@@ -26,6 +26,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def read_root():
+    return {"status": "healthy", "service": "GenesisAI Developer Portal API"}
+
 class CompileRequest(BaseModel):
     prompt: str
     execution_mode: Optional[str] = "BALANCED"
