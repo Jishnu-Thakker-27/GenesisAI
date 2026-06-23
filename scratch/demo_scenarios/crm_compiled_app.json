@@ -1,0 +1,5152 @@
+{
+  "project_id": "proj_1782226891",
+  "app_name": "SalesCoreCRM",
+  "app_type": "CRM Application",
+  "prompt": "Create a CRM to track sales leads and agents log interactions.",
+  "intent": {
+    "app_name": "SalesCoreCRM",
+    "app_type": "CRM Application",
+    "actors": [
+      {
+        "name": "SalesAgent",
+        "description": "Tracks leads and conversions"
+      },
+      {
+        "name": "SalesManager",
+        "description": "Views team pipeline dashboards"
+      }
+    ],
+    "features": [
+      {
+        "name": "AddCustomer",
+        "description": "Create new lead profile",
+        "actor_involved": "SalesAgent",
+        "source": {
+          "source_type": "user_requirement",
+          "source_description": "Direct requirement"
+        }
+      },
+      {
+        "name": "UpdateDealStage",
+        "description": "Promote leads through funnel stages",
+        "actor_involved": "SalesAgent",
+        "source": {
+          "source_type": "user_requirement",
+          "source_description": "Direct requirement"
+        }
+      }
+    ],
+    "business_rules": [
+      "Only managers can mark deals as Deleted."
+    ],
+    "constraints": [
+      "User accounts must use email login authentication."
+    ],
+    "workflow_gaps": [],
+    "assumptions": [
+      {
+        "assumption": "Deals transition sequentially",
+        "reason": "Standard pipeline workflows start at prospect and end at won",
+        "source": "industry_best_practice",
+        "confidence": 0.95,
+        "impact_level": "MEDIUM"
+      }
+    ],
+    "missing_information": [
+      "Lead scoring weight assignments."
+    ],
+    "clarification_questions": [],
+    "confidence_score": 0.87,
+    "confidence_explanation": [
+      "Insufficient functional features cataloged.",
+      "Lack of clearly defined business operational rules.",
+      "High overall structural confidence."
+    ],
+    "confidence_breakdown": {
+      "app_type_score": 1.0,
+      "actor_score": 1.0,
+      "feature_score": 0.7,
+      "business_rule_score": 0.5,
+      "workflow_score": 1.0,
+      "constraint_score": 1.0
+    },
+    "processing_mode": "MODE_B"
+  },
+  "blueprint": {
+    "project_id": "proj_1782226891",
+    "app_type": "CRM Application",
+    "actors": [
+      {
+        "name": "SalesAgent",
+        "description": "Tracks leads and conversions",
+        "relevance_score": 1.0,
+        "why_needed": "Requested actor profile for operations."
+      },
+      {
+        "name": "SalesManager",
+        "description": "Views team pipeline dashboards",
+        "relevance_score": 1.0,
+        "why_needed": "Requested actor profile for operations."
+      },
+      {
+        "name": "Admin",
+        "description": "System administrator overseeing database metrics and accounts.",
+        "relevance_score": 0.9,
+        "why_needed": "Required to manage application entities, records, and access permissions."
+      }
+    ],
+    "features": [
+      {
+        "name": "AddCustomer",
+        "description": "Create new lead profile",
+        "actor_involved": "SalesAgent",
+        "explanation": {
+          "feature_name": "AddCustomer",
+          "what_it_does": "Create new lead profile",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      },
+      {
+        "name": "UpdateDealStage",
+        "description": "Promote leads through funnel stages",
+        "actor_involved": "SalesAgent",
+        "explanation": {
+          "feature_name": "UpdateDealStage",
+          "what_it_does": "Promote leads through funnel stages",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      }
+    ],
+    "workflows": [
+      {
+        "name": "LeadConversionFlow",
+        "description": "Progressing a sales lead to converted status.",
+        "steps": [
+          "Qualify Lead",
+          "Assess Budget",
+          "Promote Deal Stage",
+          "Generate Customer Record"
+        ],
+        "actor_involved": "SalesAgent",
+        "why_needed": "Standard sales progression workflow."
+      }
+    ],
+    "permissions": [
+      {
+        "actor": "SalesAgent",
+        "action": "ReadOwnProfile",
+        "description": "Allows user to view their registered attributes.",
+        "why_needed": "Enforces fundamental privacy boundaries."
+      },
+      {
+        "actor": "SalesManager",
+        "action": "ReadOwnProfile",
+        "description": "Allows user to view their registered attributes.",
+        "why_needed": "Enforces fundamental privacy boundaries."
+      },
+      {
+        "actor": "Admin",
+        "action": "ManageAllRecords",
+        "description": "Full administrative system configurations overrides.",
+        "why_needed": "Standard admin system access rights."
+      }
+    ],
+    "innovations": [],
+    "approval_history": [],
+    "modifications": []
+  },
+  "system_design": {
+    "app_name": "Proj1782226891",
+    "app_type": "CRM Application",
+    "actors": [
+      {
+        "name": "SalesAgent",
+        "description": "Tracks leads and conversions",
+        "permissions": []
+      },
+      {
+        "name": "SalesManager",
+        "description": "Views team pipeline dashboards",
+        "permissions": []
+      },
+      {
+        "name": "Admin",
+        "description": "System administrator overseeing database metrics and accounts.",
+        "permissions": [
+          "ManageAllRecords"
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "entity_id": "ent_add_customer",
+        "entity_name": "AddCustomer",
+        "name": "AddCustomer",
+        "description": "Create new lead profile",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_customer",
+        "entity_name": "Customer",
+        "name": "Customer",
+        "description": "Logical client lead details record.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "company_name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "contact_email",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_interactionlog",
+        "entity_name": "InteractionLog",
+        "name": "InteractionLog",
+        "description": "Logical log tracking agent communications with leads.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "lead_id",
+            "type": "relationship",
+            "required": true,
+            "is_key": false,
+            "references": "Lead.id"
+          },
+          {
+            "name": "notes",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_lead",
+        "entity_name": "Lead",
+        "name": "Lead",
+        "description": "Logical sales pipeline deal progress records.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "customer_id",
+            "type": "relationship",
+            "required": true,
+            "is_key": false,
+            "references": "Customer.id"
+          },
+          {
+            "name": "deal_value",
+            "type": "float",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "deal_stage",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_update_deal_stage",
+        "entity_name": "UpdateDealStage",
+        "name": "UpdateDealStage",
+        "description": "Promote leads through funnel stages",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      }
+    ],
+    "relationships": [
+      {
+        "relationship_id": "rel_interactionlog_lead",
+        "source_entity": "InteractionLog",
+        "target_entity": "Lead",
+        "relationship_type": "many-to-one",
+        "description": "Links InteractionLog to its parent Lead record."
+      },
+      {
+        "relationship_id": "rel_lead_customer",
+        "source_entity": "Lead",
+        "target_entity": "Customer",
+        "relationship_type": "many-to-one",
+        "description": "Links Lead to its parent Customer record."
+      }
+    ],
+    "workflows": [
+      {
+        "workflow_id": "leadconversionflow",
+        "workflow_name": "LeadConversionFlow",
+        "description": "Progressing a sales lead to converted status.",
+        "workflow_steps": [
+          "Qualify Lead",
+          "Assess Budget",
+          "Promote Deal Stage",
+          "Generate Customer Record"
+        ],
+        "actors": [
+          "SalesAgent"
+        ],
+        "dependencies": [
+          "Lead",
+          "Customer"
+        ],
+        "workflow_dependencies": [],
+        "criticality": "HIGH"
+      }
+    ],
+    "permissions": [
+      {
+        "role": "Admin",
+        "permissions": [
+          "ManageAllRecords",
+          "ViewAnalyticsDashboard"
+        ],
+        "reason": "Full database administrative configuration rights."
+      },
+      {
+        "role": "SalesAgent",
+        "permissions": [
+          "ManageLeads",
+          "LogInteractions",
+          "ReadOwnProfile"
+        ],
+        "reason": "Sales representative lead management access."
+      },
+      {
+        "role": "SalesManager",
+        "permissions": [
+          "AccessPortal",
+          "ReadOwnProfile"
+        ],
+        "reason": "Baseline access privileges."
+      }
+    ],
+    "business_rules": [
+      {
+        "rule_id": "BR_001",
+        "rule": "Deals must specify a lead and a valid target customer contact.",
+        "source": "approved_blueprint",
+        "priority": "HIGH",
+        "affected_entities": [
+          "Lead",
+          "Customer"
+        ],
+        "description": "Deals must specify a lead and a valid target customer contact.",
+        "enforcement_logic": "Lead.customer_id IS NOT NULL"
+      }
+    ],
+    "design_decisions": [
+      {
+        "decision_id": "DD_001",
+        "decision": "Lead maps to Customer profile.",
+        "reason": "Enables lead tracking without cluttering base customer directories.",
+        "source": "approved_blueprint",
+        "impact_level": "HIGH",
+        "affected_components": [
+          "Lead",
+          "Customer"
+        ]
+      }
+    ],
+    "graph": {
+      "nodes": [
+        {
+          "id": "SalesAgent",
+          "type": "actor",
+          "description": "Tracks leads and conversions"
+        },
+        {
+          "id": "SalesManager",
+          "type": "actor",
+          "description": "Views team pipeline dashboards"
+        },
+        {
+          "id": "Admin",
+          "type": "actor",
+          "description": "System administrator overseeing database metrics and accounts."
+        },
+        {
+          "id": "AddCustomer",
+          "type": "entity",
+          "description": "Create new lead profile"
+        },
+        {
+          "id": "Customer",
+          "type": "entity",
+          "description": "Logical client lead details record."
+        },
+        {
+          "id": "InteractionLog",
+          "type": "entity",
+          "description": "Logical log tracking agent communications with leads."
+        },
+        {
+          "id": "Lead",
+          "type": "entity",
+          "description": "Logical sales pipeline deal progress records."
+        },
+        {
+          "id": "UpdateDealStage",
+          "type": "entity",
+          "description": "Promote leads through funnel stages"
+        },
+        {
+          "id": "LeadConversionFlow",
+          "type": "workflow",
+          "description": "Progressing a sales lead to converted status."
+        }
+      ],
+      "edges": [
+        {
+          "source": "InteractionLog",
+          "target": "Lead",
+          "type": "relationship",
+          "label": "many-to-one"
+        },
+        {
+          "source": "Lead",
+          "target": "Customer",
+          "type": "relationship",
+          "label": "many-to-one"
+        },
+        {
+          "source": "LeadConversionFlow",
+          "target": "Lead",
+          "type": "dependency",
+          "label": "uses"
+        },
+        {
+          "source": "LeadConversionFlow",
+          "target": "Customer",
+          "type": "dependency",
+          "label": "uses"
+        },
+        {
+          "source": "SalesAgent",
+          "target": "LeadConversionFlow",
+          "type": "execution",
+          "label": "triggers"
+        }
+      ]
+    },
+    "metadata": {
+      "compiled_at": "2026-06-23T20:31:31.218031",
+      "blueprint_project_id": "proj_1782226891"
+    }
+  },
+  "schema_bundle": {
+    "database_schema": [
+      {
+        "table_name": "add_customer",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_add_customer_id"
+        ],
+        "source_entity": "AddCustomer",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "customer",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "company_name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "contact_email",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_customer_id"
+        ],
+        "source_entity": "Customer",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "interaction_log",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "lead_id",
+            "type": "relationship",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": true,
+            "references": "Lead.id"
+          },
+          {
+            "name": "notes",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "column": "lead_id",
+            "references_table": "lead",
+            "references_column": "id"
+          }
+        ],
+        "constraints": [],
+        "indexes": [
+          "idx_interaction_log_id"
+        ],
+        "source_entity": "InteractionLog",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "lead",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "customer_id",
+            "type": "relationship",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": true,
+            "references": "Customer.id"
+          },
+          {
+            "name": "deal_value",
+            "type": "float",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "deal_stage",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "column": "customer_id",
+            "references_table": "customer",
+            "references_column": "id"
+          }
+        ],
+        "constraints": [],
+        "indexes": [
+          "idx_lead_id"
+        ],
+        "source_entity": "Lead",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "update_deal_stage",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_update_deal_stage_id"
+        ],
+        "source_entity": "UpdateDealStage",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      }
+    ],
+    "api_schema": [
+      {
+        "endpoint_id": "get_add_customer_list",
+        "path": "/api/v1/addcustomers",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AddCustomer"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "AddCustomer",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_add_customer_detail",
+        "path": "/api/v1/addcustomers/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/AddCustomer"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "AddCustomer",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_add_customer",
+        "path": "/api/v1/addcustomers",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/AddCustomerInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/AddCustomer"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent"
+        ],
+        "source_entity": "AddCustomer",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_add_customer",
+        "path": "/api/v1/addcustomers/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/AddCustomerInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/AddCustomer"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "AddCustomer",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_add_customer",
+        "path": "/api/v1/addcustomers/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "AddCustomer",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_customer_list",
+        "path": "/api/v1/customers",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Customer"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "Customer",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_customer_detail",
+        "path": "/api/v1/customers/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/Customer"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "Customer",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_customer",
+        "path": "/api/v1/customers",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/CustomerInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Customer"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent"
+        ],
+        "source_entity": "Customer",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_customer",
+        "path": "/api/v1/customers/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/CustomerInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Customer"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Customer",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_customer",
+        "path": "/api/v1/customers/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Customer",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_interaction_log_list",
+        "path": "/api/v1/interaction-logs",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/InteractionLog"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "InteractionLog",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_interaction_log_detail",
+        "path": "/api/v1/interaction-logs/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/InteractionLog"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "InteractionLog",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_interaction_log",
+        "path": "/api/v1/interaction-logs",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/InteractionLogInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/InteractionLog"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent"
+        ],
+        "source_entity": "InteractionLog",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_interaction_log",
+        "path": "/api/v1/interaction-logs/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/InteractionLogInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/InteractionLog"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "InteractionLog",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_interaction_log",
+        "path": "/api/v1/interaction-logs/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "InteractionLog",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_lead_list",
+        "path": "/api/v1/leads",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Lead"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "Lead",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_lead_detail",
+        "path": "/api/v1/leads/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/Lead"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "Lead",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_lead",
+        "path": "/api/v1/leads",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/LeadInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Lead"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent"
+        ],
+        "source_entity": "Lead",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_lead",
+        "path": "/api/v1/leads/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/LeadInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Lead"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Lead",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_lead",
+        "path": "/api/v1/leads/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Lead",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_update_deal_stage_list",
+        "path": "/api/v1/updatedealstages",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/UpdateDealStage"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "UpdateDealStage",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_update_deal_stage_detail",
+        "path": "/api/v1/updatedealstages/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/UpdateDealStage"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "source_entity": "UpdateDealStage",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_update_deal_stage",
+        "path": "/api/v1/updatedealstages",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/UpdateDealStageInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/UpdateDealStage"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent"
+        ],
+        "source_entity": "UpdateDealStage",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_update_deal_stage",
+        "path": "/api/v1/updatedealstages/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/UpdateDealStageInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/UpdateDealStage"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "UpdateDealStage",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_update_deal_stage",
+        "path": "/api/v1/updatedealstages/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "UpdateDealStage",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "execute_leadconversionflow",
+        "path": "/api/v1/workflows/leadconversionflow",
+        "method": "POST",
+        "request_schema": {
+          "workflow_steps": [
+            "Qualify Lead",
+            "Assess Budget",
+            "Promote Deal Stage",
+            "Generate Customer Record"
+          ]
+        },
+        "response_schema": {
+          "status": "string",
+          "execution_log": "array"
+        },
+        "permissions": [
+          "Admin",
+          "SalesAgent"
+        ],
+        "source_entity": "Lead",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      }
+    ],
+    "ui_schema": [
+      {
+        "view_id": "view_leadconversionflow",
+        "view_name": "LeadConversionFlow View",
+        "components": [
+          {
+            "type": "input_field",
+            "label": "Qualify Lead",
+            "bindings": {
+              "step_action": "qualify_lead"
+            }
+          },
+          {
+            "type": "input_field",
+            "label": "Assess Budget",
+            "bindings": {
+              "step_action": "assess_budget"
+            }
+          },
+          {
+            "type": "input_field",
+            "label": "Promote Deal Stage",
+            "bindings": {
+              "step_action": "promote_deal_stage"
+            }
+          },
+          {
+            "type": "input_field",
+            "label": "Generate Customer Record",
+            "bindings": {
+              "step_action": "generate_customer_record"
+            }
+          }
+        ],
+        "actions": [
+          "QualifyLead",
+          "AssessBudget",
+          "PromoteDealStage",
+          "GenerateCustomerRecord"
+        ],
+        "required_permissions": [
+          "SalesAgent"
+        ],
+        "source_workflow": "LeadConversionFlow",
+        "linked_endpoints": [
+          "GET /api/v1/leads",
+          "POST /api/v1/leads",
+          "GET /api/v1/customers",
+          "POST /api/v1/customers",
+          "POST /api/v1/workflows/leadconversionflow"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "UI Schema Compiler"
+        }
+      }
+    ],
+    "auth_schema": [
+      {
+        "role": "Admin",
+        "permissions": [
+          "ManageAllRecords",
+          "ViewAnalyticsDashboard"
+        ],
+        "restricted_actions": [
+          "DeleteDatabase",
+          "OverrideAll"
+        ],
+        "authentication_requirements": [
+          "JWT_Token",
+          "MFA"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "role": "SalesAgent",
+        "permissions": [
+          "ManageLeads",
+          "LogInteractions",
+          "ReadOwnProfile"
+        ],
+        "restricted_actions": [
+          "ViewAnalyticsDashboard",
+          "DeleteDatabase",
+          "OverrideAll",
+          "ManageAllRecords"
+        ],
+        "authentication_requirements": [
+          "JWT_Token"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "role": "SalesManager",
+        "permissions": [
+          "AccessPortal",
+          "ReadOwnProfile"
+        ],
+        "restricted_actions": [
+          "ViewAnalyticsDashboard",
+          "DeleteDatabase",
+          "OverrideAll",
+          "ManageAllRecords"
+        ],
+        "authentication_requirements": [
+          "JWT_Token"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      }
+    ],
+    "contracts": [
+      {
+        "contract_id": "con_entity_addcustomer",
+        "source_ast_component": "Entity:AddCustomer",
+        "generated_components": [
+          "DB_Table:add_customer",
+          "API:get_add_customer_list",
+          "API:get_add_customer_detail",
+          "API:create_add_customer",
+          "API:update_add_customer",
+          "API:delete_add_customer"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_customer",
+        "source_ast_component": "Entity:Customer",
+        "generated_components": [
+          "DB_Table:customer",
+          "API:get_customer_list",
+          "API:get_customer_detail",
+          "API:create_customer",
+          "API:update_customer",
+          "API:delete_customer",
+          "UI_View:view_leadconversionflow"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_interactionlog",
+        "source_ast_component": "Entity:InteractionLog",
+        "generated_components": [
+          "DB_Table:interaction_log",
+          "API:get_interaction_log_list",
+          "API:get_interaction_log_detail",
+          "API:create_interaction_log",
+          "API:update_interaction_log",
+          "API:delete_interaction_log"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_lead",
+        "source_ast_component": "Entity:Lead",
+        "generated_components": [
+          "DB_Table:lead",
+          "API:get_lead_list",
+          "API:get_lead_detail",
+          "API:create_lead",
+          "API:update_lead",
+          "API:delete_lead",
+          "API:execute_leadconversionflow",
+          "UI_View:view_leadconversionflow"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_updatedealstage",
+        "source_ast_component": "Entity:UpdateDealStage",
+        "generated_components": [
+          "DB_Table:update_deal_stage",
+          "API:get_update_deal_stage_list",
+          "API:get_update_deal_stage_detail",
+          "API:create_update_deal_stage",
+          "API:update_update_deal_stage",
+          "API:delete_update_deal_stage"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      }
+    ],
+    "consistency_report": [
+      {
+        "violation_id": "viol_ui_entity_addcustomer",
+        "layer_a": "AST",
+        "layer_b": "UI",
+        "message": "Entity 'AddCustomer' is not bound to any compiled UI views dependencies.",
+        "severity": "MEDIUM",
+        "related_components": [
+          "Entity:AddCustomer"
+        ]
+      },
+      {
+        "violation_id": "viol_ui_entity_interactionlog",
+        "layer_a": "AST",
+        "layer_b": "UI",
+        "message": "Entity 'InteractionLog' is not bound to any compiled UI views dependencies.",
+        "severity": "MEDIUM",
+        "related_components": [
+          "Entity:InteractionLog"
+        ]
+      },
+      {
+        "violation_id": "viol_ui_entity_updatedealstage",
+        "layer_a": "AST",
+        "layer_b": "UI",
+        "message": "Entity 'UpdateDealStage' is not bound to any compiled UI views dependencies.",
+        "severity": "MEDIUM",
+        "related_components": [
+          "Entity:UpdateDealStage"
+        ]
+      }
+    ],
+    "ast_version": {
+      "version": "proj_1782226891",
+      "generated_at": "2026-06-23T20:31:31.218031",
+      "compiler_phase": "Phase 5 Schema Generation Engine",
+      "source_ast_version": "proj_1782226891"
+    },
+    "compilation_report": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [
+        "Entity 'AddCustomer' is not bound to any compiled UI views dependencies.",
+        "Entity 'InteractionLog' is not bound to any compiled UI views dependencies.",
+        "Entity 'UpdateDealStage' is not bound to any compiled UI views dependencies."
+      ],
+      "compiled_entities": [
+        "AddCustomer",
+        "Customer",
+        "InteractionLog",
+        "Lead",
+        "UpdateDealStage"
+      ],
+      "compiled_workflows": [
+        "LeadConversionFlow"
+      ],
+      "compiled_permissions": [
+        "Admin",
+        "SalesAgent",
+        "SalesManager"
+      ],
+      "compiled_relationships": [
+        "rel_interactionlog_lead",
+        "rel_lead_customer"
+      ],
+      "consistency_checks_passed": 7,
+      "consistency_checks_failed": 3,
+      "timestamp": "2026-06-23T20:31:31.219019"
+    },
+    "artifacts": [
+      {
+        "artifact_id": "art_db_add_customer",
+        "artifact_type": "database_table",
+        "source_component": "Entity:AddCustomer",
+        "generated_component": "Table:add_customer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_customer",
+        "artifact_type": "database_table",
+        "source_component": "Entity:Customer",
+        "generated_component": "Table:customer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_interaction_log",
+        "artifact_type": "database_table",
+        "source_component": "Entity:InteractionLog",
+        "generated_component": "Table:interaction_log",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_lead",
+        "artifact_type": "database_table",
+        "source_component": "Entity:Lead",
+        "generated_component": "Table:lead",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_update_deal_stage",
+        "artifact_type": "database_table",
+        "source_component": "Entity:UpdateDealStage",
+        "generated_component": "Table:update_deal_stage",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_add_customer_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:AddCustomer",
+        "generated_component": "Endpoint:get_add_customer_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_add_customer_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:AddCustomer",
+        "generated_component": "Endpoint:get_add_customer_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_add_customer",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:AddCustomer",
+        "generated_component": "Endpoint:create_add_customer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_add_customer",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:AddCustomer",
+        "generated_component": "Endpoint:update_add_customer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_add_customer",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:AddCustomer",
+        "generated_component": "Endpoint:delete_add_customer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "AddCustomer",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_customer_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Customer",
+        "generated_component": "Endpoint:get_customer_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_customer_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Customer",
+        "generated_component": "Endpoint:get_customer_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_customer",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Customer",
+        "generated_component": "Endpoint:create_customer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_customer",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Customer",
+        "generated_component": "Endpoint:update_customer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_customer",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Customer",
+        "generated_component": "Endpoint:delete_customer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Customer",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_interaction_log_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InteractionLog",
+        "generated_component": "Endpoint:get_interaction_log_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_interaction_log_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InteractionLog",
+        "generated_component": "Endpoint:get_interaction_log_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_interaction_log",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InteractionLog",
+        "generated_component": "Endpoint:create_interaction_log",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_interaction_log",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InteractionLog",
+        "generated_component": "Endpoint:update_interaction_log",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_interaction_log",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InteractionLog",
+        "generated_component": "Endpoint:delete_interaction_log",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InteractionLog",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_lead_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Lead",
+        "generated_component": "Endpoint:get_lead_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_lead_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Lead",
+        "generated_component": "Endpoint:get_lead_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_lead",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Lead",
+        "generated_component": "Endpoint:create_lead",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_lead",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Lead",
+        "generated_component": "Endpoint:update_lead",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_lead",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Lead",
+        "generated_component": "Endpoint:delete_lead",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Lead",
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_update_deal_stage_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:UpdateDealStage",
+        "generated_component": "Endpoint:get_update_deal_stage_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_update_deal_stage_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:UpdateDealStage",
+        "generated_component": "Endpoint:get_update_deal_stage_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_update_deal_stage",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:UpdateDealStage",
+        "generated_component": "Endpoint:create_update_deal_stage",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_update_deal_stage",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:UpdateDealStage",
+        "generated_component": "Endpoint:update_update_deal_stage",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_update_deal_stage",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:UpdateDealStage",
+        "generated_component": "Endpoint:delete_update_deal_stage",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "UpdateDealStage",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_execute_leadconversionflow",
+        "artifact_type": "api_endpoint",
+        "source_component": "Workflow:LeadConversionFlow",
+        "generated_component": "Endpoint:execute_leadconversionflow",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_ui_view_leadconversionflow",
+        "artifact_type": "ui_view",
+        "source_component": "Workflow:LeadConversionFlow",
+        "generated_component": "View:view_leadconversionflow",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": "LeadConversionFlow",
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "UI Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_admin",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:Admin",
+        "generated_component": "AuthRule:Admin",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_salesagent",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:SalesAgent",
+        "generated_component": "AuthRule:SalesAgent",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_salesmanager",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:SalesManager",
+        "generated_component": "AuthRule:SalesManager",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      }
+    ]
+  },
+  "validation_report": {
+    "is_valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "error_id": "val_err_001",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:AddCustomer",
+        "message": "Orphan Entity node 'AddCustomer' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:AddCustomer",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      },
+      {
+        "error_id": "val_err_002",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:UpdateDealStage",
+        "message": "Orphan Entity node 'UpdateDealStage' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:UpdateDealStage",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      },
+      {
+        "error_id": "val_err_003",
+        "error_code": "CONSISTENCY_AST_UI",
+        "severity": "MEDIUM",
+        "layer": "Cross-Layer",
+        "component": "viol_ui_entity_addcustomer",
+        "message": "Entity 'AddCustomer' is not bound to any compiled UI views dependencies.",
+        "source_component": "Entity:AddCustomer",
+        "repair_hint": "Audit field schema names and types across DB, API, UI, and Auth compiler definitions."
+      },
+      {
+        "error_id": "val_err_004",
+        "error_code": "CONSISTENCY_AST_UI",
+        "severity": "MEDIUM",
+        "layer": "Cross-Layer",
+        "component": "viol_ui_entity_interactionlog",
+        "message": "Entity 'InteractionLog' is not bound to any compiled UI views dependencies.",
+        "source_component": "Entity:InteractionLog",
+        "repair_hint": "Audit field schema names and types across DB, API, UI, and Auth compiler definitions."
+      },
+      {
+        "error_id": "val_err_005",
+        "error_code": "CONSISTENCY_AST_UI",
+        "severity": "MEDIUM",
+        "layer": "Cross-Layer",
+        "component": "viol_ui_entity_updatedealstage",
+        "message": "Entity 'UpdateDealStage' is not bound to any compiled UI views dependencies.",
+        "source_component": "Entity:UpdateDealStage",
+        "repair_hint": "Audit field schema names and types across DB, API, UI, and Auth compiler definitions."
+      }
+    ],
+    "critical_count": 0,
+    "high_count": 0,
+    "medium_count": 5,
+    "low_count": 0,
+    "validated_components": [
+      "Table:lead",
+      "APIEndpoint:update_lead",
+      "AuthRule:SalesAgent",
+      "APIEndpoint:get_lead_detail",
+      "APIEndpoint:get_interaction_log_list",
+      "APIEndpoint:update_add_customer",
+      "Contract:con_entity_customer",
+      "APIEndpoint:get_customer_detail",
+      "APIEndpoint:update_customer",
+      "APIEndpoint:update_update_deal_stage",
+      "APIEndpoint:create_add_customer",
+      "Contract:con_entity_addcustomer",
+      "APIEndpoint:update_interaction_log",
+      "APIEndpoint:get_customer_list",
+      "APIEndpoint:delete_customer",
+      "APIEndpoint:create_customer",
+      "APIEndpoint:get_add_customer_list",
+      "APIEndpoint:create_update_deal_stage",
+      "Table:add_customer",
+      "APIEndpoint:get_interaction_log_detail",
+      "APIEndpoint:get_lead_list",
+      "AuthRule:Admin",
+      "AuthRule:SalesManager",
+      "Contract:con_entity_lead",
+      "Table:interaction_log",
+      "Workflow:LeadConversionFlow",
+      "APIEndpoint:delete_add_customer",
+      "APIEndpoint:execute_leadconversionflow",
+      "UIView:view_leadconversionflow",
+      "APIEndpoint:create_interaction_log",
+      "Table:update_deal_stage",
+      "APIEndpoint:delete_update_deal_stage",
+      "APIEndpoint:get_add_customer_detail",
+      "Contract:con_entity_updatedealstage",
+      "APIEndpoint:get_update_deal_stage_list",
+      "APIEndpoint:get_update_deal_stage_detail",
+      "APIEndpoint:delete_lead",
+      "APIEndpoint:delete_interaction_log",
+      "Contract:con_entity_interactionlog",
+      "APIEndpoint:create_lead",
+      "Table:customer"
+    ],
+    "timestamp": "2026-06-23T20:31:31.220244"
+  },
+  "repair_report": null,
+  "simulation_report": {
+    "simulation_id": "sim_1782226891",
+    "workflows_executed": [
+      "LeadConversionFlow"
+    ],
+    "successful_steps": 29,
+    "failed_steps": 0,
+    "permission_failures": 1,
+    "contract_failures": 0,
+    "validation_failures": 0,
+    "repair_failures": 0,
+    "business_rule_failures": 0,
+    "success_rate": 100.0,
+    "simulation_traces": [
+      {
+        "timestamp": "2026-06-23T20:31:31.220390",
+        "actor": "SalesAgent",
+        "action": "Qualify Lead",
+        "outcome": "SUCCESS",
+        "reason": "Step executed successfully.",
+        "affected_components": [
+          "WorkflowStep:Qualify Lead"
+        ]
+      },
+      {
+        "timestamp": "2026-06-23T20:31:31.220406",
+        "actor": "SalesAgent",
+        "action": "Assess Budget",
+        "outcome": "SUCCESS",
+        "reason": "Step executed successfully.",
+        "affected_components": [
+          "WorkflowStep:Assess Budget"
+        ]
+      },
+      {
+        "timestamp": "2026-06-23T20:31:31.220414",
+        "actor": "SalesAgent",
+        "action": "Promote Deal Stage",
+        "outcome": "SUCCESS",
+        "reason": "Step executed successfully.",
+        "affected_components": [
+          "WorkflowStep:Promote Deal Stage"
+        ]
+      },
+      {
+        "timestamp": "2026-06-23T20:31:31.220421",
+        "actor": "SalesAgent",
+        "action": "Generate Customer Record",
+        "outcome": "SUCCESS",
+        "reason": "Step executed successfully.",
+        "affected_components": [
+          "WorkflowStep:Generate Customer Record"
+        ]
+      },
+      {
+        "timestamp": "2026-06-23T20:31:31.220456",
+        "actor": "GymMember",
+        "action": "execute_leadconversionflow",
+        "outcome": "FAILED",
+        "reason": "Successfully blocked unauthorized access: Permission Denied: Role 'GymMember' is unauthorized: no Auth rule definition exists.",
+        "affected_components": []
+      }
+    ]
+  },
+  "evolution_summary": {
+    "change_id": "demo_evo_crm",
+    "version_info": {
+      "version_id": "demo_evo_crm",
+      "parent_version": "v1.0",
+      "created_at": "2026-06-23T20:31:31.231151",
+      "change_summary": "Add CustomerFeedback feature"
+    },
+    "diffs": [
+      {
+        "component": "CustomerFeedback",
+        "before_state": null,
+        "after_state": "{'type': 'feature', 'name': 'CustomerFeedback', 'details': {'name': 'CustomerFeedback', 'description': 'Customer comments and feedback'}}",
+        "change_reason": "Add requested"
+      }
+    ],
+    "impact_report": {
+      "affected_components": [],
+      "unaffected_components": [
+        "Table:add_customer",
+        "Table:customer",
+        "Table:interaction_log",
+        "Table:lead",
+        "Table:update_deal_stage",
+        "API:get_add_customer_list",
+        "API:get_add_customer_detail",
+        "API:create_add_customer",
+        "API:update_add_customer",
+        "API:delete_add_customer",
+        "API:get_customer_list",
+        "API:get_customer_detail",
+        "API:create_customer",
+        "API:update_customer",
+        "API:delete_customer",
+        "API:get_interaction_log_list",
+        "API:get_interaction_log_detail",
+        "API:create_interaction_log",
+        "API:update_interaction_log",
+        "API:delete_interaction_log",
+        "API:get_lead_list",
+        "API:get_lead_detail",
+        "API:create_lead",
+        "API:update_lead",
+        "API:delete_lead",
+        "API:get_update_deal_stage_list",
+        "API:get_update_deal_stage_detail",
+        "API:create_update_deal_stage",
+        "API:update_update_deal_stage",
+        "API:delete_update_deal_stage",
+        "API:execute_leadconversionflow"
+      ],
+      "estimated_effort": "Low (Surgical)",
+      "impact_score": {
+        "entities_changed": 0,
+        "workflows_changed": 0,
+        "apis_changed": 0,
+        "permissions_changed": 0,
+        "business_rules_changed": 0,
+        "score": 15.0,
+        "impact_level": "LOW"
+      },
+      "dependency_graph": {
+        "changed_component": "CustomerFeedback",
+        "directly_affected": [],
+        "indirectly_affected": [],
+        "dependency_depth": 0,
+        "direct_dependencies": [],
+        "indirect_dependencies": []
+      }
+    },
+    "risk_assessment": {
+      "risk_level": "LOW",
+      "affected_components": [],
+      "affected_workflows": [],
+      "affected_entities": [],
+      "validation_risk": 0.1,
+      "repair_risk": 0.1,
+      "simulation_risk": 0.1,
+      "overall_risk_score": 10.000000000000002
+    },
+    "effectiveness": {
+      "components_modified": [
+        "CustomerFeedback"
+      ],
+      "components_preserved": [
+        "Table:add_customer",
+        "Table:customer",
+        "Table:interaction_log",
+        "Table:lead",
+        "Table:update_deal_stage",
+        "API:get_add_customer_list",
+        "API:get_add_customer_detail",
+        "API:create_add_customer",
+        "API:update_add_customer",
+        "API:delete_add_customer",
+        "API:get_customer_list",
+        "API:get_customer_detail",
+        "API:create_customer",
+        "API:update_customer",
+        "API:delete_customer",
+        "API:get_interaction_log_list",
+        "API:get_interaction_log_detail",
+        "API:create_interaction_log",
+        "API:update_interaction_log",
+        "API:delete_interaction_log",
+        "API:get_lead_list",
+        "API:get_lead_detail",
+        "API:create_lead",
+        "API:update_lead",
+        "API:delete_lead",
+        "API:get_update_deal_stage_list",
+        "API:get_update_deal_stage_detail",
+        "API:create_update_deal_stage",
+        "API:update_update_deal_stage",
+        "API:delete_update_deal_stage",
+        "API:execute_leadconversionflow"
+      ],
+      "validation_passed": true,
+      "repair_required": true,
+      "simulation_passed": true,
+      "rollback_required": false,
+      "risk_level": "LOW",
+      "impact_level": "LOW",
+      "complexity_level": "LOW"
+    },
+    "conflicts_report": {
+      "is_valid": true,
+      "conflicts": []
+    },
+    "updated_blueprint": {
+      "project_id": "proj_1782226891",
+      "app_type": "CRM Application",
+      "actors": [
+        {
+          "name": "SalesAgent",
+          "description": "Tracks leads and conversions",
+          "relevance_score": 1.0,
+          "why_needed": "Requested actor profile for operations."
+        },
+        {
+          "name": "SalesManager",
+          "description": "Views team pipeline dashboards",
+          "relevance_score": 1.0,
+          "why_needed": "Requested actor profile for operations."
+        },
+        {
+          "name": "Admin",
+          "description": "System administrator overseeing database metrics and accounts.",
+          "relevance_score": 0.9,
+          "why_needed": "Required to manage application entities, records, and access permissions."
+        }
+      ],
+      "features": [
+        {
+          "name": "AddCustomer",
+          "description": "Create new lead profile",
+          "actor_involved": "SalesAgent",
+          "explanation": {
+            "feature_name": "AddCustomer",
+            "what_it_does": "Create new lead profile",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "UpdateDealStage",
+          "description": "Promote leads through funnel stages",
+          "actor_involved": "SalesAgent",
+          "explanation": {
+            "feature_name": "UpdateDealStage",
+            "what_it_does": "Promote leads through funnel stages",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "CustomerFeedback",
+          "description": "Customer comments and feedback",
+          "actor_involved": "Admin",
+          "explanation": {
+            "feature_name": "CustomerFeedback",
+            "what_it_does": "Customer comments and feedback",
+            "why_recommended": "User change request",
+            "business_value": "User value",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Incremental compiler",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        }
+      ],
+      "workflows": [
+        {
+          "name": "LeadConversionFlow",
+          "description": "Progressing a sales lead to converted status.",
+          "steps": [
+            "Qualify Lead",
+            "Assess Budget",
+            "Promote Deal Stage",
+            "Generate Customer Record"
+          ],
+          "actor_involved": "SalesAgent",
+          "why_needed": "Standard sales progression workflow."
+        }
+      ],
+      "permissions": [
+        {
+          "actor": "SalesAgent",
+          "action": "ReadOwnProfile",
+          "description": "Allows user to view their registered attributes.",
+          "why_needed": "Enforces fundamental privacy boundaries."
+        },
+        {
+          "actor": "SalesManager",
+          "action": "ReadOwnProfile",
+          "description": "Allows user to view their registered attributes.",
+          "why_needed": "Enforces fundamental privacy boundaries."
+        },
+        {
+          "actor": "Admin",
+          "action": "ManageAllRecords",
+          "description": "Full administrative system configurations overrides.",
+          "why_needed": "Standard admin system access rights."
+        }
+      ],
+      "innovations": [],
+      "approval_history": [],
+      "modifications": []
+    },
+    "updated_spec": {
+      "app_name": "Proj1782226891",
+      "app_type": "CRM Application",
+      "actors": [
+        {
+          "name": "SalesAgent",
+          "description": "Tracks leads and conversions",
+          "permissions": []
+        },
+        {
+          "name": "SalesManager",
+          "description": "Views team pipeline dashboards",
+          "permissions": []
+        },
+        {
+          "name": "Admin",
+          "description": "System administrator overseeing database metrics and accounts.",
+          "permissions": [
+            "ManageAllRecords"
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "entity_id": "ent_add_customer",
+          "entity_name": "AddCustomer",
+          "name": "AddCustomer",
+          "description": "Create new lead profile",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_customer",
+          "entity_name": "Customer",
+          "name": "Customer",
+          "description": "Logical client lead details record.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "company_name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "contact_email",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_interactionlog",
+          "entity_name": "InteractionLog",
+          "name": "InteractionLog",
+          "description": "Logical log tracking agent communications with leads.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "lead_id",
+              "type": "relationship",
+              "required": true,
+              "is_key": false,
+              "references": "Lead.id"
+            },
+            {
+              "name": "notes",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_lead",
+          "entity_name": "Lead",
+          "name": "Lead",
+          "description": "Logical sales pipeline deal progress records.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "customer_id",
+              "type": "relationship",
+              "required": true,
+              "is_key": false,
+              "references": "Customer.id"
+            },
+            {
+              "name": "deal_value",
+              "type": "float",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "deal_stage",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_update_deal_stage",
+          "entity_name": "UpdateDealStage",
+          "name": "UpdateDealStage",
+          "description": "Promote leads through funnel stages",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_customer_feedback",
+          "entity_name": "CustomerFeedback",
+          "name": "CustomerFeedback",
+          "description": "Customer comments and feedback",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        }
+      ],
+      "relationships": [
+        {
+          "relationship_id": "rel_interactionlog_lead",
+          "source_entity": "InteractionLog",
+          "target_entity": "Lead",
+          "relationship_type": "many-to-one",
+          "description": "Links InteractionLog to its parent Lead record."
+        },
+        {
+          "relationship_id": "rel_lead_customer",
+          "source_entity": "Lead",
+          "target_entity": "Customer",
+          "relationship_type": "many-to-one",
+          "description": "Links Lead to its parent Customer record."
+        }
+      ],
+      "workflows": [
+        {
+          "workflow_id": "leadconversionflow",
+          "workflow_name": "LeadConversionFlow",
+          "description": "Progressing a sales lead to converted status.",
+          "workflow_steps": [
+            "Qualify Lead",
+            "Assess Budget",
+            "Promote Deal Stage",
+            "Generate Customer Record"
+          ],
+          "actors": [
+            "SalesAgent"
+          ],
+          "dependencies": [
+            "Lead",
+            "Customer"
+          ],
+          "workflow_dependencies": [],
+          "criticality": "HIGH"
+        }
+      ],
+      "permissions": [
+        {
+          "role": "Admin",
+          "permissions": [
+            "ManageAllRecords",
+            "ViewAnalyticsDashboard"
+          ],
+          "reason": "Full database administrative configuration rights."
+        },
+        {
+          "role": "SalesAgent",
+          "permissions": [
+            "ManageLeads",
+            "LogInteractions",
+            "ReadOwnProfile"
+          ],
+          "reason": "Sales representative lead management access."
+        },
+        {
+          "role": "SalesManager",
+          "permissions": [
+            "AccessPortal",
+            "ReadOwnProfile"
+          ],
+          "reason": "Baseline access privileges."
+        }
+      ],
+      "business_rules": [
+        {
+          "rule_id": "BR_001",
+          "rule": "Deals must specify a lead and a valid target customer contact.",
+          "source": "approved_blueprint",
+          "priority": "HIGH",
+          "affected_entities": [
+            "Lead",
+            "Customer"
+          ],
+          "description": "Deals must specify a lead and a valid target customer contact.",
+          "enforcement_logic": "Lead.customer_id IS NOT NULL"
+        }
+      ],
+      "design_decisions": [
+        {
+          "decision_id": "DD_001",
+          "decision": "Lead maps to Customer profile.",
+          "reason": "Enables lead tracking without cluttering base customer directories.",
+          "source": "approved_blueprint",
+          "impact_level": "HIGH",
+          "affected_components": [
+            "Lead",
+            "Customer"
+          ]
+        }
+      ],
+      "graph": {
+        "nodes": [
+          {
+            "id": "SalesAgent",
+            "type": "actor",
+            "description": "Tracks leads and conversions"
+          },
+          {
+            "id": "SalesManager",
+            "type": "actor",
+            "description": "Views team pipeline dashboards"
+          },
+          {
+            "id": "Admin",
+            "type": "actor",
+            "description": "System administrator overseeing database metrics and accounts."
+          },
+          {
+            "id": "AddCustomer",
+            "type": "entity",
+            "description": "Create new lead profile"
+          },
+          {
+            "id": "Customer",
+            "type": "entity",
+            "description": "Logical client lead details record."
+          },
+          {
+            "id": "InteractionLog",
+            "type": "entity",
+            "description": "Logical log tracking agent communications with leads."
+          },
+          {
+            "id": "Lead",
+            "type": "entity",
+            "description": "Logical sales pipeline deal progress records."
+          },
+          {
+            "id": "UpdateDealStage",
+            "type": "entity",
+            "description": "Promote leads through funnel stages"
+          },
+          {
+            "id": "LeadConversionFlow",
+            "type": "workflow",
+            "description": "Progressing a sales lead to converted status."
+          }
+        ],
+        "edges": [
+          {
+            "source": "InteractionLog",
+            "target": "Lead",
+            "type": "relationship",
+            "label": "many-to-one"
+          },
+          {
+            "source": "Lead",
+            "target": "Customer",
+            "type": "relationship",
+            "label": "many-to-one"
+          },
+          {
+            "source": "LeadConversionFlow",
+            "target": "Lead",
+            "type": "dependency",
+            "label": "uses"
+          },
+          {
+            "source": "LeadConversionFlow",
+            "target": "Customer",
+            "type": "dependency",
+            "label": "uses"
+          },
+          {
+            "source": "SalesAgent",
+            "target": "LeadConversionFlow",
+            "type": "execution",
+            "label": "triggers"
+          }
+        ]
+      },
+      "metadata": {
+        "compiled_at": "2026-06-23T20:31:31.218031",
+        "blueprint_project_id": "proj_1782226891",
+        "ast_version_id": "demo_evo_crm"
+      }
+    },
+    "updated_bundle": {
+      "database_schema": [
+        {
+          "table_name": "add_customer",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_add_customer_id"
+          ],
+          "source_entity": "AddCustomer",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "customer",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "company_name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "contact_email",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_customer_id"
+          ],
+          "source_entity": "Customer",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "interaction_log",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "lead_id",
+              "type": "relationship",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": true,
+              "references": "Lead.id"
+            },
+            {
+              "name": "notes",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [
+            {
+              "column": "lead_id",
+              "references_table": "lead",
+              "references_column": "id"
+            }
+          ],
+          "constraints": [],
+          "indexes": [
+            "idx_interaction_log_id"
+          ],
+          "source_entity": "InteractionLog",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "lead",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "customer_id",
+              "type": "relationship",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": true,
+              "references": "Customer.id"
+            },
+            {
+              "name": "deal_value",
+              "type": "float",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "deal_stage",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [
+            {
+              "column": "customer_id",
+              "references_table": "customer",
+              "references_column": "id"
+            }
+          ],
+          "constraints": [],
+          "indexes": [
+            "idx_lead_id"
+          ],
+          "source_entity": "Lead",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "update_deal_stage",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_update_deal_stage_id"
+          ],
+          "source_entity": "UpdateDealStage",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "customer_feedback",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [],
+          "source_entity": "CustomerFeedback",
+          "traceability": {
+            "source_entity": "CustomerFeedback",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ],
+      "api_schema": [
+        {
+          "endpoint_id": "get_add_customer_list",
+          "path": "/api/v1/addcustomers",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AddCustomer"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "AddCustomer",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_add_customer_detail",
+          "path": "/api/v1/addcustomers/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/AddCustomer"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "AddCustomer",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_add_customer",
+          "path": "/api/v1/addcustomers",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/AddCustomerInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/AddCustomer"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent"
+          ],
+          "source_entity": "AddCustomer",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_add_customer",
+          "path": "/api/v1/addcustomers/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/AddCustomerInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/AddCustomer"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "AddCustomer",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_add_customer",
+          "path": "/api/v1/addcustomers/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "AddCustomer",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_customer_list",
+          "path": "/api/v1/customers",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "Customer",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_customer_detail",
+          "path": "/api/v1/customers/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "Customer",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_customer",
+          "path": "/api/v1/customers",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/CustomerInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent"
+          ],
+          "source_entity": "Customer",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_customer",
+          "path": "/api/v1/customers/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/CustomerInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Customer",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_customer",
+          "path": "/api/v1/customers/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Customer",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_interaction_log_list",
+          "path": "/api/v1/interaction-logs",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InteractionLog"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "InteractionLog",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_interaction_log_detail",
+          "path": "/api/v1/interaction-logs/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/InteractionLog"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "InteractionLog",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_interaction_log",
+          "path": "/api/v1/interaction-logs",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/InteractionLogInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/InteractionLog"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent"
+          ],
+          "source_entity": "InteractionLog",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_interaction_log",
+          "path": "/api/v1/interaction-logs/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/InteractionLogInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/InteractionLog"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "InteractionLog",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_interaction_log",
+          "path": "/api/v1/interaction-logs/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "InteractionLog",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_lead_list",
+          "path": "/api/v1/leads",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Lead"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "Lead",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_lead_detail",
+          "path": "/api/v1/leads/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/Lead"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "Lead",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_lead",
+          "path": "/api/v1/leads",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/LeadInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Lead"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent"
+          ],
+          "source_entity": "Lead",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_lead",
+          "path": "/api/v1/leads/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/LeadInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Lead"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Lead",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_lead",
+          "path": "/api/v1/leads/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Lead",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_update_deal_stage_list",
+          "path": "/api/v1/updatedealstages",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpdateDealStage"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "UpdateDealStage",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_update_deal_stage_detail",
+          "path": "/api/v1/updatedealstages/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/UpdateDealStage"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent",
+            "SalesManager"
+          ],
+          "source_entity": "UpdateDealStage",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_update_deal_stage",
+          "path": "/api/v1/updatedealstages",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/UpdateDealStageInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/UpdateDealStage"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent"
+          ],
+          "source_entity": "UpdateDealStage",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_update_deal_stage",
+          "path": "/api/v1/updatedealstages/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/UpdateDealStageInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/UpdateDealStage"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "UpdateDealStage",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_update_deal_stage",
+          "path": "/api/v1/updatedealstages/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "UpdateDealStage",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "execute_leadconversionflow",
+          "path": "/api/v1/workflows/leadconversionflow",
+          "method": "POST",
+          "request_schema": {
+            "workflow_steps": [
+              "Qualify Lead",
+              "Assess Budget",
+              "Promote Deal Stage",
+              "Generate Customer Record"
+            ]
+          },
+          "response_schema": {
+            "status": "string",
+            "execution_log": "array"
+          },
+          "permissions": [
+            "Admin",
+            "SalesAgent"
+          ],
+          "source_entity": "Lead",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_customer_feedback_list",
+          "path": "/api/v1/customerfeedbacks",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {},
+          "permissions": [],
+          "source_entity": "CustomerFeedback",
+          "traceability": {
+            "source_entity": "CustomerFeedback",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_customer_feedback",
+          "path": "/api/v1/customerfeedbacks",
+          "method": "POST",
+          "request_schema": {},
+          "response_schema": {},
+          "permissions": [],
+          "source_entity": "CustomerFeedback",
+          "traceability": {
+            "source_entity": "CustomerFeedback",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ],
+      "ui_schema": [
+        {
+          "view_id": "view_leadconversionflow",
+          "view_name": "LeadConversionFlow View",
+          "components": [
+            {
+              "type": "input_field",
+              "label": "Qualify Lead",
+              "bindings": {
+                "step_action": "qualify_lead"
+              }
+            },
+            {
+              "type": "input_field",
+              "label": "Assess Budget",
+              "bindings": {
+                "step_action": "assess_budget"
+              }
+            },
+            {
+              "type": "input_field",
+              "label": "Promote Deal Stage",
+              "bindings": {
+                "step_action": "promote_deal_stage"
+              }
+            },
+            {
+              "type": "input_field",
+              "label": "Generate Customer Record",
+              "bindings": {
+                "step_action": "generate_customer_record"
+              }
+            }
+          ],
+          "actions": [
+            "QualifyLead",
+            "AssessBudget",
+            "PromoteDealStage",
+            "GenerateCustomerRecord"
+          ],
+          "required_permissions": [
+            "SalesAgent"
+          ],
+          "source_workflow": "LeadConversionFlow",
+          "linked_endpoints": [
+            "GET /api/v1/leads",
+            "POST /api/v1/leads",
+            "GET /api/v1/customers",
+            "POST /api/v1/customers",
+            "POST /api/v1/workflows/leadconversionflow"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "UI Schema Compiler"
+          }
+        }
+      ],
+      "auth_schema": [
+        {
+          "role": "Admin",
+          "permissions": [
+            "ManageAllRecords",
+            "ViewAnalyticsDashboard"
+          ],
+          "restricted_actions": [
+            "DeleteDatabase",
+            "OverrideAll"
+          ],
+          "authentication_requirements": [
+            "JWT_Token",
+            "MFA"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "role": "SalesAgent",
+          "permissions": [
+            "ManageLeads",
+            "LogInteractions",
+            "ReadOwnProfile"
+          ],
+          "restricted_actions": [
+            "ViewAnalyticsDashboard",
+            "DeleteDatabase",
+            "OverrideAll",
+            "ManageAllRecords"
+          ],
+          "authentication_requirements": [
+            "JWT_Token"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "role": "SalesManager",
+          "permissions": [
+            "AccessPortal",
+            "ReadOwnProfile"
+          ],
+          "restricted_actions": [
+            "ViewAnalyticsDashboard",
+            "DeleteDatabase",
+            "OverrideAll",
+            "ManageAllRecords"
+          ],
+          "authentication_requirements": [
+            "JWT_Token"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        }
+      ],
+      "contracts": [
+        {
+          "contract_id": "con_entity_addcustomer",
+          "source_ast_component": "Entity:AddCustomer",
+          "generated_components": [
+            "DB_Table:add_customer",
+            "API:get_add_customer_list",
+            "API:get_add_customer_detail",
+            "API:create_add_customer",
+            "API:update_add_customer",
+            "API:delete_add_customer"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_customer",
+          "source_ast_component": "Entity:Customer",
+          "generated_components": [
+            "DB_Table:customer",
+            "API:get_customer_list",
+            "API:get_customer_detail",
+            "API:create_customer",
+            "API:update_customer",
+            "API:delete_customer",
+            "UI_View:view_leadconversionflow"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_interactionlog",
+          "source_ast_component": "Entity:InteractionLog",
+          "generated_components": [
+            "DB_Table:interaction_log",
+            "API:get_interaction_log_list",
+            "API:get_interaction_log_detail",
+            "API:create_interaction_log",
+            "API:update_interaction_log",
+            "API:delete_interaction_log"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_lead",
+          "source_ast_component": "Entity:Lead",
+          "generated_components": [
+            "DB_Table:lead",
+            "API:get_lead_list",
+            "API:get_lead_detail",
+            "API:create_lead",
+            "API:update_lead",
+            "API:delete_lead",
+            "API:execute_leadconversionflow",
+            "UI_View:view_leadconversionflow"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_updatedealstage",
+          "source_ast_component": "Entity:UpdateDealStage",
+          "generated_components": [
+            "DB_Table:update_deal_stage",
+            "API:get_update_deal_stage_list",
+            "API:get_update_deal_stage_detail",
+            "API:create_update_deal_stage",
+            "API:update_update_deal_stage",
+            "API:delete_update_deal_stage"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        }
+      ],
+      "consistency_report": [
+        {
+          "violation_id": "viol_ui_entity_addcustomer",
+          "layer_a": "AST",
+          "layer_b": "UI",
+          "message": "Entity 'AddCustomer' is not bound to any compiled UI views dependencies.",
+          "severity": "MEDIUM",
+          "related_components": [
+            "Entity:AddCustomer"
+          ]
+        },
+        {
+          "violation_id": "viol_ui_entity_interactionlog",
+          "layer_a": "AST",
+          "layer_b": "UI",
+          "message": "Entity 'InteractionLog' is not bound to any compiled UI views dependencies.",
+          "severity": "MEDIUM",
+          "related_components": [
+            "Entity:InteractionLog"
+          ]
+        },
+        {
+          "violation_id": "viol_ui_entity_updatedealstage",
+          "layer_a": "AST",
+          "layer_b": "UI",
+          "message": "Entity 'UpdateDealStage' is not bound to any compiled UI views dependencies.",
+          "severity": "MEDIUM",
+          "related_components": [
+            "Entity:UpdateDealStage"
+          ]
+        }
+      ],
+      "ast_version": {
+        "version": "proj_1782226891",
+        "generated_at": "2026-06-23T20:31:31.218031",
+        "compiler_phase": "Phase 5 Schema Generation Engine",
+        "source_ast_version": "proj_1782226891"
+      },
+      "compilation_report": {
+        "is_valid": true,
+        "errors": [],
+        "warnings": [
+          "Entity 'AddCustomer' is not bound to any compiled UI views dependencies.",
+          "Entity 'InteractionLog' is not bound to any compiled UI views dependencies.",
+          "Entity 'UpdateDealStage' is not bound to any compiled UI views dependencies."
+        ],
+        "compiled_entities": [
+          "AddCustomer",
+          "Customer",
+          "InteractionLog",
+          "Lead",
+          "UpdateDealStage"
+        ],
+        "compiled_workflows": [
+          "LeadConversionFlow"
+        ],
+        "compiled_permissions": [
+          "Admin",
+          "SalesAgent",
+          "SalesManager"
+        ],
+        "compiled_relationships": [
+          "rel_interactionlog_lead",
+          "rel_lead_customer"
+        ],
+        "consistency_checks_passed": 7,
+        "consistency_checks_failed": 3,
+        "timestamp": "2026-06-23T20:31:31.219019"
+      },
+      "artifacts": [
+        {
+          "artifact_id": "art_db_add_customer",
+          "artifact_type": "database_table",
+          "source_component": "Entity:AddCustomer",
+          "generated_component": "Table:add_customer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_customer",
+          "artifact_type": "database_table",
+          "source_component": "Entity:Customer",
+          "generated_component": "Table:customer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_interaction_log",
+          "artifact_type": "database_table",
+          "source_component": "Entity:InteractionLog",
+          "generated_component": "Table:interaction_log",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_lead",
+          "artifact_type": "database_table",
+          "source_component": "Entity:Lead",
+          "generated_component": "Table:lead",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_update_deal_stage",
+          "artifact_type": "database_table",
+          "source_component": "Entity:UpdateDealStage",
+          "generated_component": "Table:update_deal_stage",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_add_customer_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:AddCustomer",
+          "generated_component": "Endpoint:get_add_customer_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_add_customer_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:AddCustomer",
+          "generated_component": "Endpoint:get_add_customer_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_add_customer",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:AddCustomer",
+          "generated_component": "Endpoint:create_add_customer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_add_customer",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:AddCustomer",
+          "generated_component": "Endpoint:update_add_customer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_add_customer",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:AddCustomer",
+          "generated_component": "Endpoint:delete_add_customer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AddCustomer",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_customer_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Customer",
+          "generated_component": "Endpoint:get_customer_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_customer_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Customer",
+          "generated_component": "Endpoint:get_customer_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_customer",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Customer",
+          "generated_component": "Endpoint:create_customer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_customer",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Customer",
+          "generated_component": "Endpoint:update_customer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_customer",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Customer",
+          "generated_component": "Endpoint:delete_customer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Customer",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_interaction_log_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InteractionLog",
+          "generated_component": "Endpoint:get_interaction_log_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_interaction_log_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InteractionLog",
+          "generated_component": "Endpoint:get_interaction_log_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_interaction_log",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InteractionLog",
+          "generated_component": "Endpoint:create_interaction_log",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_interaction_log",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InteractionLog",
+          "generated_component": "Endpoint:update_interaction_log",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_interaction_log",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InteractionLog",
+          "generated_component": "Endpoint:delete_interaction_log",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InteractionLog",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_lead_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Lead",
+          "generated_component": "Endpoint:get_lead_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_lead_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Lead",
+          "generated_component": "Endpoint:get_lead_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_lead",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Lead",
+          "generated_component": "Endpoint:create_lead",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_lead",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Lead",
+          "generated_component": "Endpoint:update_lead",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_lead",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Lead",
+          "generated_component": "Endpoint:delete_lead",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Lead",
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_update_deal_stage_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:UpdateDealStage",
+          "generated_component": "Endpoint:get_update_deal_stage_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_update_deal_stage_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:UpdateDealStage",
+          "generated_component": "Endpoint:get_update_deal_stage_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_update_deal_stage",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:UpdateDealStage",
+          "generated_component": "Endpoint:create_update_deal_stage",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_update_deal_stage",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:UpdateDealStage",
+          "generated_component": "Endpoint:update_update_deal_stage",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_update_deal_stage",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:UpdateDealStage",
+          "generated_component": "Endpoint:delete_update_deal_stage",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UpdateDealStage",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_execute_leadconversionflow",
+          "artifact_type": "api_endpoint",
+          "source_component": "Workflow:LeadConversionFlow",
+          "generated_component": "Endpoint:execute_leadconversionflow",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_ui_view_leadconversionflow",
+          "artifact_type": "ui_view",
+          "source_component": "Workflow:LeadConversionFlow",
+          "generated_component": "View:view_leadconversionflow",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": "LeadConversionFlow",
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "UI Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_admin",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:Admin",
+          "generated_component": "AuthRule:Admin",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_salesagent",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:SalesAgent",
+          "generated_component": "AuthRule:SalesAgent",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_salesmanager",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:SalesManager",
+          "generated_component": "AuthRule:SalesManager",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_customer_feedback",
+          "artifact_type": "database_table",
+          "source_component": "Entity:CustomerFeedback",
+          "generated_component": "Table:customer_feedback",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "CustomerFeedback",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_customer_feedback_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:CustomerFeedback",
+          "generated_component": "Endpoint:get_customer_feedback_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "CustomerFeedback",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_customer_feedback",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:CustomerFeedback",
+          "generated_component": "Endpoint:create_customer_feedback",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "CustomerFeedback",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ]
+    }
+  },
+  "pipeline_traces": [
+    {
+      "phase_name": "Intent Engine",
+      "start_time": "2026-06-23T20:31:31.215003",
+      "end_time": "2026-06-23T20:31:31.215244",
+      "duration_ms": 0.22602081298828125,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Blueprint Engine",
+      "start_time": "2026-06-23T20:31:31.215261",
+      "end_time": "2026-06-23T20:31:31.217482",
+      "duration_ms": 2.217531204223633,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "System Design Engine",
+      "start_time": "2026-06-23T20:31:31.217497",
+      "end_time": "2026-06-23T20:31:31.218055",
+      "duration_ms": 0.5552768707275391,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Schema Engine",
+      "start_time": "2026-06-23T20:31:31.218063",
+      "end_time": "2026-06-23T20:31:31.219434",
+      "duration_ms": 1.3666152954101562,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Validation Engine",
+      "start_time": "2026-06-23T20:31:31.219451",
+      "end_time": "2026-06-23T20:31:31.220272",
+      "duration_ms": 0.8172988891601562,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Repair Engine",
+      "start_time": "2026-06-23T20:31:31.220281",
+      "end_time": "2026-06-23T20:31:31.220284",
+      "duration_ms": 0.0016689300537109375,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Execution Simulator",
+      "start_time": "2026-06-23T20:31:31.220290",
+      "end_time": "2026-06-23T20:31:31.220962",
+      "duration_ms": 0.6694793701171875,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Requirement Evolution Engine",
+      "start_time": "2026-06-23T20:31:31.220976",
+      "end_time": "2026-06-23T20:31:31.248370",
+      "duration_ms": 27.387380599975586,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "execution_mode": "BALANCED",
+  "created_at": "2026-06-23T20:31:31.248395",
+  "updated_at": "2026-06-23T20:31:31.248395"
+}

@@ -1,0 +1,3132 @@
+{
+  "project_id": "proj_1782226891",
+  "app_name": "HealthSyncPortal",
+  "app_type": "Healthcare Management",
+  "prompt": "Compile a hospital appointment scheduler linking patients and doctors.",
+  "intent": {
+    "app_name": "HealthSyncPortal",
+    "app_type": "Healthcare Management",
+    "actors": [
+      {
+        "name": "Patient",
+        "description": "Book appointments and view records"
+      },
+      {
+        "name": "Doctor",
+        "description": "Manage appointments and issue prescriptions"
+      }
+    ],
+    "features": [
+      {
+        "name": "RequestAppointment",
+        "description": "Request medical slot reservation",
+        "actor_involved": "Patient",
+        "source": {
+          "source_type": "user_requirement",
+          "source_description": "Direct requirement"
+        }
+      },
+      {
+        "name": "WritePrescription",
+        "description": "Create prescription notes",
+        "actor_involved": "Doctor",
+        "source": {
+          "source_type": "user_requirement",
+          "source_description": "Direct requirement"
+        }
+      }
+    ],
+    "business_rules": [
+      "Only doctors can write medical records."
+    ],
+    "constraints": [
+      "HIPAA compliance guidelines simulated."
+    ],
+    "workflow_gaps": [
+      "Patient Intake Flow",
+      "Prescription Dispensation Flow"
+    ],
+    "assumptions": [
+      {
+        "assumption": "Prescriptions link to medical inventory",
+        "reason": "Standard practice for hospital automation systems",
+        "source": "industry_best_practice",
+        "confidence": 0.8,
+        "impact_level": "MEDIUM"
+      }
+    ],
+    "missing_information": [
+      "Insurance billing provider integrations."
+    ],
+    "clarification_questions": [
+      {
+        "question": "Should patients receive auto-reminders via SMS?",
+        "category": "workflows",
+        "importance": "medium"
+      }
+    ],
+    "confidence_score": 0.8,
+    "confidence_explanation": [
+      "Insufficient functional features cataloged.",
+      "Lack of clearly defined business operational rules.",
+      "Underspecified workflow pathways (2 critical gaps).",
+      "Moderate structural confidence; proceed with assumptions."
+    ],
+    "confidence_breakdown": {
+      "app_type_score": 1.0,
+      "actor_score": 1.0,
+      "feature_score": 0.7,
+      "business_rule_score": 0.5,
+      "workflow_score": 0.4,
+      "constraint_score": 1.0
+    },
+    "processing_mode": "MODE_C"
+  },
+  "blueprint": {
+    "project_id": "proj_1782226891",
+    "app_type": "Healthcare Management",
+    "actors": [
+      {
+        "name": "Doctor",
+        "description": "Manage appointments and issue prescriptions",
+        "relevance_score": 1.0,
+        "why_needed": "Requested actor profile for operations."
+      },
+      {
+        "name": "Patient",
+        "description": "Book appointments and view records",
+        "relevance_score": 1.0,
+        "why_needed": "Requested actor profile for operations."
+      },
+      {
+        "name": "Admin",
+        "description": "System administrator overseeing database metrics and accounts.",
+        "relevance_score": 0.9,
+        "why_needed": "Required to manage application entities, records, and access permissions."
+      }
+    ],
+    "features": [
+      {
+        "name": "RequestAppointment",
+        "description": "Request medical slot reservation",
+        "actor_involved": "Patient",
+        "explanation": {
+          "feature_name": "RequestAppointment",
+          "what_it_does": "Request medical slot reservation",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      },
+      {
+        "name": "WritePrescription",
+        "description": "Create prescription notes",
+        "actor_involved": "Doctor",
+        "explanation": {
+          "feature_name": "WritePrescription",
+          "what_it_does": "Create prescription notes",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      }
+    ],
+    "workflows": [],
+    "permissions": [
+      {
+        "actor": "Patient",
+        "action": "ReadOwnProfile",
+        "description": "Allows user to view their registered attributes.",
+        "why_needed": "Enforces fundamental privacy boundaries."
+      },
+      {
+        "actor": "Doctor",
+        "action": "ReadOwnProfile",
+        "description": "Allows user to view their registered attributes.",
+        "why_needed": "Enforces fundamental privacy boundaries."
+      },
+      {
+        "actor": "Admin",
+        "action": "ManageAllRecords",
+        "description": "Full administrative system configurations overrides.",
+        "why_needed": "Standard admin system access rights."
+      }
+    ],
+    "innovations": [],
+    "approval_history": [],
+    "modifications": []
+  },
+  "system_design": {
+    "app_name": "Proj1782226891",
+    "app_type": "Healthcare Management",
+    "actors": [
+      {
+        "name": "Doctor",
+        "description": "Manage appointments and issue prescriptions",
+        "permissions": [
+          "CreateDiagnosis"
+        ]
+      },
+      {
+        "name": "Patient",
+        "description": "Book appointments and view records",
+        "permissions": []
+      },
+      {
+        "name": "Admin",
+        "description": "System administrator overseeing database metrics and accounts.",
+        "permissions": [
+          "ManageAllRecords"
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "entity_id": "ent_request_appointment",
+        "entity_name": "RequestAppointment",
+        "name": "RequestAppointment",
+        "description": "Request medical slot reservation",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_user",
+        "entity_name": "User",
+        "name": "User",
+        "description": "Logical standard app user profile.",
+        "source": "default_policy",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "username",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_write_prescription",
+        "entity_name": "WritePrescription",
+        "name": "WritePrescription",
+        "description": "Create prescription notes",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      }
+    ],
+    "relationships": [],
+    "workflows": [],
+    "permissions": [
+      {
+        "role": "Admin",
+        "permissions": [
+          "ManageAllRecords",
+          "ViewAnalyticsDashboard"
+        ],
+        "reason": "Full database administrative configuration rights."
+      },
+      {
+        "role": "Doctor",
+        "permissions": [
+          "CreateDiagnosis",
+          "ReadMedicalRecords",
+          "ManageAppointments"
+        ],
+        "reason": "Doctor medical access rights."
+      },
+      {
+        "role": "Patient",
+        "permissions": [
+          "ReadOwnProfile",
+          "ScheduleAppointments"
+        ],
+        "reason": "Patient scheduling and medical overview access."
+      }
+    ],
+    "business_rules": [
+      {
+        "rule_id": "BR_001",
+        "rule": "All operations must comply with baseline security policies.",
+        "source": "default_policy",
+        "priority": "LOW",
+        "affected_entities": [
+          "User"
+        ],
+        "description": "All operations must comply with baseline security policies.",
+        "enforcement_logic": "User.id IS NOT NULL"
+      }
+    ],
+    "design_decisions": [
+      {
+        "decision_id": "DD_001",
+        "decision": "Generic User model is base actor profile.",
+        "reason": "Standard fallback setup.",
+        "source": "default_policy",
+        "impact_level": "LOW",
+        "affected_components": [
+          "User"
+        ]
+      }
+    ],
+    "graph": {
+      "nodes": [
+        {
+          "id": "Doctor",
+          "type": "actor",
+          "description": "Manage appointments and issue prescriptions"
+        },
+        {
+          "id": "Patient",
+          "type": "actor",
+          "description": "Book appointments and view records"
+        },
+        {
+          "id": "Admin",
+          "type": "actor",
+          "description": "System administrator overseeing database metrics and accounts."
+        },
+        {
+          "id": "RequestAppointment",
+          "type": "entity",
+          "description": "Request medical slot reservation"
+        },
+        {
+          "id": "User",
+          "type": "entity",
+          "description": "Logical standard app user profile."
+        },
+        {
+          "id": "WritePrescription",
+          "type": "entity",
+          "description": "Create prescription notes"
+        }
+      ],
+      "edges": []
+    },
+    "metadata": {
+      "compiled_at": "2026-06-23T20:31:31.458014",
+      "blueprint_project_id": "proj_1782226891"
+    }
+  },
+  "schema_bundle": {
+    "database_schema": [
+      {
+        "table_name": "request_appointment",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_request_appointment_id"
+        ],
+        "source_entity": "RequestAppointment",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "user",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "username",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_user_id"
+        ],
+        "source_entity": "User",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "write_prescription",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_write_prescription_id"
+        ],
+        "source_entity": "WritePrescription",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      }
+    ],
+    "api_schema": [
+      {
+        "endpoint_id": "get_request_appointment_list",
+        "path": "/api/v1/requestappointments",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RequestAppointment"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "RequestAppointment",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_request_appointment_detail",
+        "path": "/api/v1/requestappointments/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/RequestAppointment"
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "RequestAppointment",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_request_appointment",
+        "path": "/api/v1/requestappointments",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/RequestAppointmentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/RequestAppointment"
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "RequestAppointment",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_request_appointment",
+        "path": "/api/v1/requestappointments/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/RequestAppointmentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/RequestAppointment"
+        },
+        "permissions": [
+          "Admin",
+          "Doctor"
+        ],
+        "source_entity": "RequestAppointment",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_request_appointment",
+        "path": "/api/v1/requestappointments/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "RequestAppointment",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_user_list",
+        "path": "/api/v1/users",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "User",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_user_detail",
+        "path": "/api/v1/users/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/User"
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "User",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_user",
+        "path": "/api/v1/users",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/UserInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/User"
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "User",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_user",
+        "path": "/api/v1/users/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/UserInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/User"
+        },
+        "permissions": [
+          "Admin",
+          "Doctor"
+        ],
+        "source_entity": "User",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_user",
+        "path": "/api/v1/users/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "User",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_write_prescription_list",
+        "path": "/api/v1/writeprescriptions",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/WritePrescription"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "WritePrescription",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_write_prescription_detail",
+        "path": "/api/v1/writeprescriptions/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/WritePrescription"
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "WritePrescription",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_write_prescription",
+        "path": "/api/v1/writeprescriptions",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/WritePrescriptionInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/WritePrescription"
+        },
+        "permissions": [
+          "Admin",
+          "Patient"
+        ],
+        "source_entity": "WritePrescription",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_write_prescription",
+        "path": "/api/v1/writeprescriptions/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/WritePrescriptionInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/WritePrescription"
+        },
+        "permissions": [
+          "Admin",
+          "Doctor"
+        ],
+        "source_entity": "WritePrescription",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_write_prescription",
+        "path": "/api/v1/writeprescriptions/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "WritePrescription",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      }
+    ],
+    "ui_schema": [],
+    "auth_schema": [
+      {
+        "role": "Admin",
+        "permissions": [
+          "ManageAllRecords",
+          "ViewAnalyticsDashboard"
+        ],
+        "restricted_actions": [
+          "DeleteDatabase",
+          "OverrideAll"
+        ],
+        "authentication_requirements": [
+          "JWT_Token",
+          "MFA"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "role": "Doctor",
+        "permissions": [
+          "CreateDiagnosis",
+          "ReadMedicalRecords",
+          "ManageAppointments"
+        ],
+        "restricted_actions": [
+          "ViewAnalyticsDashboard",
+          "DeleteDatabase",
+          "OverrideAll",
+          "ManageAllRecords"
+        ],
+        "authentication_requirements": [
+          "JWT_Token"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "role": "Patient",
+        "permissions": [
+          "ReadOwnProfile",
+          "ScheduleAppointments"
+        ],
+        "restricted_actions": [
+          "ViewAnalyticsDashboard",
+          "DeleteDatabase",
+          "OverrideAll",
+          "ManageAllRecords"
+        ],
+        "authentication_requirements": [
+          "JWT_Token"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      }
+    ],
+    "contracts": [
+      {
+        "contract_id": "con_entity_requestappointment",
+        "source_ast_component": "Entity:RequestAppointment",
+        "generated_components": [
+          "DB_Table:request_appointment",
+          "API:get_request_appointment_list",
+          "API:get_request_appointment_detail",
+          "API:create_request_appointment",
+          "API:update_request_appointment",
+          "API:delete_request_appointment"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_user",
+        "source_ast_component": "Entity:User",
+        "generated_components": [
+          "DB_Table:user",
+          "API:get_user_list",
+          "API:get_user_detail",
+          "API:create_user",
+          "API:update_user",
+          "API:delete_user"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_writeprescription",
+        "source_ast_component": "Entity:WritePrescription",
+        "generated_components": [
+          "DB_Table:write_prescription",
+          "API:get_write_prescription_list",
+          "API:get_write_prescription_detail",
+          "API:create_write_prescription",
+          "API:update_write_prescription",
+          "API:delete_write_prescription"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      }
+    ],
+    "consistency_report": [],
+    "ast_version": {
+      "version": "proj_1782226891",
+      "generated_at": "2026-06-23T20:31:31.458014",
+      "compiler_phase": "Phase 5 Schema Generation Engine",
+      "source_ast_version": "proj_1782226891"
+    },
+    "compilation_report": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "compiled_entities": [
+        "RequestAppointment",
+        "User",
+        "WritePrescription"
+      ],
+      "compiled_workflows": [],
+      "compiled_permissions": [
+        "Admin",
+        "Doctor",
+        "Patient"
+      ],
+      "compiled_relationships": [],
+      "consistency_checks_passed": 10,
+      "consistency_checks_failed": 0,
+      "timestamp": "2026-06-23T20:31:31.458522"
+    },
+    "artifacts": [
+      {
+        "artifact_id": "art_db_request_appointment",
+        "artifact_type": "database_table",
+        "source_component": "Entity:RequestAppointment",
+        "generated_component": "Table:request_appointment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_user",
+        "artifact_type": "database_table",
+        "source_component": "Entity:User",
+        "generated_component": "Table:user",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_write_prescription",
+        "artifact_type": "database_table",
+        "source_component": "Entity:WritePrescription",
+        "generated_component": "Table:write_prescription",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_request_appointment_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:RequestAppointment",
+        "generated_component": "Endpoint:get_request_appointment_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_request_appointment_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:RequestAppointment",
+        "generated_component": "Endpoint:get_request_appointment_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_request_appointment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:RequestAppointment",
+        "generated_component": "Endpoint:create_request_appointment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_request_appointment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:RequestAppointment",
+        "generated_component": "Endpoint:update_request_appointment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_request_appointment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:RequestAppointment",
+        "generated_component": "Endpoint:delete_request_appointment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "RequestAppointment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_user_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:User",
+        "generated_component": "Endpoint:get_user_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_user_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:User",
+        "generated_component": "Endpoint:get_user_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_user",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:User",
+        "generated_component": "Endpoint:create_user",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_user",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:User",
+        "generated_component": "Endpoint:update_user",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_user",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:User",
+        "generated_component": "Endpoint:delete_user",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "User",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_write_prescription_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:WritePrescription",
+        "generated_component": "Endpoint:get_write_prescription_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_write_prescription_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:WritePrescription",
+        "generated_component": "Endpoint:get_write_prescription_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_write_prescription",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:WritePrescription",
+        "generated_component": "Endpoint:create_write_prescription",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_write_prescription",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:WritePrescription",
+        "generated_component": "Endpoint:update_write_prescription",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_write_prescription",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:WritePrescription",
+        "generated_component": "Endpoint:delete_write_prescription",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "WritePrescription",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_admin",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:Admin",
+        "generated_component": "AuthRule:Admin",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_doctor",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:Doctor",
+        "generated_component": "AuthRule:Doctor",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_patient",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:Patient",
+        "generated_component": "AuthRule:Patient",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      }
+    ]
+  },
+  "validation_report": {
+    "is_valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "error_id": "val_err_001",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:RequestAppointment",
+        "message": "Orphan Entity node 'RequestAppointment' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:RequestAppointment",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      },
+      {
+        "error_id": "val_err_002",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:User",
+        "message": "Orphan Entity node 'User' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:User",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      },
+      {
+        "error_id": "val_err_003",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:WritePrescription",
+        "message": "Orphan Entity node 'WritePrescription' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:WritePrescription",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      }
+    ],
+    "critical_count": 0,
+    "high_count": 0,
+    "medium_count": 3,
+    "low_count": 0,
+    "validated_components": [
+      "Table:write_prescription",
+      "APIEndpoint:create_user",
+      "APIEndpoint:delete_user",
+      "APIEndpoint:get_user_list",
+      "APIEndpoint:get_user_detail",
+      "APIEndpoint:get_write_prescription_list",
+      "APIEndpoint:get_request_appointment_detail",
+      "APIEndpoint:update_request_appointment",
+      "Contract:con_entity_user",
+      "APIEndpoint:update_user",
+      "AuthRule:Doctor",
+      "APIEndpoint:get_write_prescription_detail",
+      "Contract:con_entity_requestappointment",
+      "AuthRule:Patient",
+      "APIEndpoint:delete_request_appointment",
+      "AuthRule:Admin",
+      "APIEndpoint:create_request_appointment",
+      "APIEndpoint:update_write_prescription",
+      "Table:request_appointment",
+      "APIEndpoint:get_request_appointment_list",
+      "Contract:con_entity_writeprescription",
+      "Table:user",
+      "APIEndpoint:create_write_prescription",
+      "APIEndpoint:delete_write_prescription"
+    ],
+    "timestamp": "2026-06-23T20:31:31.458919"
+  },
+  "repair_report": null,
+  "simulation_report": {
+    "simulation_id": "sim_1782226891",
+    "workflows_executed": [],
+    "successful_steps": 15,
+    "failed_steps": 0,
+    "permission_failures": 0,
+    "contract_failures": 0,
+    "validation_failures": 0,
+    "repair_failures": 0,
+    "business_rule_failures": 0,
+    "success_rate": 100.0,
+    "simulation_traces": []
+  },
+  "evolution_summary": {
+    "change_id": "demo_evo_generic",
+    "version_info": {
+      "version_id": "demo_evo_generic",
+      "parent_version": "v1.0",
+      "created_at": "2026-06-23T20:31:31.464822",
+      "change_summary": "Add UserProfile feature"
+    },
+    "diffs": [
+      {
+        "component": "UserProfile",
+        "before_state": null,
+        "after_state": "{'type': 'feature', 'name': 'UserProfile', 'details': {'name': 'UserProfile', 'description': 'Extended user profile fields'}}",
+        "change_reason": "Add requested"
+      }
+    ],
+    "impact_report": {
+      "affected_components": [],
+      "unaffected_components": [
+        "Table:request_appointment",
+        "Table:user",
+        "Table:write_prescription",
+        "API:get_request_appointment_list",
+        "API:get_request_appointment_detail",
+        "API:create_request_appointment",
+        "API:update_request_appointment",
+        "API:delete_request_appointment",
+        "API:get_user_list",
+        "API:get_user_detail",
+        "API:create_user",
+        "API:update_user",
+        "API:delete_user",
+        "API:get_write_prescription_list",
+        "API:get_write_prescription_detail",
+        "API:create_write_prescription",
+        "API:update_write_prescription",
+        "API:delete_write_prescription"
+      ],
+      "estimated_effort": "Low (Surgical)",
+      "impact_score": {
+        "entities_changed": 0,
+        "workflows_changed": 0,
+        "apis_changed": 0,
+        "permissions_changed": 0,
+        "business_rules_changed": 0,
+        "score": 15.0,
+        "impact_level": "LOW"
+      },
+      "dependency_graph": {
+        "changed_component": "UserProfile",
+        "directly_affected": [],
+        "indirectly_affected": [],
+        "dependency_depth": 0,
+        "direct_dependencies": [],
+        "indirect_dependencies": []
+      }
+    },
+    "risk_assessment": {
+      "risk_level": "LOW",
+      "affected_components": [],
+      "affected_workflows": [],
+      "affected_entities": [],
+      "validation_risk": 0.1,
+      "repair_risk": 0.1,
+      "simulation_risk": 0.1,
+      "overall_risk_score": 10.000000000000002
+    },
+    "effectiveness": {
+      "components_modified": [
+        "UserProfile"
+      ],
+      "components_preserved": [
+        "Table:request_appointment",
+        "Table:user",
+        "Table:write_prescription",
+        "API:get_request_appointment_list",
+        "API:get_request_appointment_detail",
+        "API:create_request_appointment",
+        "API:update_request_appointment",
+        "API:delete_request_appointment",
+        "API:get_user_list",
+        "API:get_user_detail",
+        "API:create_user",
+        "API:update_user",
+        "API:delete_user",
+        "API:get_write_prescription_list",
+        "API:get_write_prescription_detail",
+        "API:create_write_prescription",
+        "API:update_write_prescription",
+        "API:delete_write_prescription"
+      ],
+      "validation_passed": true,
+      "repair_required": true,
+      "simulation_passed": true,
+      "rollback_required": false,
+      "risk_level": "LOW",
+      "impact_level": "LOW",
+      "complexity_level": "LOW"
+    },
+    "conflicts_report": {
+      "is_valid": true,
+      "conflicts": []
+    },
+    "updated_blueprint": {
+      "project_id": "proj_1782226891",
+      "app_type": "Healthcare Management",
+      "actors": [
+        {
+          "name": "Doctor",
+          "description": "Manage appointments and issue prescriptions",
+          "relevance_score": 1.0,
+          "why_needed": "Requested actor profile for operations."
+        },
+        {
+          "name": "Patient",
+          "description": "Book appointments and view records",
+          "relevance_score": 1.0,
+          "why_needed": "Requested actor profile for operations."
+        },
+        {
+          "name": "Admin",
+          "description": "System administrator overseeing database metrics and accounts.",
+          "relevance_score": 0.9,
+          "why_needed": "Required to manage application entities, records, and access permissions."
+        }
+      ],
+      "features": [
+        {
+          "name": "RequestAppointment",
+          "description": "Request medical slot reservation",
+          "actor_involved": "Patient",
+          "explanation": {
+            "feature_name": "RequestAppointment",
+            "what_it_does": "Request medical slot reservation",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "WritePrescription",
+          "description": "Create prescription notes",
+          "actor_involved": "Doctor",
+          "explanation": {
+            "feature_name": "WritePrescription",
+            "what_it_does": "Create prescription notes",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "UserProfile",
+          "description": "Extended user profile fields",
+          "actor_involved": "Admin",
+          "explanation": {
+            "feature_name": "UserProfile",
+            "what_it_does": "Extended user profile fields",
+            "why_recommended": "User change request",
+            "business_value": "User value",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Incremental compiler",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        }
+      ],
+      "workflows": [],
+      "permissions": [
+        {
+          "actor": "Patient",
+          "action": "ReadOwnProfile",
+          "description": "Allows user to view their registered attributes.",
+          "why_needed": "Enforces fundamental privacy boundaries."
+        },
+        {
+          "actor": "Doctor",
+          "action": "ReadOwnProfile",
+          "description": "Allows user to view their registered attributes.",
+          "why_needed": "Enforces fundamental privacy boundaries."
+        },
+        {
+          "actor": "Admin",
+          "action": "ManageAllRecords",
+          "description": "Full administrative system configurations overrides.",
+          "why_needed": "Standard admin system access rights."
+        }
+      ],
+      "innovations": [],
+      "approval_history": [],
+      "modifications": []
+    },
+    "updated_spec": {
+      "app_name": "Proj1782226891",
+      "app_type": "Healthcare Management",
+      "actors": [
+        {
+          "name": "Doctor",
+          "description": "Manage appointments and issue prescriptions",
+          "permissions": [
+            "CreateDiagnosis"
+          ]
+        },
+        {
+          "name": "Patient",
+          "description": "Book appointments and view records",
+          "permissions": []
+        },
+        {
+          "name": "Admin",
+          "description": "System administrator overseeing database metrics and accounts.",
+          "permissions": [
+            "ManageAllRecords"
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "entity_id": "ent_request_appointment",
+          "entity_name": "RequestAppointment",
+          "name": "RequestAppointment",
+          "description": "Request medical slot reservation",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_user",
+          "entity_name": "User",
+          "name": "User",
+          "description": "Logical standard app user profile.",
+          "source": "default_policy",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "username",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "email",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_write_prescription",
+          "entity_name": "WritePrescription",
+          "name": "WritePrescription",
+          "description": "Create prescription notes",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_user_profile",
+          "entity_name": "UserProfile",
+          "name": "UserProfile",
+          "description": "Extended user profile fields",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        }
+      ],
+      "relationships": [],
+      "workflows": [],
+      "permissions": [
+        {
+          "role": "Admin",
+          "permissions": [
+            "ManageAllRecords",
+            "ViewAnalyticsDashboard"
+          ],
+          "reason": "Full database administrative configuration rights."
+        },
+        {
+          "role": "Doctor",
+          "permissions": [
+            "CreateDiagnosis",
+            "ReadMedicalRecords",
+            "ManageAppointments"
+          ],
+          "reason": "Doctor medical access rights."
+        },
+        {
+          "role": "Patient",
+          "permissions": [
+            "ReadOwnProfile",
+            "ScheduleAppointments"
+          ],
+          "reason": "Patient scheduling and medical overview access."
+        }
+      ],
+      "business_rules": [
+        {
+          "rule_id": "BR_001",
+          "rule": "All operations must comply with baseline security policies.",
+          "source": "default_policy",
+          "priority": "LOW",
+          "affected_entities": [
+            "User"
+          ],
+          "description": "All operations must comply with baseline security policies.",
+          "enforcement_logic": "User.id IS NOT NULL"
+        }
+      ],
+      "design_decisions": [
+        {
+          "decision_id": "DD_001",
+          "decision": "Generic User model is base actor profile.",
+          "reason": "Standard fallback setup.",
+          "source": "default_policy",
+          "impact_level": "LOW",
+          "affected_components": [
+            "User"
+          ]
+        }
+      ],
+      "graph": {
+        "nodes": [
+          {
+            "id": "Doctor",
+            "type": "actor",
+            "description": "Manage appointments and issue prescriptions"
+          },
+          {
+            "id": "Patient",
+            "type": "actor",
+            "description": "Book appointments and view records"
+          },
+          {
+            "id": "Admin",
+            "type": "actor",
+            "description": "System administrator overseeing database metrics and accounts."
+          },
+          {
+            "id": "RequestAppointment",
+            "type": "entity",
+            "description": "Request medical slot reservation"
+          },
+          {
+            "id": "User",
+            "type": "entity",
+            "description": "Logical standard app user profile."
+          },
+          {
+            "id": "WritePrescription",
+            "type": "entity",
+            "description": "Create prescription notes"
+          }
+        ],
+        "edges": []
+      },
+      "metadata": {
+        "compiled_at": "2026-06-23T20:31:31.458014",
+        "blueprint_project_id": "proj_1782226891",
+        "ast_version_id": "demo_evo_generic"
+      }
+    },
+    "updated_bundle": {
+      "database_schema": [
+        {
+          "table_name": "request_appointment",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_request_appointment_id"
+          ],
+          "source_entity": "RequestAppointment",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "user",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "username",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "email",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_user_id"
+          ],
+          "source_entity": "User",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "write_prescription",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_write_prescription_id"
+          ],
+          "source_entity": "WritePrescription",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "user_profile",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [],
+          "source_entity": "UserProfile",
+          "traceability": {
+            "source_entity": "UserProfile",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ],
+      "api_schema": [
+        {
+          "endpoint_id": "get_request_appointment_list",
+          "path": "/api/v1/requestappointments",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestAppointment"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "RequestAppointment",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_request_appointment_detail",
+          "path": "/api/v1/requestappointments/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/RequestAppointment"
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "RequestAppointment",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_request_appointment",
+          "path": "/api/v1/requestappointments",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/RequestAppointmentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/RequestAppointment"
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "RequestAppointment",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_request_appointment",
+          "path": "/api/v1/requestappointments/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/RequestAppointmentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/RequestAppointment"
+          },
+          "permissions": [
+            "Admin",
+            "Doctor"
+          ],
+          "source_entity": "RequestAppointment",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_request_appointment",
+          "path": "/api/v1/requestappointments/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "RequestAppointment",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_user_list",
+          "path": "/api/v1/users",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "User",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_user_detail",
+          "path": "/api/v1/users/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/User"
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "User",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_user",
+          "path": "/api/v1/users",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/UserInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/User"
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "User",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_user",
+          "path": "/api/v1/users/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/UserInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/User"
+          },
+          "permissions": [
+            "Admin",
+            "Doctor"
+          ],
+          "source_entity": "User",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_user",
+          "path": "/api/v1/users/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "User",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_write_prescription_list",
+          "path": "/api/v1/writeprescriptions",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WritePrescription"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "WritePrescription",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_write_prescription_detail",
+          "path": "/api/v1/writeprescriptions/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/WritePrescription"
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "WritePrescription",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_write_prescription",
+          "path": "/api/v1/writeprescriptions",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/WritePrescriptionInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/WritePrescription"
+          },
+          "permissions": [
+            "Admin",
+            "Patient"
+          ],
+          "source_entity": "WritePrescription",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_write_prescription",
+          "path": "/api/v1/writeprescriptions/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/WritePrescriptionInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/WritePrescription"
+          },
+          "permissions": [
+            "Admin",
+            "Doctor"
+          ],
+          "source_entity": "WritePrescription",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_write_prescription",
+          "path": "/api/v1/writeprescriptions/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "WritePrescription",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_user_profile_list",
+          "path": "/api/v1/userprofiles",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {},
+          "permissions": [],
+          "source_entity": "UserProfile",
+          "traceability": {
+            "source_entity": "UserProfile",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_user_profile",
+          "path": "/api/v1/userprofiles",
+          "method": "POST",
+          "request_schema": {},
+          "response_schema": {},
+          "permissions": [],
+          "source_entity": "UserProfile",
+          "traceability": {
+            "source_entity": "UserProfile",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ],
+      "ui_schema": [],
+      "auth_schema": [
+        {
+          "role": "Admin",
+          "permissions": [
+            "ManageAllRecords",
+            "ViewAnalyticsDashboard"
+          ],
+          "restricted_actions": [
+            "DeleteDatabase",
+            "OverrideAll"
+          ],
+          "authentication_requirements": [
+            "JWT_Token",
+            "MFA"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "role": "Doctor",
+          "permissions": [
+            "CreateDiagnosis",
+            "ReadMedicalRecords",
+            "ManageAppointments"
+          ],
+          "restricted_actions": [
+            "ViewAnalyticsDashboard",
+            "DeleteDatabase",
+            "OverrideAll",
+            "ManageAllRecords"
+          ],
+          "authentication_requirements": [
+            "JWT_Token"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "role": "Patient",
+          "permissions": [
+            "ReadOwnProfile",
+            "ScheduleAppointments"
+          ],
+          "restricted_actions": [
+            "ViewAnalyticsDashboard",
+            "DeleteDatabase",
+            "OverrideAll",
+            "ManageAllRecords"
+          ],
+          "authentication_requirements": [
+            "JWT_Token"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        }
+      ],
+      "contracts": [
+        {
+          "contract_id": "con_entity_requestappointment",
+          "source_ast_component": "Entity:RequestAppointment",
+          "generated_components": [
+            "DB_Table:request_appointment",
+            "API:get_request_appointment_list",
+            "API:get_request_appointment_detail",
+            "API:create_request_appointment",
+            "API:update_request_appointment",
+            "API:delete_request_appointment"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_user",
+          "source_ast_component": "Entity:User",
+          "generated_components": [
+            "DB_Table:user",
+            "API:get_user_list",
+            "API:get_user_detail",
+            "API:create_user",
+            "API:update_user",
+            "API:delete_user"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_writeprescription",
+          "source_ast_component": "Entity:WritePrescription",
+          "generated_components": [
+            "DB_Table:write_prescription",
+            "API:get_write_prescription_list",
+            "API:get_write_prescription_detail",
+            "API:create_write_prescription",
+            "API:update_write_prescription",
+            "API:delete_write_prescription"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        }
+      ],
+      "consistency_report": [],
+      "ast_version": {
+        "version": "proj_1782226891",
+        "generated_at": "2026-06-23T20:31:31.458014",
+        "compiler_phase": "Phase 5 Schema Generation Engine",
+        "source_ast_version": "proj_1782226891"
+      },
+      "compilation_report": {
+        "is_valid": true,
+        "errors": [],
+        "warnings": [],
+        "compiled_entities": [
+          "RequestAppointment",
+          "User",
+          "WritePrescription"
+        ],
+        "compiled_workflows": [],
+        "compiled_permissions": [
+          "Admin",
+          "Doctor",
+          "Patient"
+        ],
+        "compiled_relationships": [],
+        "consistency_checks_passed": 10,
+        "consistency_checks_failed": 0,
+        "timestamp": "2026-06-23T20:31:31.458522"
+      },
+      "artifacts": [
+        {
+          "artifact_id": "art_db_request_appointment",
+          "artifact_type": "database_table",
+          "source_component": "Entity:RequestAppointment",
+          "generated_component": "Table:request_appointment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_user",
+          "artifact_type": "database_table",
+          "source_component": "Entity:User",
+          "generated_component": "Table:user",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_write_prescription",
+          "artifact_type": "database_table",
+          "source_component": "Entity:WritePrescription",
+          "generated_component": "Table:write_prescription",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_request_appointment_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:RequestAppointment",
+          "generated_component": "Endpoint:get_request_appointment_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_request_appointment_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:RequestAppointment",
+          "generated_component": "Endpoint:get_request_appointment_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_request_appointment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:RequestAppointment",
+          "generated_component": "Endpoint:create_request_appointment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_request_appointment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:RequestAppointment",
+          "generated_component": "Endpoint:update_request_appointment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_request_appointment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:RequestAppointment",
+          "generated_component": "Endpoint:delete_request_appointment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "RequestAppointment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_user_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:User",
+          "generated_component": "Endpoint:get_user_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_user_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:User",
+          "generated_component": "Endpoint:get_user_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_user",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:User",
+          "generated_component": "Endpoint:create_user",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_user",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:User",
+          "generated_component": "Endpoint:update_user",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_user",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:User",
+          "generated_component": "Endpoint:delete_user",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "User",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_write_prescription_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:WritePrescription",
+          "generated_component": "Endpoint:get_write_prescription_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_write_prescription_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:WritePrescription",
+          "generated_component": "Endpoint:get_write_prescription_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_write_prescription",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:WritePrescription",
+          "generated_component": "Endpoint:create_write_prescription",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_write_prescription",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:WritePrescription",
+          "generated_component": "Endpoint:update_write_prescription",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_write_prescription",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:WritePrescription",
+          "generated_component": "Endpoint:delete_write_prescription",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "WritePrescription",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_admin",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:Admin",
+          "generated_component": "AuthRule:Admin",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_doctor",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:Doctor",
+          "generated_component": "AuthRule:Doctor",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_patient",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:Patient",
+          "generated_component": "AuthRule:Patient",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_user_profile",
+          "artifact_type": "database_table",
+          "source_component": "Entity:UserProfile",
+          "generated_component": "Table:user_profile",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UserProfile",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_user_profile_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:UserProfile",
+          "generated_component": "Endpoint:get_user_profile_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UserProfile",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_user_profile",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:UserProfile",
+          "generated_component": "Endpoint:create_user_profile",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "UserProfile",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ]
+    }
+  },
+  "pipeline_traces": [
+    {
+      "phase_name": "Intent Engine",
+      "start_time": "2026-06-23T20:31:31.455305",
+      "end_time": "2026-06-23T20:31:31.455568",
+      "duration_ms": 0.25200843811035156,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Blueprint Engine",
+      "start_time": "2026-06-23T20:31:31.455583",
+      "end_time": "2026-06-23T20:31:31.457685",
+      "duration_ms": 2.0995140075683594,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "System Design Engine",
+      "start_time": "2026-06-23T20:31:31.457699",
+      "end_time": "2026-06-23T20:31:31.458034",
+      "duration_ms": 0.33283233642578125,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Schema Engine",
+      "start_time": "2026-06-23T20:31:31.458041",
+      "end_time": "2026-06-23T20:31:31.458645",
+      "duration_ms": 0.60272216796875,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Validation Engine",
+      "start_time": "2026-06-23T20:31:31.458652",
+      "end_time": "2026-06-23T20:31:31.458937",
+      "duration_ms": 0.28324127197265625,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Repair Engine",
+      "start_time": "2026-06-23T20:31:31.458944",
+      "end_time": "2026-06-23T20:31:31.458947",
+      "duration_ms": 0.0011920928955078125,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Execution Simulator",
+      "start_time": "2026-06-23T20:31:31.458953",
+      "end_time": "2026-06-23T20:31:31.459183",
+      "duration_ms": 0.22745132446289062,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Requirement Evolution Engine",
+      "start_time": "2026-06-23T20:31:31.459189",
+      "end_time": "2026-06-23T20:31:31.480878",
+      "duration_ms": 21.676301956176758,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "execution_mode": "BALANCED",
+  "created_at": "2026-06-23T20:31:31.480904",
+  "updated_at": "2026-06-23T20:31:31.480904"
+}

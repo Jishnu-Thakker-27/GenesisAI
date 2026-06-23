@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+vTask/
+venv/
+.venv/
+compiler.db
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/local_screenshots/
+*.log
+
+# IDEs & System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.gemini/

@@ -1,0 +1,4715 @@
+{
+  "project_id": "proj_1782226891",
+  "app_name": "StockCoreHub",
+  "app_type": "Inventory Management",
+  "prompt": "Generate an inventory stock tracking system with warehouse logins.",
+  "intent": {
+    "app_name": "StockCoreHub",
+    "app_type": "Inventory Management",
+    "actors": [
+      {
+        "name": "WarehouseAgent",
+        "description": "Logs arrivals and shipments"
+      },
+      {
+        "name": "ProcurementOfficer",
+        "description": "Approves buy orders"
+      }
+    ],
+    "features": [
+      {
+        "name": "LogStockArrival",
+        "description": "Increments item counts",
+        "actor_involved": "WarehouseAgent",
+        "source": {
+          "source_type": "user_requirement",
+          "source_description": "Direct requirement"
+        }
+      },
+      {
+        "name": "InitiateReorder",
+        "description": "Drafts low-stock procurement",
+        "actor_involved": "WarehouseAgent",
+        "source": {
+          "source_type": "logical_inference",
+          "source_description": "Implied action for warehouse"
+        }
+      }
+    ],
+    "business_rules": [
+      "Reorders require Procurement officer signoff."
+    ],
+    "constraints": [
+      "SKU codes must follow ISO-9001 inventory structure."
+    ],
+    "workflow_gaps": [
+      "Stock Audit Flow"
+    ],
+    "assumptions": [
+      {
+        "assumption": "Stock levels decrement on sales API call",
+        "reason": "Enables downstream sales updates",
+        "source": "logical_inference",
+        "confidence": 0.85,
+        "impact_level": "HIGH"
+      }
+    ],
+    "missing_information": [
+      "Supplier contact profiles schema."
+    ],
+    "clarification_questions": [
+      {
+        "question": "Do you require barcode scanner support?",
+        "category": "features",
+        "importance": "medium"
+      }
+    ],
+    "confidence_score": 0.84,
+    "confidence_explanation": [
+      "Insufficient functional features cataloged.",
+      "Lack of clearly defined business operational rules.",
+      "Underspecified workflow pathways (1 critical gaps).",
+      "Moderate structural confidence; proceed with assumptions."
+    ],
+    "confidence_breakdown": {
+      "app_type_score": 1.0,
+      "actor_score": 1.0,
+      "feature_score": 0.7,
+      "business_rule_score": 0.5,
+      "workflow_score": 0.7,
+      "constraint_score": 1.0
+    },
+    "processing_mode": "MODE_C"
+  },
+  "blueprint": {
+    "project_id": "proj_1782226891",
+    "app_type": "Inventory Management",
+    "actors": [
+      {
+        "name": "ProcurementOfficer",
+        "description": "Approves buy orders",
+        "relevance_score": 1.0,
+        "why_needed": "Requested actor profile for operations."
+      },
+      {
+        "name": "WarehouseAgent",
+        "description": "Logs arrivals and shipments",
+        "relevance_score": 1.0,
+        "why_needed": "Requested actor profile for operations."
+      },
+      {
+        "name": "Admin",
+        "description": "System administrator overseeing database metrics and accounts.",
+        "relevance_score": 0.9,
+        "why_needed": "Required to manage application entities, records, and access permissions."
+      }
+    ],
+    "features": [
+      {
+        "name": "InitiateReorder",
+        "description": "Drafts low-stock procurement",
+        "actor_involved": "WarehouseAgent",
+        "explanation": {
+          "feature_name": "InitiateReorder",
+          "what_it_does": "Drafts low-stock procurement",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      },
+      {
+        "name": "LogStockArrival",
+        "description": "Increments item counts",
+        "actor_involved": "WarehouseAgent",
+        "explanation": {
+          "feature_name": "LogStockArrival",
+          "what_it_does": "Increments item counts",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      }
+    ],
+    "workflows": [],
+    "permissions": [
+      {
+        "actor": "WarehouseAgent",
+        "action": "ReadOwnProfile",
+        "description": "Allows user to view their registered attributes.",
+        "why_needed": "Enforces fundamental privacy boundaries."
+      },
+      {
+        "actor": "ProcurementOfficer",
+        "action": "ReadOwnProfile",
+        "description": "Allows user to view their registered attributes.",
+        "why_needed": "Enforces fundamental privacy boundaries."
+      },
+      {
+        "actor": "Admin",
+        "action": "ManageAllRecords",
+        "description": "Full administrative system configurations overrides.",
+        "why_needed": "Standard admin system access rights."
+      }
+    ],
+    "innovations": [],
+    "approval_history": [],
+    "modifications": []
+  },
+  "system_design": {
+    "app_name": "Proj1782226891",
+    "app_type": "Inventory Management",
+    "actors": [
+      {
+        "name": "ProcurementOfficer",
+        "description": "Approves buy orders",
+        "permissions": []
+      },
+      {
+        "name": "WarehouseAgent",
+        "description": "Logs arrivals and shipments",
+        "permissions": []
+      },
+      {
+        "name": "Admin",
+        "description": "System administrator overseeing database metrics and accounts.",
+        "permissions": [
+          "ManageAllRecords"
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "entity_id": "ent_initiate_reorder",
+        "entity_name": "InitiateReorder",
+        "name": "InitiateReorder",
+        "description": "Drafts low-stock procurement",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_log_stock_arrival",
+        "entity_name": "LogStockArrival",
+        "name": "LogStockArrival",
+        "description": "Increments item counts",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_product",
+        "entity_name": "Product",
+        "name": "Product",
+        "description": "Logical product catalog details.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "sku",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "price",
+            "type": "float",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "stock_quantity",
+            "type": "integer",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_stockorder",
+        "entity_name": "StockOrder",
+        "name": "StockOrder",
+        "description": "Logical records of stock replenishments.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "product_id",
+            "type": "relationship",
+            "required": true,
+            "is_key": false,
+            "references": "Product.id"
+          },
+          {
+            "name": "supplier_id",
+            "type": "relationship",
+            "required": true,
+            "is_key": false,
+            "references": "Supplier.id"
+          },
+          {
+            "name": "quantity",
+            "type": "integer",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "order_date",
+            "type": "datetime",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_supplier",
+        "entity_name": "Supplier",
+        "name": "Supplier",
+        "description": "Logical supplier contact details.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "contact_info",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      }
+    ],
+    "relationships": [
+      {
+        "relationship_id": "rel_stockorder_product",
+        "source_entity": "StockOrder",
+        "target_entity": "Product",
+        "relationship_type": "many-to-one",
+        "description": "Links StockOrder to its parent Product record."
+      },
+      {
+        "relationship_id": "rel_stockorder_supplier",
+        "source_entity": "StockOrder",
+        "target_entity": "Supplier",
+        "relationship_type": "many-to-one",
+        "description": "Links StockOrder to its parent Supplier record."
+      }
+    ],
+    "workflows": [],
+    "permissions": [
+      {
+        "role": "Admin",
+        "permissions": [
+          "ManageAllRecords",
+          "ViewAnalyticsDashboard"
+        ],
+        "reason": "Full database administrative configuration rights."
+      },
+      {
+        "role": "ProcurementOfficer",
+        "permissions": [
+          "AccessPortal",
+          "ReadOwnProfile"
+        ],
+        "reason": "Baseline access privileges."
+      },
+      {
+        "role": "WarehouseAgent",
+        "permissions": [
+          "AccessPortal",
+          "ReadOwnProfile"
+        ],
+        "reason": "Baseline access privileges."
+      }
+    ],
+    "business_rules": [
+      {
+        "rule_id": "BR_001",
+        "rule": "Stock quantity cannot drop below zero.",
+        "source": "approved_blueprint",
+        "priority": "HIGH",
+        "affected_entities": [
+          "Product"
+        ],
+        "description": "Stock quantity cannot drop below zero.",
+        "enforcement_logic": "Product.stock_quantity >= 0"
+      }
+    ],
+    "design_decisions": [
+      {
+        "decision_id": "DD_001",
+        "decision": "StockOrder links Product and Supplier.",
+        "reason": "Auditing requirements dictate tracking all incoming supply runs.",
+        "source": "approved_blueprint",
+        "impact_level": "HIGH",
+        "affected_components": [
+          "Product",
+          "Supplier",
+          "StockOrder"
+        ]
+      }
+    ],
+    "graph": {
+      "nodes": [
+        {
+          "id": "ProcurementOfficer",
+          "type": "actor",
+          "description": "Approves buy orders"
+        },
+        {
+          "id": "WarehouseAgent",
+          "type": "actor",
+          "description": "Logs arrivals and shipments"
+        },
+        {
+          "id": "Admin",
+          "type": "actor",
+          "description": "System administrator overseeing database metrics and accounts."
+        },
+        {
+          "id": "InitiateReorder",
+          "type": "entity",
+          "description": "Drafts low-stock procurement"
+        },
+        {
+          "id": "LogStockArrival",
+          "type": "entity",
+          "description": "Increments item counts"
+        },
+        {
+          "id": "Product",
+          "type": "entity",
+          "description": "Logical product catalog details."
+        },
+        {
+          "id": "StockOrder",
+          "type": "entity",
+          "description": "Logical records of stock replenishments."
+        },
+        {
+          "id": "Supplier",
+          "type": "entity",
+          "description": "Logical supplier contact details."
+        }
+      ],
+      "edges": [
+        {
+          "source": "StockOrder",
+          "target": "Product",
+          "type": "relationship",
+          "label": "many-to-one"
+        },
+        {
+          "source": "StockOrder",
+          "target": "Supplier",
+          "type": "relationship",
+          "label": "many-to-one"
+        }
+      ]
+    },
+    "metadata": {
+      "compiled_at": "2026-06-23T20:31:31.909947",
+      "blueprint_project_id": "proj_1782226891"
+    }
+  },
+  "schema_bundle": {
+    "database_schema": [
+      {
+        "table_name": "initiate_reorder",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_initiate_reorder_id"
+        ],
+        "source_entity": "InitiateReorder",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "log_stock_arrival",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_log_stock_arrival_id"
+        ],
+        "source_entity": "LogStockArrival",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "product",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "sku",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "price",
+            "type": "float",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "stock_quantity",
+            "type": "integer",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_product_id"
+        ],
+        "source_entity": "Product",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "stock_order",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "product_id",
+            "type": "relationship",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": true,
+            "references": "Product.id"
+          },
+          {
+            "name": "supplier_id",
+            "type": "relationship",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": true,
+            "references": "Supplier.id"
+          },
+          {
+            "name": "quantity",
+            "type": "integer",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "order_date",
+            "type": "datetime",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "column": "product_id",
+            "references_table": "product",
+            "references_column": "id"
+          },
+          {
+            "column": "supplier_id",
+            "references_table": "supplier",
+            "references_column": "id"
+          }
+        ],
+        "constraints": [],
+        "indexes": [
+          "idx_stock_order_id"
+        ],
+        "source_entity": "StockOrder",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "supplier",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "contact_info",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_supplier_id"
+        ],
+        "source_entity": "Supplier",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      }
+    ],
+    "api_schema": [
+      {
+        "endpoint_id": "get_initiate_reorder_list",
+        "path": "/api/v1/initiatereorders",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/InitiateReorder"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "InitiateReorder",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_initiate_reorder_detail",
+        "path": "/api/v1/initiatereorders/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/InitiateReorder"
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "InitiateReorder",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_initiate_reorder",
+        "path": "/api/v1/initiatereorders",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/InitiateReorderInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/InitiateReorder"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "InitiateReorder",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_initiate_reorder",
+        "path": "/api/v1/initiatereorders/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/InitiateReorderInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/InitiateReorder"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "InitiateReorder",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_initiate_reorder",
+        "path": "/api/v1/initiatereorders/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "InitiateReorder",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_log_stock_arrival_list",
+        "path": "/api/v1/logstockarrivals",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/LogStockArrival"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "LogStockArrival",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_log_stock_arrival_detail",
+        "path": "/api/v1/logstockarrivals/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/LogStockArrival"
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "LogStockArrival",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_log_stock_arrival",
+        "path": "/api/v1/logstockarrivals",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/LogStockArrivalInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/LogStockArrival"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "LogStockArrival",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_log_stock_arrival",
+        "path": "/api/v1/logstockarrivals/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/LogStockArrivalInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/LogStockArrival"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "LogStockArrival",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_log_stock_arrival",
+        "path": "/api/v1/logstockarrivals/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "LogStockArrival",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_product_list",
+        "path": "/api/v1/products",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "Product",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_product_detail",
+        "path": "/api/v1/products/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/Product"
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "Product",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_product",
+        "path": "/api/v1/products",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/ProductInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Product"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Product",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_product",
+        "path": "/api/v1/products/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/ProductInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Product"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Product",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_product",
+        "path": "/api/v1/products/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Product",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_stock_order_list",
+        "path": "/api/v1/stock-orders",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/StockOrder"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "StockOrder",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_stock_order_detail",
+        "path": "/api/v1/stock-orders/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/StockOrder"
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "StockOrder",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_stock_order",
+        "path": "/api/v1/stock-orders",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/StockOrderInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/StockOrder"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "StockOrder",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_stock_order",
+        "path": "/api/v1/stock-orders/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/StockOrderInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/StockOrder"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "StockOrder",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_stock_order",
+        "path": "/api/v1/stock-orders/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "StockOrder",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_supplier_list",
+        "path": "/api/v1/suppliers",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Supplier"
+          }
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "Supplier",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_supplier_detail",
+        "path": "/api/v1/suppliers/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/Supplier"
+        },
+        "permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "source_entity": "Supplier",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_supplier",
+        "path": "/api/v1/suppliers",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/SupplierInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Supplier"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Supplier",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_supplier",
+        "path": "/api/v1/suppliers/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/SupplierInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Supplier"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Supplier",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_supplier",
+        "path": "/api/v1/suppliers/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Supplier",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      }
+    ],
+    "ui_schema": [],
+    "auth_schema": [
+      {
+        "role": "Admin",
+        "permissions": [
+          "ManageAllRecords",
+          "ViewAnalyticsDashboard"
+        ],
+        "restricted_actions": [
+          "DeleteDatabase",
+          "OverrideAll"
+        ],
+        "authentication_requirements": [
+          "JWT_Token",
+          "MFA"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "role": "ProcurementOfficer",
+        "permissions": [
+          "AccessPortal",
+          "ReadOwnProfile"
+        ],
+        "restricted_actions": [
+          "ViewAnalyticsDashboard",
+          "DeleteDatabase",
+          "OverrideAll",
+          "ManageAllRecords"
+        ],
+        "authentication_requirements": [
+          "JWT_Token"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "role": "WarehouseAgent",
+        "permissions": [
+          "AccessPortal",
+          "ReadOwnProfile"
+        ],
+        "restricted_actions": [
+          "ViewAnalyticsDashboard",
+          "DeleteDatabase",
+          "OverrideAll",
+          "ManageAllRecords"
+        ],
+        "authentication_requirements": [
+          "JWT_Token"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      }
+    ],
+    "contracts": [
+      {
+        "contract_id": "con_entity_initiatereorder",
+        "source_ast_component": "Entity:InitiateReorder",
+        "generated_components": [
+          "DB_Table:initiate_reorder",
+          "API:get_initiate_reorder_list",
+          "API:get_initiate_reorder_detail",
+          "API:create_initiate_reorder",
+          "API:update_initiate_reorder",
+          "API:delete_initiate_reorder"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_logstockarrival",
+        "source_ast_component": "Entity:LogStockArrival",
+        "generated_components": [
+          "DB_Table:log_stock_arrival",
+          "API:get_log_stock_arrival_list",
+          "API:get_log_stock_arrival_detail",
+          "API:create_log_stock_arrival",
+          "API:update_log_stock_arrival",
+          "API:delete_log_stock_arrival"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_product",
+        "source_ast_component": "Entity:Product",
+        "generated_components": [
+          "DB_Table:product",
+          "API:get_product_list",
+          "API:get_product_detail",
+          "API:create_product",
+          "API:update_product",
+          "API:delete_product"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_stockorder",
+        "source_ast_component": "Entity:StockOrder",
+        "generated_components": [
+          "DB_Table:stock_order",
+          "API:get_stock_order_list",
+          "API:get_stock_order_detail",
+          "API:create_stock_order",
+          "API:update_stock_order",
+          "API:delete_stock_order"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_supplier",
+        "source_ast_component": "Entity:Supplier",
+        "generated_components": [
+          "DB_Table:supplier",
+          "API:get_supplier_list",
+          "API:get_supplier_detail",
+          "API:create_supplier",
+          "API:update_supplier",
+          "API:delete_supplier"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      }
+    ],
+    "consistency_report": [],
+    "ast_version": {
+      "version": "proj_1782226891",
+      "generated_at": "2026-06-23T20:31:31.909947",
+      "compiler_phase": "Phase 5 Schema Generation Engine",
+      "source_ast_version": "proj_1782226891"
+    },
+    "compilation_report": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "compiled_entities": [
+        "InitiateReorder",
+        "LogStockArrival",
+        "Product",
+        "StockOrder",
+        "Supplier"
+      ],
+      "compiled_workflows": [],
+      "compiled_permissions": [
+        "Admin",
+        "ProcurementOfficer",
+        "WarehouseAgent"
+      ],
+      "compiled_relationships": [
+        "rel_stockorder_product",
+        "rel_stockorder_supplier"
+      ],
+      "consistency_checks_passed": 10,
+      "consistency_checks_failed": 0,
+      "timestamp": "2026-06-23T20:31:31.910710"
+    },
+    "artifacts": [
+      {
+        "artifact_id": "art_db_initiate_reorder",
+        "artifact_type": "database_table",
+        "source_component": "Entity:InitiateReorder",
+        "generated_component": "Table:initiate_reorder",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_log_stock_arrival",
+        "artifact_type": "database_table",
+        "source_component": "Entity:LogStockArrival",
+        "generated_component": "Table:log_stock_arrival",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_product",
+        "artifact_type": "database_table",
+        "source_component": "Entity:Product",
+        "generated_component": "Table:product",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_stock_order",
+        "artifact_type": "database_table",
+        "source_component": "Entity:StockOrder",
+        "generated_component": "Table:stock_order",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_supplier",
+        "artifact_type": "database_table",
+        "source_component": "Entity:Supplier",
+        "generated_component": "Table:supplier",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_initiate_reorder_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InitiateReorder",
+        "generated_component": "Endpoint:get_initiate_reorder_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_initiate_reorder_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InitiateReorder",
+        "generated_component": "Endpoint:get_initiate_reorder_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_initiate_reorder",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InitiateReorder",
+        "generated_component": "Endpoint:create_initiate_reorder",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_initiate_reorder",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InitiateReorder",
+        "generated_component": "Endpoint:update_initiate_reorder",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_initiate_reorder",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:InitiateReorder",
+        "generated_component": "Endpoint:delete_initiate_reorder",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "InitiateReorder",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_log_stock_arrival_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:LogStockArrival",
+        "generated_component": "Endpoint:get_log_stock_arrival_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_log_stock_arrival_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:LogStockArrival",
+        "generated_component": "Endpoint:get_log_stock_arrival_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_log_stock_arrival",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:LogStockArrival",
+        "generated_component": "Endpoint:create_log_stock_arrival",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_log_stock_arrival",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:LogStockArrival",
+        "generated_component": "Endpoint:update_log_stock_arrival",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_log_stock_arrival",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:LogStockArrival",
+        "generated_component": "Endpoint:delete_log_stock_arrival",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "LogStockArrival",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_product_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Product",
+        "generated_component": "Endpoint:get_product_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_product_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Product",
+        "generated_component": "Endpoint:get_product_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_product",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Product",
+        "generated_component": "Endpoint:create_product",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_product",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Product",
+        "generated_component": "Endpoint:update_product",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_product",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Product",
+        "generated_component": "Endpoint:delete_product",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Product",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_stock_order_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:StockOrder",
+        "generated_component": "Endpoint:get_stock_order_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_stock_order_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:StockOrder",
+        "generated_component": "Endpoint:get_stock_order_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_stock_order",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:StockOrder",
+        "generated_component": "Endpoint:create_stock_order",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_stock_order",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:StockOrder",
+        "generated_component": "Endpoint:update_stock_order",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_stock_order",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:StockOrder",
+        "generated_component": "Endpoint:delete_stock_order",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "StockOrder",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_supplier_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Supplier",
+        "generated_component": "Endpoint:get_supplier_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_supplier_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Supplier",
+        "generated_component": "Endpoint:get_supplier_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_supplier",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Supplier",
+        "generated_component": "Endpoint:create_supplier",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_supplier",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Supplier",
+        "generated_component": "Endpoint:update_supplier",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_supplier",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Supplier",
+        "generated_component": "Endpoint:delete_supplier",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Supplier",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_admin",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:Admin",
+        "generated_component": "AuthRule:Admin",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_procurementofficer",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:ProcurementOfficer",
+        "generated_component": "AuthRule:ProcurementOfficer",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_warehouseagent",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:WarehouseAgent",
+        "generated_component": "AuthRule:WarehouseAgent",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      }
+    ]
+  },
+  "validation_report": {
+    "is_valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "error_id": "val_err_001",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:LogStockArrival",
+        "message": "Orphan Entity node 'LogStockArrival' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:LogStockArrival",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      },
+      {
+        "error_id": "val_err_002",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:InitiateReorder",
+        "message": "Orphan Entity node 'InitiateReorder' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:InitiateReorder",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      }
+    ],
+    "critical_count": 0,
+    "high_count": 0,
+    "medium_count": 2,
+    "low_count": 0,
+    "validated_components": [
+      "Contract:con_entity_initiatereorder",
+      "APIEndpoint:create_initiate_reorder",
+      "APIEndpoint:get_stock_order_detail",
+      "Contract:con_entity_supplier",
+      "APIEndpoint:update_initiate_reorder",
+      "APIEndpoint:get_log_stock_arrival_detail",
+      "Table:product",
+      "APIEndpoint:update_log_stock_arrival",
+      "APIEndpoint:delete_supplier",
+      "APIEndpoint:get_initiate_reorder_detail",
+      "APIEndpoint:get_supplier_detail",
+      "Table:log_stock_arrival",
+      "Table:initiate_reorder",
+      "APIEndpoint:create_supplier",
+      "AuthRule:ProcurementOfficer",
+      "APIEndpoint:update_product",
+      "APIEndpoint:delete_stock_order",
+      "AuthRule:WarehouseAgent",
+      "APIEndpoint:get_stock_order_list",
+      "APIEndpoint:create_stock_order",
+      "APIEndpoint:delete_initiate_reorder",
+      "APIEndpoint:delete_log_stock_arrival",
+      "APIEndpoint:get_log_stock_arrival_list",
+      "AuthRule:Admin",
+      "APIEndpoint:get_product_list",
+      "Contract:con_entity_stockorder",
+      "APIEndpoint:get_product_detail",
+      "APIEndpoint:get_supplier_list",
+      "APIEndpoint:create_log_stock_arrival",
+      "APIEndpoint:update_supplier",
+      "Table:supplier",
+      "APIEndpoint:delete_product",
+      "Contract:con_entity_logstockarrival",
+      "APIEndpoint:get_initiate_reorder_list",
+      "APIEndpoint:create_product",
+      "Contract:con_entity_product",
+      "Table:stock_order",
+      "APIEndpoint:update_stock_order"
+    ],
+    "timestamp": "2026-06-23T20:31:31.911361"
+  },
+  "repair_report": null,
+  "simulation_report": {
+    "simulation_id": "sim_1782226891",
+    "workflows_executed": [],
+    "successful_steps": 25,
+    "failed_steps": 0,
+    "permission_failures": 0,
+    "contract_failures": 0,
+    "validation_failures": 0,
+    "repair_failures": 0,
+    "business_rule_failures": 0,
+    "success_rate": 100.0,
+    "simulation_traces": []
+  },
+  "evolution_summary": {
+    "change_id": "demo_evo_inventory",
+    "version_info": {
+      "version_id": "demo_evo_inventory",
+      "parent_version": "v1.0",
+      "created_at": "2026-06-23T20:31:31.920497",
+      "change_summary": "Add StockAlert feature"
+    },
+    "diffs": [
+      {
+        "component": "StockAlert",
+        "before_state": null,
+        "after_state": "{'type': 'feature', 'name': 'StockAlert', 'details': {'name': 'StockAlert', 'description': 'Notify when stock is below threshold'}}",
+        "change_reason": "Add requested"
+      }
+    ],
+    "impact_report": {
+      "affected_components": [],
+      "unaffected_components": [
+        "Table:initiate_reorder",
+        "Table:log_stock_arrival",
+        "Table:product",
+        "Table:stock_order",
+        "Table:supplier",
+        "API:get_initiate_reorder_list",
+        "API:get_initiate_reorder_detail",
+        "API:create_initiate_reorder",
+        "API:update_initiate_reorder",
+        "API:delete_initiate_reorder",
+        "API:get_log_stock_arrival_list",
+        "API:get_log_stock_arrival_detail",
+        "API:create_log_stock_arrival",
+        "API:update_log_stock_arrival",
+        "API:delete_log_stock_arrival",
+        "API:get_product_list",
+        "API:get_product_detail",
+        "API:create_product",
+        "API:update_product",
+        "API:delete_product",
+        "API:get_stock_order_list",
+        "API:get_stock_order_detail",
+        "API:create_stock_order",
+        "API:update_stock_order",
+        "API:delete_stock_order",
+        "API:get_supplier_list",
+        "API:get_supplier_detail",
+        "API:create_supplier",
+        "API:update_supplier",
+        "API:delete_supplier"
+      ],
+      "estimated_effort": "Low (Surgical)",
+      "impact_score": {
+        "entities_changed": 0,
+        "workflows_changed": 0,
+        "apis_changed": 0,
+        "permissions_changed": 0,
+        "business_rules_changed": 0,
+        "score": 15.0,
+        "impact_level": "LOW"
+      },
+      "dependency_graph": {
+        "changed_component": "StockAlert",
+        "directly_affected": [],
+        "indirectly_affected": [],
+        "dependency_depth": 0,
+        "direct_dependencies": [],
+        "indirect_dependencies": []
+      }
+    },
+    "risk_assessment": {
+      "risk_level": "LOW",
+      "affected_components": [],
+      "affected_workflows": [],
+      "affected_entities": [],
+      "validation_risk": 0.1,
+      "repair_risk": 0.1,
+      "simulation_risk": 0.1,
+      "overall_risk_score": 10.000000000000002
+    },
+    "effectiveness": {
+      "components_modified": [
+        "StockAlert"
+      ],
+      "components_preserved": [
+        "Table:initiate_reorder",
+        "Table:log_stock_arrival",
+        "Table:product",
+        "Table:stock_order",
+        "Table:supplier",
+        "API:get_initiate_reorder_list",
+        "API:get_initiate_reorder_detail",
+        "API:create_initiate_reorder",
+        "API:update_initiate_reorder",
+        "API:delete_initiate_reorder",
+        "API:get_log_stock_arrival_list",
+        "API:get_log_stock_arrival_detail",
+        "API:create_log_stock_arrival",
+        "API:update_log_stock_arrival",
+        "API:delete_log_stock_arrival",
+        "API:get_product_list",
+        "API:get_product_detail",
+        "API:create_product",
+        "API:update_product",
+        "API:delete_product",
+        "API:get_stock_order_list",
+        "API:get_stock_order_detail",
+        "API:create_stock_order",
+        "API:update_stock_order",
+        "API:delete_stock_order",
+        "API:get_supplier_list",
+        "API:get_supplier_detail",
+        "API:create_supplier",
+        "API:update_supplier",
+        "API:delete_supplier"
+      ],
+      "validation_passed": true,
+      "repair_required": true,
+      "simulation_passed": true,
+      "rollback_required": false,
+      "risk_level": "LOW",
+      "impact_level": "LOW",
+      "complexity_level": "LOW"
+    },
+    "conflicts_report": {
+      "is_valid": true,
+      "conflicts": []
+    },
+    "updated_blueprint": {
+      "project_id": "proj_1782226891",
+      "app_type": "Inventory Management",
+      "actors": [
+        {
+          "name": "ProcurementOfficer",
+          "description": "Approves buy orders",
+          "relevance_score": 1.0,
+          "why_needed": "Requested actor profile for operations."
+        },
+        {
+          "name": "WarehouseAgent",
+          "description": "Logs arrivals and shipments",
+          "relevance_score": 1.0,
+          "why_needed": "Requested actor profile for operations."
+        },
+        {
+          "name": "Admin",
+          "description": "System administrator overseeing database metrics and accounts.",
+          "relevance_score": 0.9,
+          "why_needed": "Required to manage application entities, records, and access permissions."
+        }
+      ],
+      "features": [
+        {
+          "name": "InitiateReorder",
+          "description": "Drafts low-stock procurement",
+          "actor_involved": "WarehouseAgent",
+          "explanation": {
+            "feature_name": "InitiateReorder",
+            "what_it_does": "Drafts low-stock procurement",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "LogStockArrival",
+          "description": "Increments item counts",
+          "actor_involved": "WarehouseAgent",
+          "explanation": {
+            "feature_name": "LogStockArrival",
+            "what_it_does": "Increments item counts",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "StockAlert",
+          "description": "Notify when stock is below threshold",
+          "actor_involved": "Admin",
+          "explanation": {
+            "feature_name": "StockAlert",
+            "what_it_does": "Notify when stock is below threshold",
+            "why_recommended": "User change request",
+            "business_value": "User value",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Incremental compiler",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        }
+      ],
+      "workflows": [],
+      "permissions": [
+        {
+          "actor": "WarehouseAgent",
+          "action": "ReadOwnProfile",
+          "description": "Allows user to view their registered attributes.",
+          "why_needed": "Enforces fundamental privacy boundaries."
+        },
+        {
+          "actor": "ProcurementOfficer",
+          "action": "ReadOwnProfile",
+          "description": "Allows user to view their registered attributes.",
+          "why_needed": "Enforces fundamental privacy boundaries."
+        },
+        {
+          "actor": "Admin",
+          "action": "ManageAllRecords",
+          "description": "Full administrative system configurations overrides.",
+          "why_needed": "Standard admin system access rights."
+        }
+      ],
+      "innovations": [],
+      "approval_history": [],
+      "modifications": []
+    },
+    "updated_spec": {
+      "app_name": "Proj1782226891",
+      "app_type": "Inventory Management",
+      "actors": [
+        {
+          "name": "ProcurementOfficer",
+          "description": "Approves buy orders",
+          "permissions": []
+        },
+        {
+          "name": "WarehouseAgent",
+          "description": "Logs arrivals and shipments",
+          "permissions": []
+        },
+        {
+          "name": "Admin",
+          "description": "System administrator overseeing database metrics and accounts.",
+          "permissions": [
+            "ManageAllRecords"
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "entity_id": "ent_initiate_reorder",
+          "entity_name": "InitiateReorder",
+          "name": "InitiateReorder",
+          "description": "Drafts low-stock procurement",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_log_stock_arrival",
+          "entity_name": "LogStockArrival",
+          "name": "LogStockArrival",
+          "description": "Increments item counts",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_product",
+          "entity_name": "Product",
+          "name": "Product",
+          "description": "Logical product catalog details.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "sku",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "price",
+              "type": "float",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "stock_quantity",
+              "type": "integer",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_stockorder",
+          "entity_name": "StockOrder",
+          "name": "StockOrder",
+          "description": "Logical records of stock replenishments.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "product_id",
+              "type": "relationship",
+              "required": true,
+              "is_key": false,
+              "references": "Product.id"
+            },
+            {
+              "name": "supplier_id",
+              "type": "relationship",
+              "required": true,
+              "is_key": false,
+              "references": "Supplier.id"
+            },
+            {
+              "name": "quantity",
+              "type": "integer",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "order_date",
+              "type": "datetime",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_supplier",
+          "entity_name": "Supplier",
+          "name": "Supplier",
+          "description": "Logical supplier contact details.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "contact_info",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_stock_alert",
+          "entity_name": "StockAlert",
+          "name": "StockAlert",
+          "description": "Notify when stock is below threshold",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        }
+      ],
+      "relationships": [
+        {
+          "relationship_id": "rel_stockorder_product",
+          "source_entity": "StockOrder",
+          "target_entity": "Product",
+          "relationship_type": "many-to-one",
+          "description": "Links StockOrder to its parent Product record."
+        },
+        {
+          "relationship_id": "rel_stockorder_supplier",
+          "source_entity": "StockOrder",
+          "target_entity": "Supplier",
+          "relationship_type": "many-to-one",
+          "description": "Links StockOrder to its parent Supplier record."
+        }
+      ],
+      "workflows": [],
+      "permissions": [
+        {
+          "role": "Admin",
+          "permissions": [
+            "ManageAllRecords",
+            "ViewAnalyticsDashboard"
+          ],
+          "reason": "Full database administrative configuration rights."
+        },
+        {
+          "role": "ProcurementOfficer",
+          "permissions": [
+            "AccessPortal",
+            "ReadOwnProfile"
+          ],
+          "reason": "Baseline access privileges."
+        },
+        {
+          "role": "WarehouseAgent",
+          "permissions": [
+            "AccessPortal",
+            "ReadOwnProfile"
+          ],
+          "reason": "Baseline access privileges."
+        }
+      ],
+      "business_rules": [
+        {
+          "rule_id": "BR_001",
+          "rule": "Stock quantity cannot drop below zero.",
+          "source": "approved_blueprint",
+          "priority": "HIGH",
+          "affected_entities": [
+            "Product"
+          ],
+          "description": "Stock quantity cannot drop below zero.",
+          "enforcement_logic": "Product.stock_quantity >= 0"
+        }
+      ],
+      "design_decisions": [
+        {
+          "decision_id": "DD_001",
+          "decision": "StockOrder links Product and Supplier.",
+          "reason": "Auditing requirements dictate tracking all incoming supply runs.",
+          "source": "approved_blueprint",
+          "impact_level": "HIGH",
+          "affected_components": [
+            "Product",
+            "Supplier",
+            "StockOrder"
+          ]
+        }
+      ],
+      "graph": {
+        "nodes": [
+          {
+            "id": "ProcurementOfficer",
+            "type": "actor",
+            "description": "Approves buy orders"
+          },
+          {
+            "id": "WarehouseAgent",
+            "type": "actor",
+            "description": "Logs arrivals and shipments"
+          },
+          {
+            "id": "Admin",
+            "type": "actor",
+            "description": "System administrator overseeing database metrics and accounts."
+          },
+          {
+            "id": "InitiateReorder",
+            "type": "entity",
+            "description": "Drafts low-stock procurement"
+          },
+          {
+            "id": "LogStockArrival",
+            "type": "entity",
+            "description": "Increments item counts"
+          },
+          {
+            "id": "Product",
+            "type": "entity",
+            "description": "Logical product catalog details."
+          },
+          {
+            "id": "StockOrder",
+            "type": "entity",
+            "description": "Logical records of stock replenishments."
+          },
+          {
+            "id": "Supplier",
+            "type": "entity",
+            "description": "Logical supplier contact details."
+          }
+        ],
+        "edges": [
+          {
+            "source": "StockOrder",
+            "target": "Product",
+            "type": "relationship",
+            "label": "many-to-one"
+          },
+          {
+            "source": "StockOrder",
+            "target": "Supplier",
+            "type": "relationship",
+            "label": "many-to-one"
+          }
+        ]
+      },
+      "metadata": {
+        "compiled_at": "2026-06-23T20:31:31.909947",
+        "blueprint_project_id": "proj_1782226891",
+        "ast_version_id": "demo_evo_inventory"
+      }
+    },
+    "updated_bundle": {
+      "database_schema": [
+        {
+          "table_name": "initiate_reorder",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_initiate_reorder_id"
+          ],
+          "source_entity": "InitiateReorder",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "log_stock_arrival",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_log_stock_arrival_id"
+          ],
+          "source_entity": "LogStockArrival",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "product",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "sku",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "price",
+              "type": "float",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "stock_quantity",
+              "type": "integer",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_product_id"
+          ],
+          "source_entity": "Product",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "stock_order",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "product_id",
+              "type": "relationship",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": true,
+              "references": "Product.id"
+            },
+            {
+              "name": "supplier_id",
+              "type": "relationship",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": true,
+              "references": "Supplier.id"
+            },
+            {
+              "name": "quantity",
+              "type": "integer",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "order_date",
+              "type": "datetime",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [
+            {
+              "column": "product_id",
+              "references_table": "product",
+              "references_column": "id"
+            },
+            {
+              "column": "supplier_id",
+              "references_table": "supplier",
+              "references_column": "id"
+            }
+          ],
+          "constraints": [],
+          "indexes": [
+            "idx_stock_order_id"
+          ],
+          "source_entity": "StockOrder",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "supplier",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "contact_info",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_supplier_id"
+          ],
+          "source_entity": "Supplier",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "stock_alert",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [],
+          "source_entity": "StockAlert",
+          "traceability": {
+            "source_entity": "StockAlert",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ],
+      "api_schema": [
+        {
+          "endpoint_id": "get_initiate_reorder_list",
+          "path": "/api/v1/initiatereorders",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InitiateReorder"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "InitiateReorder",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_initiate_reorder_detail",
+          "path": "/api/v1/initiatereorders/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/InitiateReorder"
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "InitiateReorder",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_initiate_reorder",
+          "path": "/api/v1/initiatereorders",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/InitiateReorderInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/InitiateReorder"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "InitiateReorder",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_initiate_reorder",
+          "path": "/api/v1/initiatereorders/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/InitiateReorderInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/InitiateReorder"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "InitiateReorder",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_initiate_reorder",
+          "path": "/api/v1/initiatereorders/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "InitiateReorder",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_log_stock_arrival_list",
+          "path": "/api/v1/logstockarrivals",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogStockArrival"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "LogStockArrival",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_log_stock_arrival_detail",
+          "path": "/api/v1/logstockarrivals/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/LogStockArrival"
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "LogStockArrival",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_log_stock_arrival",
+          "path": "/api/v1/logstockarrivals",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/LogStockArrivalInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/LogStockArrival"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "LogStockArrival",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_log_stock_arrival",
+          "path": "/api/v1/logstockarrivals/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/LogStockArrivalInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/LogStockArrival"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "LogStockArrival",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_log_stock_arrival",
+          "path": "/api/v1/logstockarrivals/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "LogStockArrival",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_product_list",
+          "path": "/api/v1/products",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "Product",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_product_detail",
+          "path": "/api/v1/products/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "Product",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_product",
+          "path": "/api/v1/products",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/ProductInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Product",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_product",
+          "path": "/api/v1/products/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/ProductInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Product",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_product",
+          "path": "/api/v1/products/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Product",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_stock_order_list",
+          "path": "/api/v1/stock-orders",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockOrder"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "StockOrder",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_stock_order_detail",
+          "path": "/api/v1/stock-orders/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/StockOrder"
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "StockOrder",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_stock_order",
+          "path": "/api/v1/stock-orders",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/StockOrderInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/StockOrder"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "StockOrder",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_stock_order",
+          "path": "/api/v1/stock-orders/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/StockOrderInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/StockOrder"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "StockOrder",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_stock_order",
+          "path": "/api/v1/stock-orders/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "StockOrder",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_supplier_list",
+          "path": "/api/v1/suppliers",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Supplier"
+            }
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "Supplier",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_supplier_detail",
+          "path": "/api/v1/suppliers/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/Supplier"
+          },
+          "permissions": [
+            "Admin",
+            "ProcurementOfficer",
+            "WarehouseAgent"
+          ],
+          "source_entity": "Supplier",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_supplier",
+          "path": "/api/v1/suppliers",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/SupplierInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Supplier"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Supplier",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_supplier",
+          "path": "/api/v1/suppliers/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/SupplierInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Supplier"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Supplier",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_supplier",
+          "path": "/api/v1/suppliers/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Supplier",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_stock_alert_list",
+          "path": "/api/v1/stockalerts",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {},
+          "permissions": [],
+          "source_entity": "StockAlert",
+          "traceability": {
+            "source_entity": "StockAlert",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_stock_alert",
+          "path": "/api/v1/stockalerts",
+          "method": "POST",
+          "request_schema": {},
+          "response_schema": {},
+          "permissions": [],
+          "source_entity": "StockAlert",
+          "traceability": {
+            "source_entity": "StockAlert",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ],
+      "ui_schema": [],
+      "auth_schema": [
+        {
+          "role": "Admin",
+          "permissions": [
+            "ManageAllRecords",
+            "ViewAnalyticsDashboard"
+          ],
+          "restricted_actions": [
+            "DeleteDatabase",
+            "OverrideAll"
+          ],
+          "authentication_requirements": [
+            "JWT_Token",
+            "MFA"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "role": "ProcurementOfficer",
+          "permissions": [
+            "AccessPortal",
+            "ReadOwnProfile"
+          ],
+          "restricted_actions": [
+            "ViewAnalyticsDashboard",
+            "DeleteDatabase",
+            "OverrideAll",
+            "ManageAllRecords"
+          ],
+          "authentication_requirements": [
+            "JWT_Token"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "role": "WarehouseAgent",
+          "permissions": [
+            "AccessPortal",
+            "ReadOwnProfile"
+          ],
+          "restricted_actions": [
+            "ViewAnalyticsDashboard",
+            "DeleteDatabase",
+            "OverrideAll",
+            "ManageAllRecords"
+          ],
+          "authentication_requirements": [
+            "JWT_Token"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        }
+      ],
+      "contracts": [
+        {
+          "contract_id": "con_entity_initiatereorder",
+          "source_ast_component": "Entity:InitiateReorder",
+          "generated_components": [
+            "DB_Table:initiate_reorder",
+            "API:get_initiate_reorder_list",
+            "API:get_initiate_reorder_detail",
+            "API:create_initiate_reorder",
+            "API:update_initiate_reorder",
+            "API:delete_initiate_reorder"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_logstockarrival",
+          "source_ast_component": "Entity:LogStockArrival",
+          "generated_components": [
+            "DB_Table:log_stock_arrival",
+            "API:get_log_stock_arrival_list",
+            "API:get_log_stock_arrival_detail",
+            "API:create_log_stock_arrival",
+            "API:update_log_stock_arrival",
+            "API:delete_log_stock_arrival"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_product",
+          "source_ast_component": "Entity:Product",
+          "generated_components": [
+            "DB_Table:product",
+            "API:get_product_list",
+            "API:get_product_detail",
+            "API:create_product",
+            "API:update_product",
+            "API:delete_product"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_stockorder",
+          "source_ast_component": "Entity:StockOrder",
+          "generated_components": [
+            "DB_Table:stock_order",
+            "API:get_stock_order_list",
+            "API:get_stock_order_detail",
+            "API:create_stock_order",
+            "API:update_stock_order",
+            "API:delete_stock_order"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_supplier",
+          "source_ast_component": "Entity:Supplier",
+          "generated_components": [
+            "DB_Table:supplier",
+            "API:get_supplier_list",
+            "API:get_supplier_detail",
+            "API:create_supplier",
+            "API:update_supplier",
+            "API:delete_supplier"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        }
+      ],
+      "consistency_report": [],
+      "ast_version": {
+        "version": "proj_1782226891",
+        "generated_at": "2026-06-23T20:31:31.909947",
+        "compiler_phase": "Phase 5 Schema Generation Engine",
+        "source_ast_version": "proj_1782226891"
+      },
+      "compilation_report": {
+        "is_valid": true,
+        "errors": [],
+        "warnings": [],
+        "compiled_entities": [
+          "InitiateReorder",
+          "LogStockArrival",
+          "Product",
+          "StockOrder",
+          "Supplier"
+        ],
+        "compiled_workflows": [],
+        "compiled_permissions": [
+          "Admin",
+          "ProcurementOfficer",
+          "WarehouseAgent"
+        ],
+        "compiled_relationships": [
+          "rel_stockorder_product",
+          "rel_stockorder_supplier"
+        ],
+        "consistency_checks_passed": 10,
+        "consistency_checks_failed": 0,
+        "timestamp": "2026-06-23T20:31:31.910710"
+      },
+      "artifacts": [
+        {
+          "artifact_id": "art_db_initiate_reorder",
+          "artifact_type": "database_table",
+          "source_component": "Entity:InitiateReorder",
+          "generated_component": "Table:initiate_reorder",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_log_stock_arrival",
+          "artifact_type": "database_table",
+          "source_component": "Entity:LogStockArrival",
+          "generated_component": "Table:log_stock_arrival",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_product",
+          "artifact_type": "database_table",
+          "source_component": "Entity:Product",
+          "generated_component": "Table:product",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_stock_order",
+          "artifact_type": "database_table",
+          "source_component": "Entity:StockOrder",
+          "generated_component": "Table:stock_order",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_supplier",
+          "artifact_type": "database_table",
+          "source_component": "Entity:Supplier",
+          "generated_component": "Table:supplier",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_initiate_reorder_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InitiateReorder",
+          "generated_component": "Endpoint:get_initiate_reorder_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_initiate_reorder_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InitiateReorder",
+          "generated_component": "Endpoint:get_initiate_reorder_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_initiate_reorder",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InitiateReorder",
+          "generated_component": "Endpoint:create_initiate_reorder",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_initiate_reorder",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InitiateReorder",
+          "generated_component": "Endpoint:update_initiate_reorder",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_initiate_reorder",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:InitiateReorder",
+          "generated_component": "Endpoint:delete_initiate_reorder",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "InitiateReorder",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_log_stock_arrival_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:LogStockArrival",
+          "generated_component": "Endpoint:get_log_stock_arrival_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_log_stock_arrival_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:LogStockArrival",
+          "generated_component": "Endpoint:get_log_stock_arrival_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_log_stock_arrival",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:LogStockArrival",
+          "generated_component": "Endpoint:create_log_stock_arrival",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_log_stock_arrival",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:LogStockArrival",
+          "generated_component": "Endpoint:update_log_stock_arrival",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_log_stock_arrival",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:LogStockArrival",
+          "generated_component": "Endpoint:delete_log_stock_arrival",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "LogStockArrival",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_product_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Product",
+          "generated_component": "Endpoint:get_product_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_product_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Product",
+          "generated_component": "Endpoint:get_product_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_product",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Product",
+          "generated_component": "Endpoint:create_product",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_product",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Product",
+          "generated_component": "Endpoint:update_product",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_product",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Product",
+          "generated_component": "Endpoint:delete_product",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Product",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_stock_order_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:StockOrder",
+          "generated_component": "Endpoint:get_stock_order_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_stock_order_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:StockOrder",
+          "generated_component": "Endpoint:get_stock_order_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_stock_order",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:StockOrder",
+          "generated_component": "Endpoint:create_stock_order",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_stock_order",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:StockOrder",
+          "generated_component": "Endpoint:update_stock_order",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_stock_order",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:StockOrder",
+          "generated_component": "Endpoint:delete_stock_order",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockOrder",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_supplier_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Supplier",
+          "generated_component": "Endpoint:get_supplier_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_supplier_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Supplier",
+          "generated_component": "Endpoint:get_supplier_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_supplier",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Supplier",
+          "generated_component": "Endpoint:create_supplier",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_supplier",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Supplier",
+          "generated_component": "Endpoint:update_supplier",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_supplier",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Supplier",
+          "generated_component": "Endpoint:delete_supplier",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Supplier",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_admin",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:Admin",
+          "generated_component": "AuthRule:Admin",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_procurementofficer",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:ProcurementOfficer",
+          "generated_component": "AuthRule:ProcurementOfficer",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_warehouseagent",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:WarehouseAgent",
+          "generated_component": "AuthRule:WarehouseAgent",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_stock_alert",
+          "artifact_type": "database_table",
+          "source_component": "Entity:StockAlert",
+          "generated_component": "Table:stock_alert",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockAlert",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_stock_alert_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:StockAlert",
+          "generated_component": "Endpoint:get_stock_alert_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockAlert",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_stock_alert",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:StockAlert",
+          "generated_component": "Endpoint:create_stock_alert",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "StockAlert",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ]
+    }
+  },
+  "pipeline_traces": [
+    {
+      "phase_name": "Intent Engine",
+      "start_time": "2026-06-23T20:31:31.907187",
+      "end_time": "2026-06-23T20:31:31.907401",
+      "duration_ms": 0.20360946655273438,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Blueprint Engine",
+      "start_time": "2026-06-23T20:31:31.907416",
+      "end_time": "2026-06-23T20:31:31.909464",
+      "duration_ms": 2.0461082458496094,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "System Design Engine",
+      "start_time": "2026-06-23T20:31:31.909477",
+      "end_time": "2026-06-23T20:31:31.909966",
+      "duration_ms": 0.4870891571044922,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Schema Engine",
+      "start_time": "2026-06-23T20:31:31.909973",
+      "end_time": "2026-06-23T20:31:31.910880",
+      "duration_ms": 0.9055137634277344,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Validation Engine",
+      "start_time": "2026-06-23T20:31:31.910887",
+      "end_time": "2026-06-23T20:31:31.911380",
+      "duration_ms": 0.4916191101074219,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Repair Engine",
+      "start_time": "2026-06-23T20:31:31.911386",
+      "end_time": "2026-06-23T20:31:31.911389",
+      "duration_ms": 0.0011920928955078125,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Execution Simulator",
+      "start_time": "2026-06-23T20:31:31.911395",
+      "end_time": "2026-06-23T20:31:31.912099",
+      "duration_ms": 0.6988048553466797,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Requirement Evolution Engine",
+      "start_time": "2026-06-23T20:31:31.912124",
+      "end_time": "2026-06-23T20:31:31.938441",
+      "duration_ms": 26.310443878173828,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "execution_mode": "BALANCED",
+  "created_at": "2026-06-23T20:31:31.938484",
+  "updated_at": "2026-06-23T20:31:31.938484"
+}

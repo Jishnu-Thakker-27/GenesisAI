@@ -1,0 +1,5991 @@
+{
+  "project_id": "proj_1782226891",
+  "app_name": "EduPulsePortal",
+  "app_type": "School Information System",
+  "prompt": "Build a school management database where students enroll in courses.",
+  "intent": {
+    "app_name": "EduPulsePortal",
+    "app_type": "School Information System",
+    "actors": [
+      {
+        "name": "Student",
+        "description": "Access grades and classes"
+      },
+      {
+        "name": "Teacher",
+        "description": "Post assignments and grades"
+      }
+    ],
+    "features": [
+      {
+        "name": "ViewGrades",
+        "description": "Check exam scores",
+        "actor_involved": "Student",
+        "source": {
+          "source_type": "user_requirement",
+          "source_description": "Direct requirement"
+        }
+      },
+      {
+        "name": "SubmitAssignment",
+        "description": "Upload homework files",
+        "actor_involved": "Student",
+        "source": {
+          "source_type": "user_requirement",
+          "source_description": "Direct requirement"
+        }
+      },
+      {
+        "name": "GradeAssignment",
+        "description": "Grade submitted assignments",
+        "actor_involved": "Teacher",
+        "source": {
+          "source_type": "user_requirement",
+          "source_description": "Direct requirement"
+        }
+      }
+    ],
+    "business_rules": [
+      "Grades cannot be modified after semester close."
+    ],
+    "constraints": [
+      "Max assignment file upload size is 10MB."
+    ],
+    "workflow_gaps": [
+      "Class Registration Flow"
+    ],
+    "assumptions": [
+      {
+        "assumption": "Courses map to classrooms",
+        "reason": "Standard school layout paradigm",
+        "source": "industry_best_practice",
+        "confidence": 0.9,
+        "impact_level": "LOW"
+      }
+    ],
+    "missing_information": [
+      "Parent profile access boundaries."
+    ],
+    "clarification_questions": [],
+    "confidence_score": 0.87,
+    "confidence_explanation": [
+      "Lack of clearly defined business operational rules.",
+      "Underspecified workflow pathways (1 critical gaps).",
+      "High overall structural confidence."
+    ],
+    "confidence_breakdown": {
+      "app_type_score": 1.0,
+      "actor_score": 1.0,
+      "feature_score": 1.0,
+      "business_rule_score": 0.5,
+      "workflow_score": 0.7,
+      "constraint_score": 1.0
+    },
+    "processing_mode": "MODE_B"
+  },
+  "blueprint": {
+    "project_id": "proj_1782226891",
+    "app_type": "School Information System",
+    "actors": [
+      {
+        "name": "Student",
+        "description": "Access grades and classes",
+        "relevance_score": 1.0,
+        "why_needed": "Requested actor profile for operations."
+      },
+      {
+        "name": "Teacher",
+        "description": "Post assignments and grades",
+        "relevance_score": 1.0,
+        "why_needed": "Requested actor profile for operations."
+      },
+      {
+        "name": "Admin",
+        "description": "System administrator overseeing database metrics and accounts.",
+        "relevance_score": 0.9,
+        "why_needed": "Required to manage application entities, records, and access permissions."
+      }
+    ],
+    "features": [
+      {
+        "name": "GradeAssignment",
+        "description": "Grade submitted assignments",
+        "actor_involved": "Teacher",
+        "explanation": {
+          "feature_name": "GradeAssignment",
+          "what_it_does": "Grade submitted assignments",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      },
+      {
+        "name": "SubmitAssignment",
+        "description": "Upload homework files",
+        "actor_involved": "Student",
+        "explanation": {
+          "feature_name": "SubmitAssignment",
+          "what_it_does": "Upload homework files",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      },
+      {
+        "name": "ViewGrades",
+        "description": "Check exam scores",
+        "actor_involved": "Student",
+        "explanation": {
+          "feature_name": "ViewGrades",
+          "what_it_does": "Check exam scores",
+          "why_recommended": "Extracted from your core requirements.",
+          "business_value": "Direct fulfillment of custom request.",
+          "source": {
+            "source_type": "user_requirement",
+            "source_description": "Explicitly requested in prompt.",
+            "relevance_score": 1.0
+          },
+          "source_reliability": 1.0,
+          "recommendation_confidence": 1.0,
+          "innovation_origin": "user_created",
+          "relevance_score": 1.0
+        }
+      }
+    ],
+    "workflows": [],
+    "permissions": [
+      {
+        "actor": "Student",
+        "action": "ReadOwnProfile",
+        "description": "Allows user to view their registered attributes.",
+        "why_needed": "Enforces fundamental privacy boundaries."
+      },
+      {
+        "actor": "Teacher",
+        "action": "ReadOwnProfile",
+        "description": "Allows user to view their registered attributes.",
+        "why_needed": "Enforces fundamental privacy boundaries."
+      },
+      {
+        "actor": "Admin",
+        "action": "ManageAllRecords",
+        "description": "Full administrative system configurations overrides.",
+        "why_needed": "Standard admin system access rights."
+      }
+    ],
+    "innovations": [],
+    "approval_history": [],
+    "modifications": []
+  },
+  "system_design": {
+    "app_name": "Proj1782226891",
+    "app_type": "School Information System",
+    "actors": [
+      {
+        "name": "Student",
+        "description": "Access grades and classes",
+        "permissions": []
+      },
+      {
+        "name": "Teacher",
+        "description": "Post assignments and grades",
+        "permissions": [
+          "GradeStudents"
+        ]
+      },
+      {
+        "name": "Admin",
+        "description": "System administrator overseeing database metrics and accounts.",
+        "permissions": [
+          "ManageAllRecords"
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "entity_id": "ent_course",
+        "entity_name": "Course",
+        "name": "Course",
+        "description": "Logical academic courses directory.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "teacher_id",
+            "type": "relationship",
+            "required": true,
+            "is_key": false,
+            "references": "Teacher.id"
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_enrollment",
+        "entity_name": "Enrollment",
+        "name": "Enrollment",
+        "description": "Logical mapping linking students to enrolled courses.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "student_id",
+            "type": "relationship",
+            "required": true,
+            "is_key": false,
+            "references": "Student.id"
+          },
+          {
+            "name": "course_id",
+            "type": "relationship",
+            "required": true,
+            "is_key": false,
+            "references": "Course.id"
+          },
+          {
+            "name": "grade",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_grade_assignment",
+        "entity_name": "GradeAssignment",
+        "name": "GradeAssignment",
+        "description": "Grade submitted assignments",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_student",
+        "entity_name": "Student",
+        "name": "Student",
+        "description": "Logical student record.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "grade_level",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_submit_assignment",
+        "entity_name": "SubmitAssignment",
+        "name": "SubmitAssignment",
+        "description": "Upload homework files",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_teacher",
+        "entity_name": "Teacher",
+        "name": "Teacher",
+        "description": "Logical instructor details.",
+        "source": "industry_pattern",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          },
+          {
+            "name": "department",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "entity_id": "ent_view_grades",
+        "entity_name": "ViewGrades",
+        "name": "ViewGrades",
+        "description": "Check exam scores",
+        "source": "user_requirement",
+        "confidence": 1.0,
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "is_key": true,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "is_key": false,
+            "references": null
+          }
+        ],
+        "constraints": []
+      }
+    ],
+    "relationships": [
+      {
+        "relationship_id": "rel_course_teacher",
+        "source_entity": "Course",
+        "target_entity": "Teacher",
+        "relationship_type": "many-to-one",
+        "description": "Links Course to its parent Teacher record."
+      },
+      {
+        "relationship_id": "rel_enrollment_course",
+        "source_entity": "Enrollment",
+        "target_entity": "Course",
+        "relationship_type": "many-to-one",
+        "description": "Links Enrollment to its parent Course record."
+      },
+      {
+        "relationship_id": "rel_enrollment_student",
+        "source_entity": "Enrollment",
+        "target_entity": "Student",
+        "relationship_type": "many-to-one",
+        "description": "Links Enrollment to its parent Student record."
+      }
+    ],
+    "workflows": [],
+    "permissions": [
+      {
+        "role": "Admin",
+        "permissions": [
+          "ManageAllRecords",
+          "ViewAnalyticsDashboard"
+        ],
+        "reason": "Full database administrative configuration rights."
+      },
+      {
+        "role": "Student",
+        "permissions": [
+          "EnrollCourses",
+          "ReadOwnGrades"
+        ],
+        "reason": "Student enrollment access."
+      },
+      {
+        "role": "Teacher",
+        "permissions": [
+          "GradeStudents",
+          "ManageCourses"
+        ],
+        "reason": "Teacher classroom access rights."
+      }
+    ],
+    "business_rules": [
+      {
+        "rule_id": "BR_001",
+        "rule": "Students must be active to enroll in courses.",
+        "source": "approved_blueprint",
+        "priority": "HIGH",
+        "affected_entities": [
+          "Student",
+          "Enrollment"
+        ],
+        "description": "Students must be active to enroll in courses.",
+        "enforcement_logic": "Student.status == 'active'"
+      }
+    ],
+    "design_decisions": [
+      {
+        "decision_id": "DD_001",
+        "decision": "Enrollment acts as join table between Student and Course.",
+        "reason": "Supports many-to-many relationship mapping and tracks grades.",
+        "source": "approved_blueprint",
+        "impact_level": "HIGH",
+        "affected_components": [
+          "Student",
+          "Course",
+          "Enrollment"
+        ]
+      }
+    ],
+    "graph": {
+      "nodes": [
+        {
+          "id": "Student",
+          "type": "actor",
+          "description": "Access grades and classes"
+        },
+        {
+          "id": "Teacher",
+          "type": "actor",
+          "description": "Post assignments and grades"
+        },
+        {
+          "id": "Admin",
+          "type": "actor",
+          "description": "System administrator overseeing database metrics and accounts."
+        },
+        {
+          "id": "Course",
+          "type": "entity",
+          "description": "Logical academic courses directory."
+        },
+        {
+          "id": "Enrollment",
+          "type": "entity",
+          "description": "Logical mapping linking students to enrolled courses."
+        },
+        {
+          "id": "GradeAssignment",
+          "type": "entity",
+          "description": "Grade submitted assignments"
+        },
+        {
+          "id": "SubmitAssignment",
+          "type": "entity",
+          "description": "Upload homework files"
+        },
+        {
+          "id": "ViewGrades",
+          "type": "entity",
+          "description": "Check exam scores"
+        }
+      ],
+      "edges": [
+        {
+          "source": "Course",
+          "target": "Teacher",
+          "type": "relationship",
+          "label": "many-to-one"
+        },
+        {
+          "source": "Enrollment",
+          "target": "Course",
+          "type": "relationship",
+          "label": "many-to-one"
+        },
+        {
+          "source": "Enrollment",
+          "target": "Student",
+          "type": "relationship",
+          "label": "many-to-one"
+        }
+      ]
+    },
+    "metadata": {
+      "compiled_at": "2026-06-23T20:31:31.655417",
+      "blueprint_project_id": "proj_1782226891"
+    }
+  },
+  "schema_bundle": {
+    "database_schema": [
+      {
+        "table_name": "course",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "teacher_id",
+            "type": "relationship",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": true,
+            "references": "Teacher.id"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "column": "teacher_id",
+            "references_table": "teacher",
+            "references_column": "id"
+          }
+        ],
+        "constraints": [],
+        "indexes": [
+          "idx_course_id"
+        ],
+        "source_entity": "Course",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "enrollment",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "student_id",
+            "type": "relationship",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": true,
+            "references": "Student.id"
+          },
+          {
+            "name": "course_id",
+            "type": "relationship",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": true,
+            "references": "Course.id"
+          },
+          {
+            "name": "grade",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "column": "student_id",
+            "references_table": "student",
+            "references_column": "id"
+          },
+          {
+            "column": "course_id",
+            "references_table": "course",
+            "references_column": "id"
+          }
+        ],
+        "constraints": [],
+        "indexes": [
+          "idx_enrollment_id"
+        ],
+        "source_entity": "Enrollment",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "grade_assignment",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_grade_assignment_id"
+        ],
+        "source_entity": "GradeAssignment",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "student",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "grade_level",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_student_id"
+        ],
+        "source_entity": "Student",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "submit_assignment",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_submit_assignment_id"
+        ],
+        "source_entity": "SubmitAssignment",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "teacher",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "department",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_teacher_id"
+        ],
+        "source_entity": "Teacher",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "table_name": "view_grades",
+        "columns": [
+          {
+            "name": "id",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": true,
+            "is_foreign_key": false,
+            "references": null
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "is_nullable": false,
+            "is_primary_key": false,
+            "is_foreign_key": false,
+            "references": null
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [],
+        "constraints": [],
+        "indexes": [
+          "idx_view_grades_id"
+        ],
+        "source_entity": "ViewGrades",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      }
+    ],
+    "api_schema": [
+      {
+        "endpoint_id": "get_course_list",
+        "path": "/api/v1/courses",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Course"
+          }
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Course",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_course_detail",
+        "path": "/api/v1/courses/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/Course"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Course",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_course",
+        "path": "/api/v1/courses",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/CourseInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Course"
+        },
+        "permissions": [
+          "Admin",
+          "Student"
+        ],
+        "source_entity": "Course",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_course",
+        "path": "/api/v1/courses/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/CourseInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Course"
+        },
+        "permissions": [
+          "Admin",
+          "Teacher"
+        ],
+        "source_entity": "Course",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_course",
+        "path": "/api/v1/courses/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Course",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_enrollment_list",
+        "path": "/api/v1/enrollments",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Enrollment"
+          }
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Enrollment",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_enrollment_detail",
+        "path": "/api/v1/enrollments/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/Enrollment"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Enrollment",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_enrollment",
+        "path": "/api/v1/enrollments",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/EnrollmentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Enrollment"
+        },
+        "permissions": [
+          "Admin",
+          "Student"
+        ],
+        "source_entity": "Enrollment",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_enrollment",
+        "path": "/api/v1/enrollments/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/EnrollmentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Enrollment"
+        },
+        "permissions": [
+          "Admin",
+          "Teacher"
+        ],
+        "source_entity": "Enrollment",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_enrollment",
+        "path": "/api/v1/enrollments/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Enrollment",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_grade_assignment_list",
+        "path": "/api/v1/gradeassignments",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/GradeAssignment"
+          }
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "GradeAssignment",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_grade_assignment_detail",
+        "path": "/api/v1/gradeassignments/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/GradeAssignment"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "GradeAssignment",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_grade_assignment",
+        "path": "/api/v1/gradeassignments",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/GradeAssignmentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/GradeAssignment"
+        },
+        "permissions": [
+          "Admin",
+          "Student"
+        ],
+        "source_entity": "GradeAssignment",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_grade_assignment",
+        "path": "/api/v1/gradeassignments/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/GradeAssignmentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/GradeAssignment"
+        },
+        "permissions": [
+          "Admin",
+          "Teacher"
+        ],
+        "source_entity": "GradeAssignment",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_grade_assignment",
+        "path": "/api/v1/gradeassignments/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "GradeAssignment",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_student_list",
+        "path": "/api/v1/students",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Student"
+          }
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Student",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_student_detail",
+        "path": "/api/v1/students/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/Student"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Student",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_student",
+        "path": "/api/v1/students",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/StudentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Student"
+        },
+        "permissions": [
+          "Admin",
+          "Student"
+        ],
+        "source_entity": "Student",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_student",
+        "path": "/api/v1/students/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/StudentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Student"
+        },
+        "permissions": [
+          "Admin",
+          "Teacher"
+        ],
+        "source_entity": "Student",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_student",
+        "path": "/api/v1/students/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Student",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_submit_assignment_list",
+        "path": "/api/v1/submitassignments",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SubmitAssignment"
+          }
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "SubmitAssignment",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_submit_assignment_detail",
+        "path": "/api/v1/submitassignments/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/SubmitAssignment"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "SubmitAssignment",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_submit_assignment",
+        "path": "/api/v1/submitassignments",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/SubmitAssignmentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/SubmitAssignment"
+        },
+        "permissions": [
+          "Admin",
+          "Student"
+        ],
+        "source_entity": "SubmitAssignment",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_submit_assignment",
+        "path": "/api/v1/submitassignments/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/SubmitAssignmentInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/SubmitAssignment"
+        },
+        "permissions": [
+          "Admin",
+          "Teacher"
+        ],
+        "source_entity": "SubmitAssignment",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_submit_assignment",
+        "path": "/api/v1/submitassignments/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "SubmitAssignment",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_teacher_list",
+        "path": "/api/v1/teachers",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Teacher"
+          }
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Teacher",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_teacher_detail",
+        "path": "/api/v1/teachers/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/Teacher"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Teacher",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_teacher",
+        "path": "/api/v1/teachers",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/TeacherInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Teacher"
+        },
+        "permissions": [
+          "Admin",
+          "Student"
+        ],
+        "source_entity": "Teacher",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_teacher",
+        "path": "/api/v1/teachers/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/TeacherInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/Teacher"
+        },
+        "permissions": [
+          "Admin",
+          "Teacher"
+        ],
+        "source_entity": "Teacher",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_teacher",
+        "path": "/api/v1/teachers/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "Teacher",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_view_grades_list",
+        "path": "/api/v1/viewgradess",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ViewGrades"
+          }
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "ViewGrades",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "get_view_grades_detail",
+        "path": "/api/v1/viewgradess/{id}",
+        "method": "GET",
+        "request_schema": {},
+        "response_schema": {
+          "$ref": "#/components/schemas/ViewGrades"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "ViewGrades",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "create_view_grades",
+        "path": "/api/v1/viewgradess",
+        "method": "POST",
+        "request_schema": {
+          "$ref": "#/components/schemas/ViewGradesInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/ViewGrades"
+        },
+        "permissions": [
+          "Admin",
+          "Student"
+        ],
+        "source_entity": "ViewGrades",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "update_view_grades",
+        "path": "/api/v1/viewgradess/{id}",
+        "method": "PUT",
+        "request_schema": {
+          "$ref": "#/components/schemas/ViewGradesInput"
+        },
+        "response_schema": {
+          "$ref": "#/components/schemas/ViewGrades"
+        },
+        "permissions": [
+          "Admin",
+          "Teacher"
+        ],
+        "source_entity": "ViewGrades",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "endpoint_id": "delete_view_grades",
+        "path": "/api/v1/viewgradess/{id}",
+        "method": "DELETE",
+        "request_schema": {},
+        "response_schema": {
+          "status": "string"
+        },
+        "permissions": [
+          "Admin"
+        ],
+        "source_entity": "ViewGrades",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      }
+    ],
+    "ui_schema": [],
+    "auth_schema": [
+      {
+        "role": "Admin",
+        "permissions": [
+          "ManageAllRecords",
+          "ViewAnalyticsDashboard"
+        ],
+        "restricted_actions": [
+          "DeleteDatabase",
+          "OverrideAll"
+        ],
+        "authentication_requirements": [
+          "JWT_Token",
+          "MFA"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "role": "Student",
+        "permissions": [
+          "EnrollCourses",
+          "ReadOwnGrades"
+        ],
+        "restricted_actions": [
+          "ViewAnalyticsDashboard",
+          "DeleteDatabase",
+          "OverrideAll",
+          "ManageAllRecords"
+        ],
+        "authentication_requirements": [
+          "JWT_Token"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "role": "Teacher",
+        "permissions": [
+          "GradeStudents",
+          "ManageCourses"
+        ],
+        "restricted_actions": [
+          "ViewAnalyticsDashboard",
+          "DeleteDatabase",
+          "OverrideAll",
+          "ManageAllRecords"
+        ],
+        "authentication_requirements": [
+          "JWT_Token"
+        ],
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      }
+    ],
+    "contracts": [
+      {
+        "contract_id": "con_entity_course",
+        "source_ast_component": "Entity:Course",
+        "generated_components": [
+          "DB_Table:course",
+          "API:get_course_list",
+          "API:get_course_detail",
+          "API:create_course",
+          "API:update_course",
+          "API:delete_course"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_enrollment",
+        "source_ast_component": "Entity:Enrollment",
+        "generated_components": [
+          "DB_Table:enrollment",
+          "API:get_enrollment_list",
+          "API:get_enrollment_detail",
+          "API:create_enrollment",
+          "API:update_enrollment",
+          "API:delete_enrollment"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_gradeassignment",
+        "source_ast_component": "Entity:GradeAssignment",
+        "generated_components": [
+          "DB_Table:grade_assignment",
+          "API:get_grade_assignment_list",
+          "API:get_grade_assignment_detail",
+          "API:create_grade_assignment",
+          "API:update_grade_assignment",
+          "API:delete_grade_assignment"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_student",
+        "source_ast_component": "Entity:Student",
+        "generated_components": [
+          "DB_Table:student",
+          "API:get_student_list",
+          "API:get_student_detail",
+          "API:create_student",
+          "API:update_student",
+          "API:delete_student"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_submitassignment",
+        "source_ast_component": "Entity:SubmitAssignment",
+        "generated_components": [
+          "DB_Table:submit_assignment",
+          "API:get_submit_assignment_list",
+          "API:get_submit_assignment_detail",
+          "API:create_submit_assignment",
+          "API:update_submit_assignment",
+          "API:delete_submit_assignment"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_teacher",
+        "source_ast_component": "Entity:Teacher",
+        "generated_components": [
+          "DB_Table:teacher",
+          "API:get_teacher_list",
+          "API:get_teacher_detail",
+          "API:create_teacher",
+          "API:update_teacher",
+          "API:delete_teacher"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      },
+      {
+        "contract_id": "con_entity_viewgrades",
+        "source_ast_component": "Entity:ViewGrades",
+        "generated_components": [
+          "DB_Table:view_grades",
+          "API:get_view_grades_list",
+          "API:get_view_grades_detail",
+          "API:create_view_grades",
+          "API:update_view_grades",
+          "API:delete_view_grades"
+        ],
+        "validation_rules": [
+          "Check DB table exists",
+          "Check CRUD API completeness",
+          "Check required fields match"
+        ],
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Schema Contract Engine"
+        }
+      }
+    ],
+    "consistency_report": [],
+    "ast_version": {
+      "version": "proj_1782226891",
+      "generated_at": "2026-06-23T20:31:31.655417",
+      "compiler_phase": "Phase 5 Schema Generation Engine",
+      "source_ast_version": "proj_1782226891"
+    },
+    "compilation_report": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "compiled_entities": [
+        "Course",
+        "Enrollment",
+        "GradeAssignment",
+        "Student",
+        "SubmitAssignment",
+        "Teacher",
+        "ViewGrades"
+      ],
+      "compiled_workflows": [],
+      "compiled_permissions": [
+        "Admin",
+        "Student",
+        "Teacher"
+      ],
+      "compiled_relationships": [
+        "rel_course_teacher",
+        "rel_enrollment_course",
+        "rel_enrollment_student"
+      ],
+      "consistency_checks_passed": 10,
+      "consistency_checks_failed": 0,
+      "timestamp": "2026-06-23T20:31:31.656368"
+    },
+    "artifacts": [
+      {
+        "artifact_id": "art_db_course",
+        "artifact_type": "database_table",
+        "source_component": "Entity:Course",
+        "generated_component": "Table:course",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_enrollment",
+        "artifact_type": "database_table",
+        "source_component": "Entity:Enrollment",
+        "generated_component": "Table:enrollment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_grade_assignment",
+        "artifact_type": "database_table",
+        "source_component": "Entity:GradeAssignment",
+        "generated_component": "Table:grade_assignment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_student",
+        "artifact_type": "database_table",
+        "source_component": "Entity:Student",
+        "generated_component": "Table:student",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_submit_assignment",
+        "artifact_type": "database_table",
+        "source_component": "Entity:SubmitAssignment",
+        "generated_component": "Table:submit_assignment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_teacher",
+        "artifact_type": "database_table",
+        "source_component": "Entity:Teacher",
+        "generated_component": "Table:teacher",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_db_view_grades",
+        "artifact_type": "database_table",
+        "source_component": "Entity:ViewGrades",
+        "generated_component": "Table:view_grades",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Database Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_course_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Course",
+        "generated_component": "Endpoint:get_course_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_course_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Course",
+        "generated_component": "Endpoint:get_course_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_course",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Course",
+        "generated_component": "Endpoint:create_course",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_course",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Course",
+        "generated_component": "Endpoint:update_course",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_course",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Course",
+        "generated_component": "Endpoint:delete_course",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Course",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_enrollment_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Enrollment",
+        "generated_component": "Endpoint:get_enrollment_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_enrollment_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Enrollment",
+        "generated_component": "Endpoint:get_enrollment_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_enrollment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Enrollment",
+        "generated_component": "Endpoint:create_enrollment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_enrollment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Enrollment",
+        "generated_component": "Endpoint:update_enrollment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_enrollment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Enrollment",
+        "generated_component": "Endpoint:delete_enrollment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Enrollment",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_grade_assignment_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:GradeAssignment",
+        "generated_component": "Endpoint:get_grade_assignment_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_grade_assignment_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:GradeAssignment",
+        "generated_component": "Endpoint:get_grade_assignment_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_grade_assignment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:GradeAssignment",
+        "generated_component": "Endpoint:create_grade_assignment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_grade_assignment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:GradeAssignment",
+        "generated_component": "Endpoint:update_grade_assignment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_grade_assignment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:GradeAssignment",
+        "generated_component": "Endpoint:delete_grade_assignment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "GradeAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_student_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Student",
+        "generated_component": "Endpoint:get_student_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_student_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Student",
+        "generated_component": "Endpoint:get_student_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_student",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Student",
+        "generated_component": "Endpoint:create_student",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_student",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Student",
+        "generated_component": "Endpoint:update_student",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_student",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Student",
+        "generated_component": "Endpoint:delete_student",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Student",
+          "source_workflow": null,
+          "source_design_decisions": [
+            "DD_001"
+          ],
+          "source_business_rules": [
+            "BR_001"
+          ],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_submit_assignment_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:SubmitAssignment",
+        "generated_component": "Endpoint:get_submit_assignment_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_submit_assignment_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:SubmitAssignment",
+        "generated_component": "Endpoint:get_submit_assignment_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_submit_assignment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:SubmitAssignment",
+        "generated_component": "Endpoint:create_submit_assignment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_submit_assignment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:SubmitAssignment",
+        "generated_component": "Endpoint:update_submit_assignment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_submit_assignment",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:SubmitAssignment",
+        "generated_component": "Endpoint:delete_submit_assignment",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "SubmitAssignment",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_teacher_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Teacher",
+        "generated_component": "Endpoint:get_teacher_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_teacher_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Teacher",
+        "generated_component": "Endpoint:get_teacher_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_teacher",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Teacher",
+        "generated_component": "Endpoint:create_teacher",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_teacher",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Teacher",
+        "generated_component": "Endpoint:update_teacher",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_teacher",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:Teacher",
+        "generated_component": "Endpoint:delete_teacher",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "Teacher",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_view_grades_list",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:ViewGrades",
+        "generated_component": "Endpoint:get_view_grades_list",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_get_view_grades_detail",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:ViewGrades",
+        "generated_component": "Endpoint:get_view_grades_detail",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_create_view_grades",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:ViewGrades",
+        "generated_component": "Endpoint:create_view_grades",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_update_view_grades",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:ViewGrades",
+        "generated_component": "Endpoint:update_view_grades",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_api_delete_view_grades",
+        "artifact_type": "api_endpoint",
+        "source_component": "Entity:ViewGrades",
+        "generated_component": "Endpoint:delete_view_grades",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": "ViewGrades",
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "API Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_admin",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:Admin",
+        "generated_component": "AuthRule:Admin",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_student",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:Student",
+        "generated_component": "AuthRule:Student",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      },
+      {
+        "artifact_id": "art_auth_teacher",
+        "artifact_type": "auth_rule",
+        "source_component": "Actor:Teacher",
+        "generated_component": "AuthRule:Teacher",
+        "ast_version": "proj_1782226891",
+        "traceability": {
+          "source_entity": null,
+          "source_workflow": null,
+          "source_design_decisions": [],
+          "source_business_rules": [],
+          "source_ast_version": "proj_1782226891",
+          "compiler_phase": "Auth Schema Compiler"
+        }
+      }
+    ]
+  },
+  "validation_report": {
+    "is_valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "error_id": "val_err_001",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:SubmitAssignment",
+        "message": "Orphan Entity node 'SubmitAssignment' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:SubmitAssignment",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      },
+      {
+        "error_id": "val_err_002",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:ViewGrades",
+        "message": "Orphan Entity node 'ViewGrades' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:ViewGrades",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      },
+      {
+        "error_id": "val_err_003",
+        "error_code": "GRAPH_ORPHAN_ENTITY",
+        "severity": "MEDIUM",
+        "layer": "Graph",
+        "component": "GraphNode:GradeAssignment",
+        "message": "Orphan Entity node 'GradeAssignment' has no relations or workflow triggers connected in system design graph.",
+        "source_component": "Entity:GradeAssignment",
+        "repair_hint": "Map relationships or bind this entity as a workflow dependency."
+      }
+    ],
+    "critical_count": 0,
+    "high_count": 0,
+    "medium_count": 3,
+    "low_count": 0,
+    "validated_components": [
+      "APIEndpoint:get_student_detail",
+      "APIEndpoint:get_course_list",
+      "APIEndpoint:update_submit_assignment",
+      "Table:enrollment",
+      "Contract:con_entity_enrollment",
+      "APIEndpoint:get_view_grades_list",
+      "Table:course",
+      "APIEndpoint:update_teacher",
+      "APIEndpoint:delete_enrollment",
+      "APIEndpoint:create_student",
+      "APIEndpoint:get_grade_assignment_detail",
+      "Table:teacher",
+      "APIEndpoint:delete_grade_assignment",
+      "Contract:con_entity_course",
+      "Contract:con_entity_teacher",
+      "Contract:con_entity_viewgrades",
+      "APIEndpoint:get_enrollment_list",
+      "APIEndpoint:get_submit_assignment_detail",
+      "APIEndpoint:get_teacher_detail",
+      "APIEndpoint:delete_submit_assignment",
+      "Table:submit_assignment",
+      "APIEndpoint:update_enrollment",
+      "AuthRule:Teacher",
+      "APIEndpoint:create_enrollment",
+      "APIEndpoint:create_submit_assignment",
+      "Contract:con_entity_submitassignment",
+      "APIEndpoint:get_submit_assignment_list",
+      "APIEndpoint:update_view_grades",
+      "Contract:con_entity_student",
+      "AuthRule:Admin",
+      "APIEndpoint:update_student",
+      "APIEndpoint:get_student_list",
+      "APIEndpoint:create_course",
+      "APIEndpoint:create_teacher",
+      "Contract:con_entity_gradeassignment",
+      "APIEndpoint:update_course",
+      "APIEndpoint:delete_teacher",
+      "APIEndpoint:get_course_detail",
+      "APIEndpoint:delete_student",
+      "APIEndpoint:create_view_grades",
+      "APIEndpoint:delete_view_grades",
+      "APIEndpoint:get_teacher_list",
+      "APIEndpoint:create_grade_assignment",
+      "APIEndpoint:get_enrollment_detail",
+      "AuthRule:Student",
+      "APIEndpoint:update_grade_assignment",
+      "Table:grade_assignment",
+      "Table:view_grades",
+      "APIEndpoint:get_view_grades_detail",
+      "APIEndpoint:get_grade_assignment_list",
+      "APIEndpoint:delete_course",
+      "Table:student"
+    ],
+    "timestamp": "2026-06-23T20:31:31.657391"
+  },
+  "repair_report": null,
+  "simulation_report": {
+    "simulation_id": "sim_1782226891",
+    "workflows_executed": [],
+    "successful_steps": 35,
+    "failed_steps": 0,
+    "permission_failures": 0,
+    "contract_failures": 0,
+    "validation_failures": 0,
+    "repair_failures": 0,
+    "business_rule_failures": 0,
+    "success_rate": 100.0,
+    "simulation_traces": []
+  },
+  "evolution_summary": {
+    "change_id": "demo_evo_school",
+    "version_info": {
+      "version_id": "demo_evo_school",
+      "parent_version": "v1.0",
+      "created_at": "2026-06-23T20:31:31.670402",
+      "change_summary": "Add AttendanceRecord feature"
+    },
+    "diffs": [
+      {
+        "component": "AttendanceRecord",
+        "before_state": null,
+        "after_state": "{'type': 'feature', 'name': 'AttendanceRecord', 'details': {'name': 'AttendanceRecord', 'description': 'Track student attendance logs'}}",
+        "change_reason": "Add requested"
+      }
+    ],
+    "impact_report": {
+      "affected_components": [],
+      "unaffected_components": [
+        "Table:course",
+        "Table:enrollment",
+        "Table:grade_assignment",
+        "Table:student",
+        "Table:submit_assignment",
+        "Table:teacher",
+        "Table:view_grades",
+        "API:get_course_list",
+        "API:get_course_detail",
+        "API:create_course",
+        "API:update_course",
+        "API:delete_course",
+        "API:get_enrollment_list",
+        "API:get_enrollment_detail",
+        "API:create_enrollment",
+        "API:update_enrollment",
+        "API:delete_enrollment",
+        "API:get_grade_assignment_list",
+        "API:get_grade_assignment_detail",
+        "API:create_grade_assignment",
+        "API:update_grade_assignment",
+        "API:delete_grade_assignment",
+        "API:get_student_list",
+        "API:get_student_detail",
+        "API:create_student",
+        "API:update_student",
+        "API:delete_student",
+        "API:get_submit_assignment_list",
+        "API:get_submit_assignment_detail",
+        "API:create_submit_assignment",
+        "API:update_submit_assignment",
+        "API:delete_submit_assignment",
+        "API:get_teacher_list",
+        "API:get_teacher_detail",
+        "API:create_teacher",
+        "API:update_teacher",
+        "API:delete_teacher",
+        "API:get_view_grades_list",
+        "API:get_view_grades_detail",
+        "API:create_view_grades",
+        "API:update_view_grades",
+        "API:delete_view_grades"
+      ],
+      "estimated_effort": "Low (Surgical)",
+      "impact_score": {
+        "entities_changed": 0,
+        "workflows_changed": 0,
+        "apis_changed": 0,
+        "permissions_changed": 0,
+        "business_rules_changed": 0,
+        "score": 15.0,
+        "impact_level": "LOW"
+      },
+      "dependency_graph": {
+        "changed_component": "AttendanceRecord",
+        "directly_affected": [],
+        "indirectly_affected": [],
+        "dependency_depth": 0,
+        "direct_dependencies": [],
+        "indirect_dependencies": []
+      }
+    },
+    "risk_assessment": {
+      "risk_level": "LOW",
+      "affected_components": [],
+      "affected_workflows": [],
+      "affected_entities": [],
+      "validation_risk": 0.1,
+      "repair_risk": 0.1,
+      "simulation_risk": 0.1,
+      "overall_risk_score": 10.000000000000002
+    },
+    "effectiveness": {
+      "components_modified": [
+        "AttendanceRecord"
+      ],
+      "components_preserved": [
+        "Table:course",
+        "Table:enrollment",
+        "Table:grade_assignment",
+        "Table:student",
+        "Table:submit_assignment",
+        "Table:teacher",
+        "Table:view_grades",
+        "API:get_course_list",
+        "API:get_course_detail",
+        "API:create_course",
+        "API:update_course",
+        "API:delete_course",
+        "API:get_enrollment_list",
+        "API:get_enrollment_detail",
+        "API:create_enrollment",
+        "API:update_enrollment",
+        "API:delete_enrollment",
+        "API:get_grade_assignment_list",
+        "API:get_grade_assignment_detail",
+        "API:create_grade_assignment",
+        "API:update_grade_assignment",
+        "API:delete_grade_assignment",
+        "API:get_student_list",
+        "API:get_student_detail",
+        "API:create_student",
+        "API:update_student",
+        "API:delete_student",
+        "API:get_submit_assignment_list",
+        "API:get_submit_assignment_detail",
+        "API:create_submit_assignment",
+        "API:update_submit_assignment",
+        "API:delete_submit_assignment",
+        "API:get_teacher_list",
+        "API:get_teacher_detail",
+        "API:create_teacher",
+        "API:update_teacher",
+        "API:delete_teacher",
+        "API:get_view_grades_list",
+        "API:get_view_grades_detail",
+        "API:create_view_grades",
+        "API:update_view_grades",
+        "API:delete_view_grades"
+      ],
+      "validation_passed": true,
+      "repair_required": true,
+      "simulation_passed": true,
+      "rollback_required": false,
+      "risk_level": "LOW",
+      "impact_level": "LOW",
+      "complexity_level": "LOW"
+    },
+    "conflicts_report": {
+      "is_valid": true,
+      "conflicts": []
+    },
+    "updated_blueprint": {
+      "project_id": "proj_1782226891",
+      "app_type": "School Information System",
+      "actors": [
+        {
+          "name": "Student",
+          "description": "Access grades and classes",
+          "relevance_score": 1.0,
+          "why_needed": "Requested actor profile for operations."
+        },
+        {
+          "name": "Teacher",
+          "description": "Post assignments and grades",
+          "relevance_score": 1.0,
+          "why_needed": "Requested actor profile for operations."
+        },
+        {
+          "name": "Admin",
+          "description": "System administrator overseeing database metrics and accounts.",
+          "relevance_score": 0.9,
+          "why_needed": "Required to manage application entities, records, and access permissions."
+        }
+      ],
+      "features": [
+        {
+          "name": "GradeAssignment",
+          "description": "Grade submitted assignments",
+          "actor_involved": "Teacher",
+          "explanation": {
+            "feature_name": "GradeAssignment",
+            "what_it_does": "Grade submitted assignments",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "SubmitAssignment",
+          "description": "Upload homework files",
+          "actor_involved": "Student",
+          "explanation": {
+            "feature_name": "SubmitAssignment",
+            "what_it_does": "Upload homework files",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "ViewGrades",
+          "description": "Check exam scores",
+          "actor_involved": "Student",
+          "explanation": {
+            "feature_name": "ViewGrades",
+            "what_it_does": "Check exam scores",
+            "why_recommended": "Extracted from your core requirements.",
+            "business_value": "Direct fulfillment of custom request.",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Explicitly requested in prompt.",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        },
+        {
+          "name": "AttendanceRecord",
+          "description": "Track student attendance logs",
+          "actor_involved": "Admin",
+          "explanation": {
+            "feature_name": "AttendanceRecord",
+            "what_it_does": "Track student attendance logs",
+            "why_recommended": "User change request",
+            "business_value": "User value",
+            "source": {
+              "source_type": "user_requirement",
+              "source_description": "Incremental compiler",
+              "relevance_score": 1.0
+            },
+            "source_reliability": 1.0,
+            "recommendation_confidence": 1.0,
+            "innovation_origin": "user_created",
+            "relevance_score": 1.0
+          }
+        }
+      ],
+      "workflows": [],
+      "permissions": [
+        {
+          "actor": "Student",
+          "action": "ReadOwnProfile",
+          "description": "Allows user to view their registered attributes.",
+          "why_needed": "Enforces fundamental privacy boundaries."
+        },
+        {
+          "actor": "Teacher",
+          "action": "ReadOwnProfile",
+          "description": "Allows user to view their registered attributes.",
+          "why_needed": "Enforces fundamental privacy boundaries."
+        },
+        {
+          "actor": "Admin",
+          "action": "ManageAllRecords",
+          "description": "Full administrative system configurations overrides.",
+          "why_needed": "Standard admin system access rights."
+        }
+      ],
+      "innovations": [],
+      "approval_history": [],
+      "modifications": []
+    },
+    "updated_spec": {
+      "app_name": "Proj1782226891",
+      "app_type": "School Information System",
+      "actors": [
+        {
+          "name": "Student",
+          "description": "Access grades and classes",
+          "permissions": []
+        },
+        {
+          "name": "Teacher",
+          "description": "Post assignments and grades",
+          "permissions": [
+            "GradeStudents"
+          ]
+        },
+        {
+          "name": "Admin",
+          "description": "System administrator overseeing database metrics and accounts.",
+          "permissions": [
+            "ManageAllRecords"
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "entity_id": "ent_course",
+          "entity_name": "Course",
+          "name": "Course",
+          "description": "Logical academic courses directory.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "title",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "teacher_id",
+              "type": "relationship",
+              "required": true,
+              "is_key": false,
+              "references": "Teacher.id"
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_enrollment",
+          "entity_name": "Enrollment",
+          "name": "Enrollment",
+          "description": "Logical mapping linking students to enrolled courses.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "student_id",
+              "type": "relationship",
+              "required": true,
+              "is_key": false,
+              "references": "Student.id"
+            },
+            {
+              "name": "course_id",
+              "type": "relationship",
+              "required": true,
+              "is_key": false,
+              "references": "Course.id"
+            },
+            {
+              "name": "grade",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_grade_assignment",
+          "entity_name": "GradeAssignment",
+          "name": "GradeAssignment",
+          "description": "Grade submitted assignments",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_student",
+          "entity_name": "Student",
+          "name": "Student",
+          "description": "Logical student record.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "grade_level",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_submit_assignment",
+          "entity_name": "SubmitAssignment",
+          "name": "SubmitAssignment",
+          "description": "Upload homework files",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_teacher",
+          "entity_name": "Teacher",
+          "name": "Teacher",
+          "description": "Logical instructor details.",
+          "source": "industry_pattern",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            },
+            {
+              "name": "department",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_view_grades",
+          "entity_name": "ViewGrades",
+          "name": "ViewGrades",
+          "description": "Check exam scores",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        },
+        {
+          "entity_id": "ent_attendance_record",
+          "entity_name": "AttendanceRecord",
+          "name": "AttendanceRecord",
+          "description": "Track student attendance logs",
+          "source": "user_requirement",
+          "confidence": 1.0,
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "is_key": true,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "is_key": false,
+              "references": null
+            }
+          ],
+          "constraints": []
+        }
+      ],
+      "relationships": [
+        {
+          "relationship_id": "rel_course_teacher",
+          "source_entity": "Course",
+          "target_entity": "Teacher",
+          "relationship_type": "many-to-one",
+          "description": "Links Course to its parent Teacher record."
+        },
+        {
+          "relationship_id": "rel_enrollment_course",
+          "source_entity": "Enrollment",
+          "target_entity": "Course",
+          "relationship_type": "many-to-one",
+          "description": "Links Enrollment to its parent Course record."
+        },
+        {
+          "relationship_id": "rel_enrollment_student",
+          "source_entity": "Enrollment",
+          "target_entity": "Student",
+          "relationship_type": "many-to-one",
+          "description": "Links Enrollment to its parent Student record."
+        }
+      ],
+      "workflows": [],
+      "permissions": [
+        {
+          "role": "Admin",
+          "permissions": [
+            "ManageAllRecords",
+            "ViewAnalyticsDashboard"
+          ],
+          "reason": "Full database administrative configuration rights."
+        },
+        {
+          "role": "Student",
+          "permissions": [
+            "EnrollCourses",
+            "ReadOwnGrades"
+          ],
+          "reason": "Student enrollment access."
+        },
+        {
+          "role": "Teacher",
+          "permissions": [
+            "GradeStudents",
+            "ManageCourses"
+          ],
+          "reason": "Teacher classroom access rights."
+        }
+      ],
+      "business_rules": [
+        {
+          "rule_id": "BR_001",
+          "rule": "Students must be active to enroll in courses.",
+          "source": "approved_blueprint",
+          "priority": "HIGH",
+          "affected_entities": [
+            "Student",
+            "Enrollment"
+          ],
+          "description": "Students must be active to enroll in courses.",
+          "enforcement_logic": "Student.status == 'active'"
+        }
+      ],
+      "design_decisions": [
+        {
+          "decision_id": "DD_001",
+          "decision": "Enrollment acts as join table between Student and Course.",
+          "reason": "Supports many-to-many relationship mapping and tracks grades.",
+          "source": "approved_blueprint",
+          "impact_level": "HIGH",
+          "affected_components": [
+            "Student",
+            "Course",
+            "Enrollment"
+          ]
+        }
+      ],
+      "graph": {
+        "nodes": [
+          {
+            "id": "Student",
+            "type": "actor",
+            "description": "Access grades and classes"
+          },
+          {
+            "id": "Teacher",
+            "type": "actor",
+            "description": "Post assignments and grades"
+          },
+          {
+            "id": "Admin",
+            "type": "actor",
+            "description": "System administrator overseeing database metrics and accounts."
+          },
+          {
+            "id": "Course",
+            "type": "entity",
+            "description": "Logical academic courses directory."
+          },
+          {
+            "id": "Enrollment",
+            "type": "entity",
+            "description": "Logical mapping linking students to enrolled courses."
+          },
+          {
+            "id": "GradeAssignment",
+            "type": "entity",
+            "description": "Grade submitted assignments"
+          },
+          {
+            "id": "SubmitAssignment",
+            "type": "entity",
+            "description": "Upload homework files"
+          },
+          {
+            "id": "ViewGrades",
+            "type": "entity",
+            "description": "Check exam scores"
+          }
+        ],
+        "edges": [
+          {
+            "source": "Course",
+            "target": "Teacher",
+            "type": "relationship",
+            "label": "many-to-one"
+          },
+          {
+            "source": "Enrollment",
+            "target": "Course",
+            "type": "relationship",
+            "label": "many-to-one"
+          },
+          {
+            "source": "Enrollment",
+            "target": "Student",
+            "type": "relationship",
+            "label": "many-to-one"
+          }
+        ]
+      },
+      "metadata": {
+        "compiled_at": "2026-06-23T20:31:31.655417",
+        "blueprint_project_id": "proj_1782226891",
+        "ast_version_id": "demo_evo_school"
+      }
+    },
+    "updated_bundle": {
+      "database_schema": [
+        {
+          "table_name": "course",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "title",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "teacher_id",
+              "type": "relationship",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": true,
+              "references": "Teacher.id"
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [
+            {
+              "column": "teacher_id",
+              "references_table": "teacher",
+              "references_column": "id"
+            }
+          ],
+          "constraints": [],
+          "indexes": [
+            "idx_course_id"
+          ],
+          "source_entity": "Course",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "enrollment",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "student_id",
+              "type": "relationship",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": true,
+              "references": "Student.id"
+            },
+            {
+              "name": "course_id",
+              "type": "relationship",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": true,
+              "references": "Course.id"
+            },
+            {
+              "name": "grade",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [
+            {
+              "column": "student_id",
+              "references_table": "student",
+              "references_column": "id"
+            },
+            {
+              "column": "course_id",
+              "references_table": "course",
+              "references_column": "id"
+            }
+          ],
+          "constraints": [],
+          "indexes": [
+            "idx_enrollment_id"
+          ],
+          "source_entity": "Enrollment",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "grade_assignment",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_grade_assignment_id"
+          ],
+          "source_entity": "GradeAssignment",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "student",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "grade_level",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_student_id"
+          ],
+          "source_entity": "Student",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "submit_assignment",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_submit_assignment_id"
+          ],
+          "source_entity": "SubmitAssignment",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "teacher",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "department",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_teacher_id"
+          ],
+          "source_entity": "Teacher",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "view_grades",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [
+            "idx_view_grades_id"
+          ],
+          "source_entity": "ViewGrades",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "table_name": "attendance_record",
+          "columns": [
+            {
+              "name": "id",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": true,
+              "is_foreign_key": false,
+              "references": null
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "is_nullable": false,
+              "is_primary_key": false,
+              "is_foreign_key": false,
+              "references": null
+            }
+          ],
+          "primary_keys": [
+            "id"
+          ],
+          "foreign_keys": [],
+          "constraints": [],
+          "indexes": [],
+          "source_entity": "AttendanceRecord",
+          "traceability": {
+            "source_entity": "AttendanceRecord",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ],
+      "api_schema": [
+        {
+          "endpoint_id": "get_course_list",
+          "path": "/api/v1/courses",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Course"
+            }
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Course",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_course_detail",
+          "path": "/api/v1/courses/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/Course"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Course",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_course",
+          "path": "/api/v1/courses",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/CourseInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Course"
+          },
+          "permissions": [
+            "Admin",
+            "Student"
+          ],
+          "source_entity": "Course",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_course",
+          "path": "/api/v1/courses/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/CourseInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Course"
+          },
+          "permissions": [
+            "Admin",
+            "Teacher"
+          ],
+          "source_entity": "Course",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_course",
+          "path": "/api/v1/courses/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Course",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_enrollment_list",
+          "path": "/api/v1/enrollments",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enrollment"
+            }
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Enrollment",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_enrollment_detail",
+          "path": "/api/v1/enrollments/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/Enrollment"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Enrollment",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_enrollment",
+          "path": "/api/v1/enrollments",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/EnrollmentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Enrollment"
+          },
+          "permissions": [
+            "Admin",
+            "Student"
+          ],
+          "source_entity": "Enrollment",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_enrollment",
+          "path": "/api/v1/enrollments/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/EnrollmentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Enrollment"
+          },
+          "permissions": [
+            "Admin",
+            "Teacher"
+          ],
+          "source_entity": "Enrollment",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_enrollment",
+          "path": "/api/v1/enrollments/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Enrollment",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_grade_assignment_list",
+          "path": "/api/v1/gradeassignments",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GradeAssignment"
+            }
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "GradeAssignment",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_grade_assignment_detail",
+          "path": "/api/v1/gradeassignments/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/GradeAssignment"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "GradeAssignment",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_grade_assignment",
+          "path": "/api/v1/gradeassignments",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/GradeAssignmentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/GradeAssignment"
+          },
+          "permissions": [
+            "Admin",
+            "Student"
+          ],
+          "source_entity": "GradeAssignment",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_grade_assignment",
+          "path": "/api/v1/gradeassignments/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/GradeAssignmentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/GradeAssignment"
+          },
+          "permissions": [
+            "Admin",
+            "Teacher"
+          ],
+          "source_entity": "GradeAssignment",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_grade_assignment",
+          "path": "/api/v1/gradeassignments/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "GradeAssignment",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_student_list",
+          "path": "/api/v1/students",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Student"
+            }
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Student",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_student_detail",
+          "path": "/api/v1/students/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/Student"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Student",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_student",
+          "path": "/api/v1/students",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/StudentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Student"
+          },
+          "permissions": [
+            "Admin",
+            "Student"
+          ],
+          "source_entity": "Student",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_student",
+          "path": "/api/v1/students/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/StudentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Student"
+          },
+          "permissions": [
+            "Admin",
+            "Teacher"
+          ],
+          "source_entity": "Student",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_student",
+          "path": "/api/v1/students/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Student",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_submit_assignment_list",
+          "path": "/api/v1/submitassignments",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubmitAssignment"
+            }
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "SubmitAssignment",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_submit_assignment_detail",
+          "path": "/api/v1/submitassignments/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/SubmitAssignment"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "SubmitAssignment",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_submit_assignment",
+          "path": "/api/v1/submitassignments",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/SubmitAssignmentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/SubmitAssignment"
+          },
+          "permissions": [
+            "Admin",
+            "Student"
+          ],
+          "source_entity": "SubmitAssignment",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_submit_assignment",
+          "path": "/api/v1/submitassignments/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/SubmitAssignmentInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/SubmitAssignment"
+          },
+          "permissions": [
+            "Admin",
+            "Teacher"
+          ],
+          "source_entity": "SubmitAssignment",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_submit_assignment",
+          "path": "/api/v1/submitassignments/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "SubmitAssignment",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_teacher_list",
+          "path": "/api/v1/teachers",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Teacher"
+            }
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Teacher",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_teacher_detail",
+          "path": "/api/v1/teachers/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/Teacher"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Teacher",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_teacher",
+          "path": "/api/v1/teachers",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/TeacherInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Teacher"
+          },
+          "permissions": [
+            "Admin",
+            "Student"
+          ],
+          "source_entity": "Teacher",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_teacher",
+          "path": "/api/v1/teachers/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/TeacherInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/Teacher"
+          },
+          "permissions": [
+            "Admin",
+            "Teacher"
+          ],
+          "source_entity": "Teacher",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_teacher",
+          "path": "/api/v1/teachers/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "Teacher",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_view_grades_list",
+          "path": "/api/v1/viewgradess",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ViewGrades"
+            }
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "ViewGrades",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_view_grades_detail",
+          "path": "/api/v1/viewgradess/{id}",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {
+            "$ref": "#/components/schemas/ViewGrades"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "ViewGrades",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_view_grades",
+          "path": "/api/v1/viewgradess",
+          "method": "POST",
+          "request_schema": {
+            "$ref": "#/components/schemas/ViewGradesInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/ViewGrades"
+          },
+          "permissions": [
+            "Admin",
+            "Student"
+          ],
+          "source_entity": "ViewGrades",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "update_view_grades",
+          "path": "/api/v1/viewgradess/{id}",
+          "method": "PUT",
+          "request_schema": {
+            "$ref": "#/components/schemas/ViewGradesInput"
+          },
+          "response_schema": {
+            "$ref": "#/components/schemas/ViewGrades"
+          },
+          "permissions": [
+            "Admin",
+            "Teacher"
+          ],
+          "source_entity": "ViewGrades",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "delete_view_grades",
+          "path": "/api/v1/viewgradess/{id}",
+          "method": "DELETE",
+          "request_schema": {},
+          "response_schema": {
+            "status": "string"
+          },
+          "permissions": [
+            "Admin"
+          ],
+          "source_entity": "ViewGrades",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "endpoint_id": "get_attendance_record_list",
+          "path": "/api/v1/attendancerecords",
+          "method": "GET",
+          "request_schema": {},
+          "response_schema": {},
+          "permissions": [],
+          "source_entity": "AttendanceRecord",
+          "traceability": {
+            "source_entity": "AttendanceRecord",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "endpoint_id": "create_attendance_record",
+          "path": "/api/v1/attendancerecords",
+          "method": "POST",
+          "request_schema": {},
+          "response_schema": {},
+          "permissions": [],
+          "source_entity": "AttendanceRecord",
+          "traceability": {
+            "source_entity": "AttendanceRecord",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ],
+      "ui_schema": [],
+      "auth_schema": [
+        {
+          "role": "Admin",
+          "permissions": [
+            "ManageAllRecords",
+            "ViewAnalyticsDashboard"
+          ],
+          "restricted_actions": [
+            "DeleteDatabase",
+            "OverrideAll"
+          ],
+          "authentication_requirements": [
+            "JWT_Token",
+            "MFA"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "role": "Student",
+          "permissions": [
+            "EnrollCourses",
+            "ReadOwnGrades"
+          ],
+          "restricted_actions": [
+            "ViewAnalyticsDashboard",
+            "DeleteDatabase",
+            "OverrideAll",
+            "ManageAllRecords"
+          ],
+          "authentication_requirements": [
+            "JWT_Token"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "role": "Teacher",
+          "permissions": [
+            "GradeStudents",
+            "ManageCourses"
+          ],
+          "restricted_actions": [
+            "ViewAnalyticsDashboard",
+            "DeleteDatabase",
+            "OverrideAll",
+            "ManageAllRecords"
+          ],
+          "authentication_requirements": [
+            "JWT_Token"
+          ],
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        }
+      ],
+      "contracts": [
+        {
+          "contract_id": "con_entity_course",
+          "source_ast_component": "Entity:Course",
+          "generated_components": [
+            "DB_Table:course",
+            "API:get_course_list",
+            "API:get_course_detail",
+            "API:create_course",
+            "API:update_course",
+            "API:delete_course"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_enrollment",
+          "source_ast_component": "Entity:Enrollment",
+          "generated_components": [
+            "DB_Table:enrollment",
+            "API:get_enrollment_list",
+            "API:get_enrollment_detail",
+            "API:create_enrollment",
+            "API:update_enrollment",
+            "API:delete_enrollment"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_gradeassignment",
+          "source_ast_component": "Entity:GradeAssignment",
+          "generated_components": [
+            "DB_Table:grade_assignment",
+            "API:get_grade_assignment_list",
+            "API:get_grade_assignment_detail",
+            "API:create_grade_assignment",
+            "API:update_grade_assignment",
+            "API:delete_grade_assignment"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_student",
+          "source_ast_component": "Entity:Student",
+          "generated_components": [
+            "DB_Table:student",
+            "API:get_student_list",
+            "API:get_student_detail",
+            "API:create_student",
+            "API:update_student",
+            "API:delete_student"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_submitassignment",
+          "source_ast_component": "Entity:SubmitAssignment",
+          "generated_components": [
+            "DB_Table:submit_assignment",
+            "API:get_submit_assignment_list",
+            "API:get_submit_assignment_detail",
+            "API:create_submit_assignment",
+            "API:update_submit_assignment",
+            "API:delete_submit_assignment"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_teacher",
+          "source_ast_component": "Entity:Teacher",
+          "generated_components": [
+            "DB_Table:teacher",
+            "API:get_teacher_list",
+            "API:get_teacher_detail",
+            "API:create_teacher",
+            "API:update_teacher",
+            "API:delete_teacher"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        },
+        {
+          "contract_id": "con_entity_viewgrades",
+          "source_ast_component": "Entity:ViewGrades",
+          "generated_components": [
+            "DB_Table:view_grades",
+            "API:get_view_grades_list",
+            "API:get_view_grades_detail",
+            "API:create_view_grades",
+            "API:update_view_grades",
+            "API:delete_view_grades"
+          ],
+          "validation_rules": [
+            "Check DB table exists",
+            "Check CRUD API completeness",
+            "Check required fields match"
+          ],
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Schema Contract Engine"
+          }
+        }
+      ],
+      "consistency_report": [],
+      "ast_version": {
+        "version": "proj_1782226891",
+        "generated_at": "2026-06-23T20:31:31.655417",
+        "compiler_phase": "Phase 5 Schema Generation Engine",
+        "source_ast_version": "proj_1782226891"
+      },
+      "compilation_report": {
+        "is_valid": true,
+        "errors": [],
+        "warnings": [],
+        "compiled_entities": [
+          "Course",
+          "Enrollment",
+          "GradeAssignment",
+          "Student",
+          "SubmitAssignment",
+          "Teacher",
+          "ViewGrades"
+        ],
+        "compiled_workflows": [],
+        "compiled_permissions": [
+          "Admin",
+          "Student",
+          "Teacher"
+        ],
+        "compiled_relationships": [
+          "rel_course_teacher",
+          "rel_enrollment_course",
+          "rel_enrollment_student"
+        ],
+        "consistency_checks_passed": 10,
+        "consistency_checks_failed": 0,
+        "timestamp": "2026-06-23T20:31:31.656368"
+      },
+      "artifacts": [
+        {
+          "artifact_id": "art_db_course",
+          "artifact_type": "database_table",
+          "source_component": "Entity:Course",
+          "generated_component": "Table:course",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_enrollment",
+          "artifact_type": "database_table",
+          "source_component": "Entity:Enrollment",
+          "generated_component": "Table:enrollment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_grade_assignment",
+          "artifact_type": "database_table",
+          "source_component": "Entity:GradeAssignment",
+          "generated_component": "Table:grade_assignment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_student",
+          "artifact_type": "database_table",
+          "source_component": "Entity:Student",
+          "generated_component": "Table:student",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_submit_assignment",
+          "artifact_type": "database_table",
+          "source_component": "Entity:SubmitAssignment",
+          "generated_component": "Table:submit_assignment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_teacher",
+          "artifact_type": "database_table",
+          "source_component": "Entity:Teacher",
+          "generated_component": "Table:teacher",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_view_grades",
+          "artifact_type": "database_table",
+          "source_component": "Entity:ViewGrades",
+          "generated_component": "Table:view_grades",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Database Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_course_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Course",
+          "generated_component": "Endpoint:get_course_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_course_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Course",
+          "generated_component": "Endpoint:get_course_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_course",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Course",
+          "generated_component": "Endpoint:create_course",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_course",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Course",
+          "generated_component": "Endpoint:update_course",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_course",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Course",
+          "generated_component": "Endpoint:delete_course",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Course",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_enrollment_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Enrollment",
+          "generated_component": "Endpoint:get_enrollment_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_enrollment_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Enrollment",
+          "generated_component": "Endpoint:get_enrollment_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_enrollment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Enrollment",
+          "generated_component": "Endpoint:create_enrollment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_enrollment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Enrollment",
+          "generated_component": "Endpoint:update_enrollment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_enrollment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Enrollment",
+          "generated_component": "Endpoint:delete_enrollment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Enrollment",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_grade_assignment_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:GradeAssignment",
+          "generated_component": "Endpoint:get_grade_assignment_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_grade_assignment_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:GradeAssignment",
+          "generated_component": "Endpoint:get_grade_assignment_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_grade_assignment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:GradeAssignment",
+          "generated_component": "Endpoint:create_grade_assignment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_grade_assignment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:GradeAssignment",
+          "generated_component": "Endpoint:update_grade_assignment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_grade_assignment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:GradeAssignment",
+          "generated_component": "Endpoint:delete_grade_assignment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "GradeAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_student_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Student",
+          "generated_component": "Endpoint:get_student_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_student_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Student",
+          "generated_component": "Endpoint:get_student_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_student",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Student",
+          "generated_component": "Endpoint:create_student",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_student",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Student",
+          "generated_component": "Endpoint:update_student",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_student",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Student",
+          "generated_component": "Endpoint:delete_student",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Student",
+            "source_workflow": null,
+            "source_design_decisions": [
+              "DD_001"
+            ],
+            "source_business_rules": [
+              "BR_001"
+            ],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_submit_assignment_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:SubmitAssignment",
+          "generated_component": "Endpoint:get_submit_assignment_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_submit_assignment_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:SubmitAssignment",
+          "generated_component": "Endpoint:get_submit_assignment_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_submit_assignment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:SubmitAssignment",
+          "generated_component": "Endpoint:create_submit_assignment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_submit_assignment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:SubmitAssignment",
+          "generated_component": "Endpoint:update_submit_assignment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_submit_assignment",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:SubmitAssignment",
+          "generated_component": "Endpoint:delete_submit_assignment",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "SubmitAssignment",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_teacher_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Teacher",
+          "generated_component": "Endpoint:get_teacher_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_teacher_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Teacher",
+          "generated_component": "Endpoint:get_teacher_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_teacher",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Teacher",
+          "generated_component": "Endpoint:create_teacher",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_teacher",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Teacher",
+          "generated_component": "Endpoint:update_teacher",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_teacher",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:Teacher",
+          "generated_component": "Endpoint:delete_teacher",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "Teacher",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_view_grades_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:ViewGrades",
+          "generated_component": "Endpoint:get_view_grades_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_view_grades_detail",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:ViewGrades",
+          "generated_component": "Endpoint:get_view_grades_detail",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_view_grades",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:ViewGrades",
+          "generated_component": "Endpoint:create_view_grades",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_update_view_grades",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:ViewGrades",
+          "generated_component": "Endpoint:update_view_grades",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_delete_view_grades",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:ViewGrades",
+          "generated_component": "Endpoint:delete_view_grades",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "ViewGrades",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "API Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_admin",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:Admin",
+          "generated_component": "AuthRule:Admin",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_student",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:Student",
+          "generated_component": "AuthRule:Student",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_auth_teacher",
+          "artifact_type": "auth_rule",
+          "source_component": "Actor:Teacher",
+          "generated_component": "AuthRule:Teacher",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": null,
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Auth Schema Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_db_attendance_record",
+          "artifact_type": "database_table",
+          "source_component": "Entity:AttendanceRecord",
+          "generated_component": "Table:attendance_record",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AttendanceRecord",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_get_attendance_record_list",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:AttendanceRecord",
+          "generated_component": "Endpoint:get_attendance_record_list",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AttendanceRecord",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        },
+        {
+          "artifact_id": "art_api_create_attendance_record",
+          "artifact_type": "api_endpoint",
+          "source_component": "Entity:AttendanceRecord",
+          "generated_component": "Endpoint:create_attendance_record",
+          "ast_version": "proj_1782226891",
+          "traceability": {
+            "source_entity": "AttendanceRecord",
+            "source_workflow": null,
+            "source_design_decisions": [],
+            "source_business_rules": [],
+            "source_ast_version": "proj_1782226891",
+            "compiler_phase": "Incremental Compiler"
+          }
+        }
+      ]
+    }
+  },
+  "pipeline_traces": [
+    {
+      "phase_name": "Intent Engine",
+      "start_time": "2026-06-23T20:31:31.651502",
+      "end_time": "2026-06-23T20:31:31.651744",
+      "duration_ms": 0.22411346435546875,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Blueprint Engine",
+      "start_time": "2026-06-23T20:31:31.651758",
+      "end_time": "2026-06-23T20:31:31.654858",
+      "duration_ms": 3.095865249633789,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "System Design Engine",
+      "start_time": "2026-06-23T20:31:31.654872",
+      "end_time": "2026-06-23T20:31:31.655450",
+      "duration_ms": 0.5757808685302734,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Schema Engine",
+      "start_time": "2026-06-23T20:31:31.655457",
+      "end_time": "2026-06-23T20:31:31.656576",
+      "duration_ms": 1.1174678802490234,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Validation Engine",
+      "start_time": "2026-06-23T20:31:31.656584",
+      "end_time": "2026-06-23T20:31:31.657429",
+      "duration_ms": 0.8432865142822266,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Repair Engine",
+      "start_time": "2026-06-23T20:31:31.657439",
+      "end_time": "2026-06-23T20:31:31.657443",
+      "duration_ms": 0.001430511474609375,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Execution Simulator",
+      "start_time": "2026-06-23T20:31:31.657449",
+      "end_time": "2026-06-23T20:31:31.658104",
+      "duration_ms": 0.6527900695800781,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "phase_name": "Requirement Evolution Engine",
+      "start_time": "2026-06-23T20:31:31.658111",
+      "end_time": "2026-06-23T20:31:31.686395",
+      "duration_ms": 28.278827667236328,
+      "status": "SUCCESS",
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "execution_mode": "BALANCED",
+  "created_at": "2026-06-23T20:31:31.686419",
+  "updated_at": "2026-06-23T20:31:31.686419"
+}
