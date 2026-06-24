@@ -82,9 +82,16 @@ export interface ArchitectureReasoningItem {
 }
 
 export interface ArchitectRisk {
-  risk: string;
-  severity: "LOW" | "MEDIUM" | "HIGH";
+  category: string;
+  level: "LOW" | "MEDIUM" | "HIGH";
+  explanation: string;
   mitigation: string;
+}
+
+export interface AmbiguityItem {
+  category: string;
+  severity: "LOW" | "MEDIUM" | "HIGH";
+  issue: string;
 }
 
 export interface AIArchitectReport {
@@ -97,6 +104,16 @@ export interface AIArchitectReport {
   confidence_scores: ArchitectConfidenceScores;
   architecture_reasoning_trace: ArchitectureReasoningItem[];
   recommended_architecture_strategy: string;
+  detected_domain?: string;
+  detected_subdomain?: string;
+  confidence_score?: number;
+  actors?: string[];
+  entities?: string[];
+  workflows?: string[];
+  assumptions?: string[];
+  reasoning_trace?: string[];
+  confidence_explanation?: string[];
+  ambiguities?: AmbiguityItem[];
 }
 
 export interface ValidationError {

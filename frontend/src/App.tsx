@@ -10,13 +10,13 @@ import { Evaluation } from './pages/Evaluation';
 import { AIArchitect } from './pages/AIArchitect';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [activeTab, setActiveTab] = useState<string>('ai-architect');
   const [projectId, setProjectId] = useState<string>('proj_01');
   const [systemVersion, setSystemVersion] = useState<string>('v1.2.8');
 
   // Triggered when a new compilation completes or requirement evolved
   const handleNewEvolution = () => {
-    setActiveTab('dashboard');
+    setActiveTab('ai-architect');
   };
 
   const renderActivePage = () => {
@@ -24,6 +24,7 @@ const App: React.FC = () => {
       case 'dashboard':
         return (
           <Dashboard 
+            currentProjectId={projectId}
             onViewSpec={(id) => {
               setProjectId(id);
               setActiveTab('compiler');
@@ -41,8 +42,9 @@ const App: React.FC = () => {
       case 'architecture':
         return <ArchitectureMap projectId={projectId} />;
       case 'validation':
+        return <ValidationRepair projectId={projectId} activeSubTab="validation" />;
       case 'repair':
-        return <ValidationRepair projectId={projectId} />;
+        return <ValidationRepair projectId={projectId} activeSubTab="repair" />;
       case 'simulation':
         return <SimulationPlatform projectId={projectId} />;
       case 'evaluation':
@@ -50,7 +52,7 @@ const App: React.FC = () => {
       case 'timeline':
         return <VersionHistory projectId={projectId} />;
       default:
-        return <Dashboard onViewSpec={() => {}} onSetProjectId={() => {}} onCompileStart={() => {}} />;
+        return <Dashboard currentProjectId={projectId} onViewSpec={() => {}} onSetProjectId={() => {}} onCompileStart={() => {}} />;
     }
   };
 

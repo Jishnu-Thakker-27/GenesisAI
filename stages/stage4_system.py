@@ -120,229 +120,113 @@ class MasterSpecificationValidationReport(BaseModel):
 
 class EntityDiscoveryEngine:
     @staticmethod
-    def discover_entities(blueprint: ApprovedBlueprint) -> List[EntityDefinition]:
-        """Discovers logical database entities and populates their fields deterministically based on blueprint category."""
+    def discover_entities(blueprint: ApprovedBlueprint, report: Optional[Any] = None) -> List[EntityDefinition]:
+        """Discovers logical database entities and populates their fields deterministically based on blueprint category or report entities."""
         category = blueprint.app_type.lower()
         entities_map: Dict[str, EntityDefinition] = {}
 
-        if "gym" in category:
-            entities_map["Member"] = EntityDefinition(
-                entity_id="ent_member",
-                entity_name="Member",
-                name="Member",
-                description="Logical entity tracking gym member profiles and details.",
-                source="industry_pattern",
-                confidence=1.0,
-                fields=[
-                    EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="first_name", type="string"),
-                    EntityField(name="last_name", type="string"),
-                    EntityField(name="email", type="string"),
-                    EntityField(name="membership_status", type="string")
-                ],
-                constraints=["Unique email", "Non-null first_name"]
-            )
-            entities_map["Trainer"] = EntityDefinition(
-                entity_id="ent_trainer",
-                entity_name="Trainer",
-                name="Trainer",
-                description="Logical entity tracking certified personal trainers.",
-                source="industry_pattern",
-                confidence=1.0,
+        all_predefined_entities = {
+            "Menu": EntityDefinition(
+                entity_id="ent_menu", entity_name="Menu", name="Menu",
+                description="Logical restaurant menu options.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="name", type="string"),
-                    EntityField(name="specialty", type="string")
+                    EntityField(name="description", type="string")
                 ]
-            )
-            entities_map["ClassSchedule"] = EntityDefinition(
-                entity_id="ent_classschedule",
-                entity_name="ClassSchedule",
-                name="ClassSchedule",
-                description="Logical entity representing structured fitness class calendars.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "MenuItem": EntityDefinition(
+                entity_id="ent_menuitem", entity_name="MenuItem", name="MenuItem",
+                description="Individual food/drink options within a menu.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="class_name", type="string"),
-                    EntityField(name="trainer_id", type="relationship", references="Trainer.id"),
-                    EntityField(name="capacity", type="integer")
+                    EntityField(name="menu_id", type="relationship", references="Menu.id"),
+                    EntityField(name="name", type="string"),
+                    EntityField(name="price", type="float")
                 ]
-            )
-            entities_map["ClassBooking"] = EntityDefinition(
-                entity_id="ent_classbooking",
-                entity_name="ClassBooking",
-                name="ClassBooking",
-                description="Logical booking slot reservation linking members to schedules.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Order": EntityDefinition(
+                entity_id="ent_order", entity_name="Order", name="Order",
+                description="Orders placed by customers.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="member_id", type="relationship", references="Member.id"),
-                    EntityField(name="class_schedule_id", type="relationship", references="ClassSchedule.id"),
-                    EntityField(name="booking_date", type="datetime")
+                    EntityField(name="customer_id", type="string"),
+                    EntityField(name="total_amount", type="float"),
+                    EntityField(name="status", type="string")
                 ]
-            )
-        elif "crm" in category:
-            entities_map["Customer"] = EntityDefinition(
-                entity_id="ent_customer",
-                entity_name="Customer",
-                name="Customer",
-                description="Logical client lead details record.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Reservation": EntityDefinition(
+                entity_id="ent_reservation", entity_name="Reservation", name="Reservation",
+                description="Table reservations made by customers.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="company_name", type="string"),
-                    EntityField(name="contact_email", type="string")
+                    EntityField(name="customer_id", type="string"),
+                    EntityField(name="reservation_time", type="datetime"),
+                    EntityField(name="party_size", type="integer")
                 ]
-            )
-            entities_map["Lead"] = EntityDefinition(
-                entity_id="ent_lead",
-                entity_name="Lead",
-                name="Lead",
-                description="Logical sales pipeline deal progress records.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Payment": EntityDefinition(
+                entity_id="ent_payment", entity_name="Payment", name="Payment",
+                description="Payments received for orders.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="customer_id", type="relationship", references="Customer.id"),
-                    EntityField(name="deal_value", type="float"),
-                    EntityField(name="deal_stage", type="string")
+                    EntityField(name="order_id", type="relationship", references="Order.id"),
+                    EntityField(name="amount", type="float"),
+                    EntityField(name="status", type="string")
                 ]
-            )
-            entities_map["InteractionLog"] = EntityDefinition(
-                entity_id="ent_interactionlog",
-                entity_name="InteractionLog",
-                name="InteractionLog",
-                description="Logical log tracking agent communications with leads.",
-                source="industry_pattern",
-                confidence=1.0,
-                fields=[
-                    EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="lead_id", type="relationship", references="Lead.id"),
-                    EntityField(name="notes", type="string")
-                ]
-            )
-        elif "hospital" in category or "medical" in category:
-            entities_map["Patient"] = EntityDefinition(
-                entity_id="ent_patient",
-                entity_name="Patient",
-                name="Patient",
-                description="Logical entity representing a patient.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Patient": EntityDefinition(
+                entity_id="ent_patient", entity_name="Patient", name="Patient",
+                description="Logical patient record.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="name", type="string"),
                     EntityField(name="dob", type="string"),
                     EntityField(name="insurance_provider", type="string")
                 ]
-            )
-            entities_map["Doctor"] = EntityDefinition(
-                entity_id="ent_doctor",
-                entity_name="Doctor",
-                name="Doctor",
-                description="Logical entity representing a practitioner.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Doctor": EntityDefinition(
+                entity_id="ent_doctor", entity_name="Doctor", name="Doctor",
+                description="Logical doctor record.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="name", type="string"),
                     EntityField(name="specialization", type="string")
                 ]
-            )
-            entities_map["Appointment"] = EntityDefinition(
-                entity_id="ent_appointment",
-                entity_name="Appointment",
-                name="Appointment",
-                description="Logical appointment reservation records.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Appointment": EntityDefinition(
+                entity_id="ent_appointment", entity_name="Appointment", name="Appointment",
+                description="Patient to doctor appointments slots.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="patient_id", type="relationship", references="Patient.id"),
                     EntityField(name="doctor_id", type="relationship", references="Doctor.id"),
-                    EntityField(name="appointment_time", type="datetime"),
-                    EntityField(name="status", type="string")
+                    EntityField(name="appointment_time", type="datetime")
                 ]
-            )
-            entities_map["MedicalRecord"] = EntityDefinition(
-                entity_id="ent_medicalrecord",
-                entity_name="MedicalRecord",
-                name="MedicalRecord",
-                description="Confidential medical history diagnosis log.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "MedicalRecord": EntityDefinition(
+                entity_id="ent_medicalrecord", entity_name="MedicalRecord", name="MedicalRecord",
+                description="Confidential medical history diagnosis log.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="patient_id", type="relationship", references="Patient.id"),
                     EntityField(name="diagnosis", type="string"),
                     EntityField(name="prescription", type="string")
                 ]
-            )
-        elif "school" in category or "education" in category or "university" in category or "student" in category:
-            entities_map["Student"] = EntityDefinition(
-                entity_id="ent_student",
-                entity_name="Student",
-                name="Student",
-                description="Logical student record.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Prescription": EntityDefinition(
+                entity_id="ent_prescription", entity_name="Prescription", name="Prescription",
+                description="Prescription notes created by practitioner.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="name", type="string"),
-                    EntityField(name="grade_level", type="string")
+                    EntityField(name="patient_id", type="relationship", references="Patient.id"),
+                    EntityField(name="medication", type="string"),
+                    EntityField(name="dosage", type="string")
                 ]
-            )
-            entities_map["Teacher"] = EntityDefinition(
-                entity_id="ent_teacher",
-                entity_name="Teacher",
-                name="Teacher",
-                description="Logical instructor details.",
-                source="industry_pattern",
-                confidence=1.0,
-                fields=[
-                    EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="name", type="string"),
-                    EntityField(name="department", type="string")
-                ]
-            )
-            entities_map["Course"] = EntityDefinition(
-                entity_id="ent_course",
-                entity_name="Course",
-                name="Course",
-                description="Logical academic courses directory.",
-                source="industry_pattern",
-                confidence=1.0,
-                fields=[
-                    EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="title", type="string"),
-                    EntityField(name="teacher_id", type="relationship", references="Teacher.id")
-                ]
-            )
-            entities_map["Enrollment"] = EntityDefinition(
-                entity_id="ent_enrollment",
-                entity_name="Enrollment",
-                name="Enrollment",
-                description="Logical mapping linking students to enrolled courses.",
-                source="industry_pattern",
-                confidence=1.0,
-                fields=[
-                    EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="student_id", type="relationship", references="Student.id"),
-                    EntityField(name="course_id", type="relationship", references="Course.id"),
-                    EntityField(name="grade", type="string")
-                ]
-            )
-        elif "inventory" in category or "stock" in category or "warehouse" in category:
-            entities_map["Product"] = EntityDefinition(
-                entity_id="ent_product",
-                entity_name="Product",
-                name="Product",
-                description="Logical product catalog details.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Product": EntityDefinition(
+                entity_id="ent_product", entity_name="Product", name="Product",
+                description="Product catalog inventory ledger.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="sku", type="string"),
@@ -350,49 +234,348 @@ class EntityDiscoveryEngine:
                     EntityField(name="price", type="float"),
                     EntityField(name="stock_quantity", type="integer")
                 ]
-            )
-            entities_map["Supplier"] = EntityDefinition(
-                entity_id="ent_supplier",
-                entity_name="Supplier",
-                name="Supplier",
-                description="Logical supplier contact details.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "Cart": EntityDefinition(
+                entity_id="ent_cart", entity_name="Cart", name="Cart",
+                description="Shopping cart item list.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="product_id", type="relationship", references="Product.id"),
+                    EntityField(name="quantity", type="integer")
+                ]
+            ),
+            "Inventory": EntityDefinition(
+                entity_id="ent_inventory", entity_name="Inventory", name="Inventory",
+                description="Stock quantities tracking.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="product_id", type="relationship", references="Product.id"),
+                    EntityField(name="quantity", type="integer")
+                ]
+            ),
+            "Room": EntityDefinition(
+                entity_id="ent_room", entity_name="Room", name="Room",
+                description="Hotel room listings.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="room_number", type="string"),
+                    EntityField(name="room_type", type="string"),
+                    EntityField(name="price_per_night", type="float")
+                ]
+            ),
+            "Booking": EntityDefinition(
+                entity_id="ent_booking", entity_name="Booking", name="Booking",
+                description="Hotel room reservation log.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="room_id", type="relationship", references="Room.id"),
+                    EntityField(name="guest_id", type="string"),
+                    EntityField(name="check_in_date", type="datetime")
+                ]
+            ),
+            "Guest": EntityDefinition(
+                entity_id="ent_guest", entity_name="Guest", name="Guest",
+                description="Guest profile record.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="name", type="string"),
+                    EntityField(name="email", type="string")
+                ]
+            ),
+            "Member": EntityDefinition(
+                entity_id="ent_member", entity_name="Member", name="Member",
+                description="Gym member details.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="first_name", type="string"),
+                    EntityField(name="last_name", type="string"),
+                    EntityField(name="email", type="string"),
+                    EntityField(name="membership_status", type="string")
+                ]
+            ),
+            "Trainer": EntityDefinition(
+                entity_id="ent_trainer", entity_name="Trainer", name="Trainer",
+                description="Gym trainer details.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="name", type="string"),
+                    EntityField(name="specialty", type="string")
+                ]
+            ),
+            "ClassSchedule": EntityDefinition(
+                entity_id="ent_classschedule", entity_name="ClassSchedule", name="ClassSchedule",
+                description="Gym fitness class calendars.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="class_name", type="string"),
+                    EntityField(name="trainer_id", type="relationship", references="Trainer.id"),
+                    EntityField(name="capacity", type="integer")
+                ]
+            ),
+            "ClassBooking": EntityDefinition(
+                entity_id="ent_classbooking", entity_name="ClassBooking", name="ClassBooking",
+                description="Gym class slot booking reservation.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="member_id", type="relationship", references="Member.id"),
+                    EntityField(name="class_schedule_id", type="relationship", references="ClassSchedule.id"),
+                    EntityField(name="booking_date", type="datetime")
+                ]
+            ),
+            "Contact": EntityDefinition(
+                entity_id="ent_contact", entity_name="Contact", name="Contact",
+                description="CRM client contacts list.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="name", type="string"),
+                    EntityField(name="email", type="string")
+                ]
+            ),
+            "Deal": EntityDefinition(
+                entity_id="ent_deal", entity_name="Deal", name="Deal",
+                description="CRM pipeline deals progress.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="contact_id", type="relationship", references="Contact.id"),
+                    EntityField(name="deal_value", type="float"),
+                    EntityField(name="deal_stage", type="string")
+                ]
+            ),
+            "PipelineStage": EntityDefinition(
+                entity_id="ent_pipelinestage", entity_name="PipelineStage", name="PipelineStage",
+                description="CRM stages config.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="stage_name", type="string")
+                ]
+            ),
+            "Customer": EntityDefinition(
+                entity_id="ent_customer", entity_name="Customer", name="Customer",
+                description="Logical client lead details record.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="company_name", type="string"),
+                    EntityField(name="contact_email", type="string")
+                ]
+            ),
+            "Lead": EntityDefinition(
+                entity_id="ent_lead", entity_name="Lead", name="Lead",
+                description="Logical sales pipeline deal progress records.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="customer_id", type="relationship", references="Customer.id"),
+                    EntityField(name="deal_value", type="float"),
+                    EntityField(name="deal_stage", type="string")
+                ]
+            ),
+            "InteractionLog": EntityDefinition(
+                entity_id="ent_interactionlog", entity_name="InteractionLog", name="InteractionLog",
+                description="Logical log tracking agent communications with leads.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="lead_id", type="relationship", references="Lead.id"),
+                    EntityField(name="notes", type="string")
+                ]
+            ),
+            "Student": EntityDefinition(
+                entity_id="ent_student", entity_name="Student", name="Student",
+                description="School student academic profile.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="name", type="string"),
+                    EntityField(name="grade_level", type="string")
+                ]
+            ),
+            "Teacher": EntityDefinition(
+                entity_id="ent_teacher", entity_name="Teacher", name="Teacher",
+                description="School teacher details.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="name", type="string"),
+                    EntityField(name="department", type="string")
+                ]
+            ),
+            "Course": EntityDefinition(
+                entity_id="ent_course", entity_name="Course", name="Course",
+                description="School academic courses catalog.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="title", type="string"),
+                    EntityField(name="teacher_id", type="relationship", references="Teacher.id")
+                ]
+            ),
+            "Enrollment": EntityDefinition(
+                entity_id="ent_enrollment", entity_name="Enrollment", name="Enrollment",
+                description="School course enrollment record.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="student_id", type="relationship", references="Student.id"),
+                    EntityField(name="course_id", type="relationship", references="Course.id"),
+                    EntityField(name="grade", type="string")
+                ]
+            ),
+            "Grade": EntityDefinition(
+                entity_id="ent_grade", entity_name="Grade", name="Grade",
+                description="School grades metrics.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="enrollment_id", type="relationship", references="Enrollment.id"),
+                    EntityField(name="score", type="string")
+                ]
+            ),
+            "Supplier": EntityDefinition(
+                entity_id="ent_supplier", entity_name="Supplier", name="Supplier",
+                description="Inventory supplier contact records.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="name", type="string"),
                     EntityField(name="contact_info", type="string")
                 ]
-            )
-            entities_map["StockOrder"] = EntityDefinition(
-                entity_id="ent_stockorder",
-                entity_name="StockOrder",
-                name="StockOrder",
-                description="Logical records of stock replenishments.",
-                source="industry_pattern",
-                confidence=1.0,
+            ),
+            "StockOrder": EntityDefinition(
+                entity_id="ent_stockorder", entity_name="StockOrder", name="StockOrder",
+                description="Inventory stock order replenish request.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="product_id", type="relationship", references="Product.id"),
                     EntityField(name="supplier_id", type="relationship", references="Supplier.id"),
-                    EntityField(name="quantity", type="integer"),
-                    EntityField(name="order_date", type="datetime")
+                    EntityField(name="quantity", type="integer")
                 ]
-            )
-        else:
-            entities_map["User"] = EntityDefinition(
-                entity_id="ent_user",
-                entity_name="User",
-                name="User",
-                description="Logical standard app user profile.",
-                source="default_policy",
-                confidence=1.0,
+            ),
+            "WarehouseLocation": EntityDefinition(
+                entity_id="ent_warehouselocation", entity_name="WarehouseLocation", name="WarehouseLocation",
+                description="Inventory stocking bins.", source="industry_pattern", confidence=1.0,
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
-                    EntityField(name="username", type="string"),
-                    EntityField(name="email", type="string")
+                    EntityField(name="aisle", type="string"),
+                    EntityField(name="bin_code", type="string")
+                ]
+            ),
+            "Listing": EntityDefinition(
+                entity_id="ent_listing", entity_name="Listing", name="Listing",
+                description="Marketplace vendor listing.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="title", type="string"),
+                    EntityField(name="price", type="float")
+                ]
+            ),
+            "Store": EntityDefinition(
+                entity_id="ent_store", entity_name="Store", name="Store",
+                description="Marketplace seller store registration.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="store_name", type="string")
+                ]
+            ),
+            "Transaction": EntityDefinition(
+                entity_id="ent_transaction", entity_name="Transaction", name="Transaction",
+                description="Marketplace billing transaction.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="amount", type="float")
+                ]
+            ),
+            "OrderItem": EntityDefinition(
+                entity_id="ent_orderitem", entity_name="OrderItem", name="OrderItem",
+                description="Marketplace list items.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="listing_id", type="relationship", references="Listing.id"),
+                    EntityField(name="quantity", type="integer")
+                ]
+            ),
+            "Account": EntityDefinition(
+                entity_id="ent_account", entity_name="Account", name="Account",
+                description="Bank account metrics ledger.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="balance", type="float"),
+                    EntityField(name="account_type", type="string")
+                ]
+            ),
+            "Card": EntityDefinition(
+                entity_id="ent_card", entity_name="Card", name="Card",
+                description="Bank account credit/debit card details.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="account_id", type="relationship", references="Account.id"),
+                    EntityField(name="card_number", type="string")
+                ]
+            ),
+            "LoanApplication": EntityDefinition(
+                entity_id="ent_loanapplication", entity_name="LoanApplication", name="LoanApplication",
+                description="Bank credit loan requests.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="amount", type="float"),
+                    EntityField(name="status", type="string")
                 ]
             )
+        }
+
+        # If report has entities, generate using those
+        if report and report.entities:
+            for ent_name in report.entities:
+                if ent_name in all_predefined_entities:
+                    entities_map[ent_name] = all_predefined_entities[ent_name]
+                else:
+                    # Generate a custom entity definition
+                    entities_map[ent_name] = EntityDefinition(
+                        entity_id=f"ent_{CanonicalNamingEngine.to_snake_case(ent_name)}",
+                        entity_name=ent_name,
+                        name=ent_name,
+                        description=f"Logical system entity representing {ent_name}.",
+                        source="user_requirement",
+                        confidence=1.0,
+                        fields=[
+                            EntityField(name="id", type="string", is_key=True),
+                            EntityField(name="name", type="string")
+                        ]
+                    )
+        else:
+            # Fallback to category-based discovery
+            if "gym" in category:
+                for k in ["Member", "Trainer", "ClassSchedule", "ClassBooking"]:
+                    entities_map[k] = all_predefined_entities[k]
+            elif "crm" in category:
+                for k in ["Customer", "Lead", "InteractionLog"]:
+                    entities_map[k] = all_predefined_entities[k]
+            elif ("hospital" in category and "hospitality" not in category) or "medical" in category or "healthcare" in category:
+                for k in ["Patient", "Doctor", "Appointment", "MedicalRecord", "Prescription"]:
+                    entities_map[k] = all_predefined_entities[k]
+            elif "school" in category or "education" in category or "student" in category:
+                for k in ["Student", "Teacher", "Course", "Enrollment", "Grade"]:
+                    entities_map[k] = all_predefined_entities[k]
+            elif "inventory" in category or "stock" in category or "warehouse" in category:
+                for k in ["Product", "Supplier", "StockOrder", "WarehouseLocation"]:
+                    entities_map[k] = all_predefined_entities[k]
+            elif "restaurant" in category or "food" in category:
+                for k in ["Menu", "MenuItem", "Order", "Reservation", "Payment"]:
+                    entities_map[k] = all_predefined_entities[k]
+            elif "ecommerce" in category or "e-commerce" in category or "shop" in category:
+                for k in ["Product", "Cart", "Order", "Payment", "Inventory"]:
+                    entities_map[k] = all_predefined_entities[k]
+            elif "hotel" in category or "booking" in category or "hospitality" in category:
+                for k in ["Room", "Booking", "Guest", "Payment"]:
+                    entities_map[k] = all_predefined_entities[k]
+            elif "banking" in category or "financial" in category:
+                for k in ["Account", "Card", "LoanApplication"]:
+                    entities_map[k] = all_predefined_entities[k]
+            else:
+                entities_map["User"] = EntityDefinition(
+                    entity_id="ent_user",
+                    entity_name="User",
+                    name="User",
+                    description="Logical standard app user profile.",
+                    source="default_policy",
+                    confidence=1.0,
+                    fields=[
+                        EntityField(name="id", type="string", is_key=True),
+                        EntityField(name="username", type="string"),
+                        EntityField(name="email", type="string")
+                    ]
+                )
 
         # Merge any custom entities suggested in blueprint features/innovations
         for feature in blueprint.features:
@@ -440,10 +623,80 @@ class RelationshipDiscoveryEngine:
 
 class WorkflowDesigner:
     @staticmethod
-    def design_workflows(blueprint: ApprovedBlueprint) -> List[WorkflowDefinition]:
+    def design_workflows(blueprint: ApprovedBlueprint, report: Optional[Any] = None) -> List[WorkflowDefinition]:
         """Converts blueprint workflows into logical designs, tracking their actor and entity dependencies."""
         workflows: List[WorkflowDefinition] = []
-        for wf in blueprint.workflows:
+        
+        target_workflows = []
+        if report and report.workflows:
+            bp_wf_map = {w.name.lower(): w for w in blueprint.workflows}
+            for wf_name in report.workflows:
+                wf_key = wf_name.lower()
+                if wf_key in bp_wf_map:
+                    target_workflows.append(bp_wf_map[wf_key])
+                else:
+                    from stages.stage3_recommend import RecommendedWorkflow
+                    steps = [f"Start {wf_name}", "Process", "Complete"]
+                    actor = "User"
+                    
+                    # Try to find a matching feature from the blueprint to extract the correct actor
+                    matching_feature = None
+                    wf_clean = wf_name.lower().replace(" ", "").replace("_", "").replace("-", "")
+                    for feat in blueprint.features:
+                        feat_clean = feat.name.lower().replace(" ", "").replace("_", "").replace("-", "")
+                        if feat_clean in wf_clean or wf_clean in feat_clean:
+                            matching_feature = feat
+                            break
+                    
+                    if matching_feature:
+                        actor = matching_feature.actor_involved
+                    
+                    if "order" in wf_key:
+                        steps = ["Browse Menu", "Select Items", "Add to Cart", "Submit Order"]
+                        if not matching_feature:
+                            if "Customer" in [a.name for a in blueprint.actors]:
+                                actor = "Customer"
+                            elif "Buyer" in [a.name for a in blueprint.actors]:
+                                actor = "Buyer"
+                            elif "Guest" in [a.name for a in blueprint.actors]:
+                                actor = "Guest"
+                            else:
+                                actor = "User"
+                    elif "checkout" in wf_key or "pay" in wf_key:
+                        steps = ["Initiate Payment", "Select Payment Method", "Process Transaction", "Confirm Payment"]
+                        if not matching_feature:
+                            if "Customer" in [a.name for a in blueprint.actors]:
+                                actor = "Customer"
+                            elif "Buyer" in [a.name for a in blueprint.actors]:
+                                actor = "Buyer"
+                            elif "Guest" in [a.name for a in blueprint.actors]:
+                                actor = "Guest"
+                            else:
+                                actor = "User"
+                    elif "appointment" in wf_key:
+                        steps = ["Select Date and Time", "Check Doctor Availability", "Confirm Appointment"]
+                        if not matching_feature:
+                            actor = "Patient" if "Patient" in [a.name for a in blueprint.actors] else "User"
+                    elif "prescription" in wf_key or "consultation" in wf_key:
+                        steps = ["Select Patient", "Diagnose Patient", "Write Prescription", "Save Prescription"]
+                        if not matching_feature:
+                            actor = "Doctor" if "Doctor" in [a.name for a in blueprint.actors] else "User"
+                    elif "room" in wf_key or "booking" in wf_key:
+                        steps = ["Search Rooms", "Select Room", "Enter Guest Details", "Confirm Booking"]
+                        if not matching_feature:
+                            actor = "Guest" if "Guest" in [a.name for a in blueprint.actors] else "User"
+                    
+                    target_workflows.append(RecommendedWorkflow(
+                        name=CanonicalNamingEngine.to_pascal_case(wf_name),
+                        description=f"Standard sequence for {wf_name}.",
+                        steps=steps,
+                        actor_involved=actor,
+                        why_needed=f"Enables the {wf_name} capability."
+                    ))
+        else:
+            target_workflows = blueprint.workflows
+
+        for wf in target_workflows:
             deps = []
             workflow_deps = []
             name_lower = wf.name.lower()
@@ -464,6 +717,13 @@ class WorkflowDesigner:
                 deps = ["Enrollment", "Student"]
             elif "receive" in name_lower or "stock" in name_lower:
                 deps = ["StockOrder", "Product"]
+            elif "order" in name_lower:
+                if report and "restaurant" in report.detected_domain.lower():
+                    deps = ["Order", "MenuItem", "Menu"]
+                else:
+                    deps = ["Order", "Product", "Cart"]
+            elif "checkout" in name_lower:
+                deps = ["Payment", "Order"]
 
             # Map workflow dependencies to check validation cycles
             if "consultation" in name_lower:
@@ -473,7 +733,7 @@ class WorkflowDesigner:
 
             # Determine Criticality
             criticality: Literal["HIGH", "MEDIUM", "LOW"] = "MEDIUM"
-            if any(k in name_lower for k in ["booking", "purchase", "scheduling", "enroll", "receive", "fulfill", "conversion"]):
+            if any(k in name_lower for k in ["booking", "purchase", "scheduling", "enroll", "receive", "fulfill", "conversion", "order", "checkout"]):
                 criticality = "HIGH"
             elif "update" in name_lower or "view" in name_lower or "profile" in name_lower:
                 criticality = "LOW"
@@ -493,11 +753,29 @@ class WorkflowDesigner:
 
 class PermissionDesigner:
     @staticmethod
-    def design_permissions(blueprint: ApprovedBlueprint) -> List[PermissionDefinition]:
+    def design_permissions(blueprint: ApprovedBlueprint, report: Optional[Any] = None) -> List[PermissionDefinition]:
         """Maps logical permissions matrices for approved actors and profiles."""
         permissions: List[PermissionDefinition] = []
         
-        for actor in blueprint.actors:
+        target_actors = []
+        if report and report.actors:
+            bp_act_map = {a.name.lower(): a for a in blueprint.actors}
+            for act_name in report.actors:
+                act_key = act_name.lower()
+                if act_key in bp_act_map:
+                    target_actors.append(bp_act_map[act_key])
+                else:
+                    from stages.stage3_recommend import RecommendedActor
+                    target_actors.append(RecommendedActor(
+                        name=act_name,
+                        description=f"Logical actor profile for {act_name}.",
+                        relevance_score=1.0,
+                        why_needed=f"Enables access control for {act_name}."
+                    ))
+        else:
+            target_actors = blueprint.actors
+
+        for actor in target_actors:
             perms = []
             reason = ""
             name = actor.name
@@ -528,6 +806,24 @@ class PermissionDesigner:
             elif name == "WarehouseStaff":
                 perms = ["UpdateInventory", "ReadInventory"]
                 reason = "Staff stocking logs permissions."
+            elif name == "Customer":
+                perms = ["BrowseMenu", "PlaceOrder", "Checkout", "ReadOwnProfile"]
+                reason = "Customer ordering and checkout rights."
+            elif name == "RestaurantOwner":
+                perms = ["ManageMenu", "ViewOrders", "ManageRestaurant"]
+                reason = "Restaurant owner administrative access."
+            elif name == "Buyer":
+                perms = ["BrowseProducts", "AddToCart", "Checkout", "ReadOwnProfile"]
+                reason = "Buyer marketplace browsing and purchasing rights."
+            elif name == "Seller":
+                perms = ["ManageProducts", "ViewOrders", "FulfillOrders"]
+                reason = "Seller marketplace merchant access."
+            elif name == "Guest":
+                perms = ["SearchRooms", "BookRoom", "CheckoutRoom", "ReadOwnProfile"]
+                reason = "Hotel guest booking access."
+            elif name == "HotelManager":
+                perms = ["ManageRooms", "ViewBookings", "ManageHotel"]
+                reason = "Hotel manager administrative access."
             else:
                 perms = ["AccessPortal", "ReadOwnProfile"]
                 reason = "Baseline access privileges."
@@ -542,12 +838,13 @@ class PermissionDesigner:
 
 class BusinessRuleCompiler:
     @staticmethod
-    def compile_rules(blueprint: ApprovedBlueprint) -> List[BusinessRuleDefinition]:
+    def compile_rules(blueprint: ApprovedBlueprint, report: Optional[Any] = None) -> List[BusinessRuleDefinition]:
         """Compiles rule assertions from intent rules, constraints, and innovations."""
         rules: List[BusinessRuleDefinition] = []
         category = blueprint.app_type.lower()
+        domain = report.detected_domain.lower() if (report and report.detected_domain) else category
         
-        if "gym" in category:
+        if "gym" in domain:
             rules.append(BusinessRuleDefinition(
                 rule_id="BR_001",
                 rule="Members are capped at a maximum of 3 active bookings per day.",
@@ -566,7 +863,7 @@ class BusinessRuleCompiler:
                 description="Cancellations are forbidden within 2 hours of class start.",
                 enforcement_logic="ClassSchedule.start_time - now() >= 2_hours"
             ))
-        elif "crm" in category:
+        elif "crm" in domain:
             rules.append(BusinessRuleDefinition(
                 rule_id="BR_001",
                 rule="Deals must specify a lead and a valid target customer contact.",
@@ -576,7 +873,7 @@ class BusinessRuleCompiler:
                 description="Deals must specify a lead and a valid target customer contact.",
                 enforcement_logic="Lead.customer_id IS NOT NULL"
             ))
-        elif "hospital" in category or "medical" in category:
+        elif ("hospital" in domain and "hospitality" not in domain) or "healthcare" in domain or "medical" in domain:
             rules.append(BusinessRuleDefinition(
                 rule_id="BR_001",
                 rule="Appointments cannot overlap for the same doctor.",
@@ -586,7 +883,16 @@ class BusinessRuleCompiler:
                 description="Appointments cannot overlap for the same doctor.",
                 enforcement_logic="Count(Appointment WHERE doctor_id = Doctor.id AND overlap_time) == 0"
             ))
-        elif "school" in category or "education" in category or "university" in category or "student" in category:
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_002",
+                rule="Prescriptions require an associated patient and diagnosis.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["Prescription", "Patient", "MedicalRecord"],
+                description="Prescriptions require an associated patient and diagnosis.",
+                enforcement_logic="Prescription.patient_id IS NOT NULL AND MedicalRecord.diagnosis IS NOT NULL"
+            ))
+        elif "school" in domain or "education" in domain or "student" in domain:
             rules.append(BusinessRuleDefinition(
                 rule_id="BR_001",
                 rule="Students must be active to enroll in courses.",
@@ -596,7 +902,7 @@ class BusinessRuleCompiler:
                 description="Students must be active to enroll in courses.",
                 enforcement_logic="Student.status == 'active'"
             ))
-        elif "inventory" in category or "stock" in category or "warehouse" in category:
+        elif "inventory" in domain or "stock" in domain or "warehouse" in domain:
             rules.append(BusinessRuleDefinition(
                 rule_id="BR_001",
                 rule="Stock quantity cannot drop below zero.",
@@ -605,6 +911,72 @@ class BusinessRuleCompiler:
                 affected_entities=["Product"],
                 description="Stock quantity cannot drop below zero.",
                 enforcement_logic="Product.stock_quantity >= 0"
+            ))
+        elif "restaurant" in domain or "food" in domain:
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_001",
+                rule="Reservation requires available table.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["Reservation"],
+                description="Reservation requires available table.",
+                enforcement_logic="Reservation.available_table_count > 0"
+            ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_002",
+                rule="Paid order required before fulfillment.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["Payment", "Order"],
+                description="Paid order required before fulfillment.",
+                enforcement_logic="Payment.status == 'paid' BEFORE Order.status == 'fulfilled'"
+            ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_003",
+                rule="Refund requires manager approval.",
+                source="approved_blueprint",
+                priority="MEDIUM",
+                affected_entities=["Payment", "Order"],
+                description="Refund requires manager approval.",
+                enforcement_logic="Refund.status == 'approved_by_manager' BEFORE Payment.status == 'refunded'"
+            ))
+        elif "ecommerce" in domain or "marketplace" in domain or "e-commerce" in domain:
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_001",
+                rule="Orders must specify a buyer and a valid product checkout item.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["Order", "Product"],
+                description="Orders must specify a buyer and a valid product checkout item.",
+                enforcement_logic="Order.customer_id IS NOT NULL AND Count(Product) >= 1"
+            ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_002",
+                rule="Product stock quantity cannot drop below zero.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["Product"],
+                description="Product stock quantity cannot drop below zero.",
+                enforcement_logic="Product.stock_quantity >= 0"
+            ))
+        elif "hotel" in domain or "booking" in domain:
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_001",
+                rule="Booking check-in date must be in the future.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["Booking"],
+                description="Booking check-in date must be in the future.",
+                enforcement_logic="Booking.check_in_date > now()"
+            ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_002",
+                rule="Rooms cannot have overlapping booking reservations.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["Booking", "Room"],
+                description="Rooms cannot have overlapping booking reservations.",
+                enforcement_logic="Count(Booking WHERE room_id = Room.id AND overlap_time) == 0"
             ))
         else:
             rules.append(BusinessRuleDefinition(
@@ -621,12 +993,13 @@ class BusinessRuleCompiler:
 
 class DesignDecisionEngine:
     @staticmethod
-    def track_decisions(blueprint: ApprovedBlueprint) -> List[DesignDecision]:
+    def track_decisions(blueprint: ApprovedBlueprint, report: Optional[Any] = None) -> List[DesignDecision]:
         """Tracks the explicit logical justifications for key architectural structures."""
         decisions: List[DesignDecision] = []
         category = blueprint.app_type.lower()
+        domain = report.detected_domain.lower() if (report and report.detected_domain) else category
 
-        if "gym" in category:
+        if "gym" in domain:
             decisions.append(DesignDecision(
                 decision_id="DD_001",
                 decision="ClassBooking connects Member and ClassSchedule.",
@@ -643,7 +1016,7 @@ class DesignDecisionEngine:
                 impact_level="MEDIUM",
                 affected_components=["Trainer", "ClassSchedule"]
             ))
-        elif "crm" in category:
+        elif "crm" in domain:
             decisions.append(DesignDecision(
                 decision_id="DD_001",
                 decision="Lead maps to Customer profile.",
@@ -652,7 +1025,7 @@ class DesignDecisionEngine:
                 impact_level="HIGH",
                 affected_components=["Lead", "Customer"]
             ))
-        elif "hospital" in category or "medical" in category:
+        elif ("hospital" in domain and "hospitality" not in domain) or "healthcare" in domain or "medical" in domain:
             decisions.append(DesignDecision(
                 decision_id="DD_001",
                 decision="Doctor manages MedicalRecord updates.",
@@ -661,7 +1034,7 @@ class DesignDecisionEngine:
                 impact_level="HIGH",
                 affected_components=["Doctor", "MedicalRecord"]
             ))
-        elif "school" in category or "education" in category or "university" in category or "student" in category:
+        elif "school" in domain or "education" in domain or "student" in domain:
             decisions.append(DesignDecision(
                 decision_id="DD_001",
                 decision="Enrollment acts as join table between Student and Course.",
@@ -670,7 +1043,7 @@ class DesignDecisionEngine:
                 impact_level="HIGH",
                 affected_components=["Student", "Course", "Enrollment"]
             ))
-        elif "inventory" in category or "stock" in category or "warehouse" in category:
+        elif "inventory" in domain or "stock" in domain or "warehouse" in domain:
             decisions.append(DesignDecision(
                 decision_id="DD_001",
                 decision="StockOrder links Product and Supplier.",
@@ -678,6 +1051,33 @@ class DesignDecisionEngine:
                 source="approved_blueprint",
                 impact_level="HIGH",
                 affected_components=["Product", "Supplier", "StockOrder"]
+            ))
+        elif "restaurant" in domain:
+            decisions.append(DesignDecision(
+                decision_id="DD_001",
+                decision="MenuItem is linked to Menu.",
+                reason="Enables structured categorization of menu offerings.",
+                source="approved_blueprint",
+                impact_level="HIGH",
+                affected_components=["MenuItem", "Menu"]
+            ))
+        elif "ecommerce" in domain or "marketplace" in domain:
+            decisions.append(DesignDecision(
+                decision_id="DD_001",
+                decision="Inventory updates are tied directly to Order fulfillment.",
+                reason="Ensures real-time stock levels are accurate across customer orders.",
+                source="approved_blueprint",
+                impact_level="HIGH",
+                affected_components=["Inventory", "Order"]
+            ))
+        elif "hotel" in domain:
+            decisions.append(DesignDecision(
+                decision_id="DD_001",
+                decision="Booking links Guest and Room.",
+                reason="Required to manage room availability and guest registrations.",
+                source="approved_blueprint",
+                impact_level="HIGH",
+                affected_components=["Booking", "Guest", "Room"]
             ))
         else:
             decisions.append(DesignDecision(
@@ -749,12 +1149,30 @@ class GraphBuilder:
 
 class MasterSpecificationBuilder:
     @staticmethod
-    def compile_specification(blueprint: ApprovedBlueprint) -> MasterSpecification:
+    def compile_specification(blueprint: ApprovedBlueprint, report: Optional[Any] = None) -> MasterSpecification:
         """Orchestrates all logical engines to build the final MasterSpecification AST."""
         app_name = CanonicalNamingEngine.to_pascal_case(blueprint.project_id)
         
+        target_actors = []
+        if report and report.actors:
+            bp_act_map = {a.name.lower(): a for a in blueprint.actors}
+            for act_name in report.actors:
+                act_key = act_name.lower()
+                if act_key in bp_act_map:
+                    target_actors.append(bp_act_map[act_key])
+                else:
+                    from stages.stage3_recommend import RecommendedActor
+                    target_actors.append(RecommendedActor(
+                        name=act_name,
+                        description=f"Logical actor profile for {act_name}.",
+                        relevance_score=1.0,
+                        why_needed=f"Enables access control for {act_name}."
+                    ))
+        else:
+            target_actors = blueprint.actors
+
         actors_list = []
-        for a in blueprint.actors:
+        for a in target_actors:
             perms = []
             if a.name == "Admin":
                 perms = ["ManageAllRecords"]
@@ -766,6 +1184,16 @@ class MasterSpecificationBuilder:
                 perms = ["GradeStudents"]
             elif a.name == "WarehouseStaff":
                 perms = ["UpdateInventory"]
+            elif a.name == "Customer":
+                perms = ["BrowseMenu", "PlaceOrder", "Checkout"]
+            elif a.name == "Buyer":
+                perms = ["BrowseProducts", "AddToCart", "Checkout"]
+            elif a.name == "Seller":
+                perms = ["ManageProducts", "ViewOrders"]
+            elif a.name == "Guest":
+                perms = ["SearchRooms", "BookRoom"]
+            elif a.name == "HotelManager":
+                perms = ["ManageRooms", "ViewBookings"]
                 
             actors_list.append(Actor(
                 name=a.name,
@@ -773,12 +1201,12 @@ class MasterSpecificationBuilder:
                 permissions=perms
             ))
 
-        entities = EntityDiscoveryEngine.discover_entities(blueprint)
+        entities = EntityDiscoveryEngine.discover_entities(blueprint, report)
         relationships = RelationshipDiscoveryEngine.discover_relationships(entities)
-        workflows = WorkflowDesigner.design_workflows(blueprint)
-        permissions = PermissionDesigner.design_permissions(blueprint)
-        rules = BusinessRuleCompiler.compile_rules(blueprint)
-        decisions = DesignDecisionEngine.track_decisions(blueprint)
+        workflows = WorkflowDesigner.design_workflows(blueprint, report)
+        permissions = PermissionDesigner.design_permissions(blueprint, report)
+        rules = BusinessRuleCompiler.compile_rules(blueprint, report)
+        decisions = DesignDecisionEngine.track_decisions(blueprint, report)
 
         entities.sort(key=lambda x: x.name)
         relationships.sort(key=lambda x: x.relationship_id)

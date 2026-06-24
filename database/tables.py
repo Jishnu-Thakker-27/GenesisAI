@@ -106,6 +106,28 @@ CREATE TABLE IF NOT EXISTS blueprint_modifications (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (project_id) REFERENCES projects(id)
 );
+
+CREATE TABLE IF NOT EXISTS architecture_memory (
+    project_id TEXT PRIMARY KEY,
+    prompt TEXT NOT NULL,
+    domain TEXT NOT NULL,
+    subdomain TEXT NOT NULL,
+    dna TEXT NOT NULL,
+    actors TEXT NOT NULL,
+    entities TEXT NOT NULL,
+    workflows TEXT NOT NULL,
+    business_rules TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS pattern_repository (
+    domain TEXT PRIMARY KEY,
+    common_actors TEXT NOT NULL,
+    common_entities TEXT NOT NULL,
+    common_workflows TEXT NOT NULL,
+    common_rules TEXT NOT NULL,
+    evidence_count INTEGER DEFAULT 0
+);
 """
 
 # Seed data for community innovations repository
@@ -184,6 +206,89 @@ SEED_COMMUNITY_INNOVATIONS = [
     ("inn_c05", "Inventory", "Predictive Stock Alert", "Monitors stock quantities and uses historical sales patterns to warn administrators before stock depletion.", 92, 8, 0.92, 9.5, 150, '["Stock Levels Tracker", "Supplier Catalog directory"]', "industry", 8.74)
 ]
 
+SEED_PATTERN_REPOS = [
+    (
+        "Gym Management",
+        json.dumps([{"name": "GymMember", "frequency": 1.0}, {"name": "GymTrainer", "frequency": 1.0}, {"name": "Admin", "frequency": 0.9}]),
+        json.dumps([{"name": "Member", "frequency": 1.0}, {"name": "Trainer", "frequency": 1.0}, {"name": "ClassSchedule", "frequency": 0.95}, {"name": "ClassBooking", "frequency": 0.95}]),
+        json.dumps([{"name": "Class Booking", "frequency": 1.0}, {"name": "Membership Purchase", "frequency": 1.0}]),
+        json.dumps([{"rule": "Members can book a maximum of 3 classes per day.", "frequency": 0.9}, {"rule": "Cancellations must be done at least 2 hours before class starts.", "frequency": 0.85}]),
+        10
+    ),
+    (
+        "CRM Application",
+        json.dumps([{"name": "SalesAgent", "frequency": 1.0}, {"name": "SalesManager", "frequency": 0.9}]),
+        json.dumps([{"name": "Customer", "frequency": 1.0}, {"name": "Lead", "frequency": 1.0}, {"name": "InteractionLog", "frequency": 0.9}, {"name": "Deal", "frequency": 0.8}]),
+        json.dumps([{"name": "Lead Conversion Flow", "frequency": 1.0}, {"name": "Follow Up Flow", "frequency": 1.0}]),
+        json.dumps([{"rule": "Only managers can mark deals as Deleted.", "frequency": 0.9}, {"rule": "Lead assignments require active sales agents.", "frequency": 0.85}]),
+        10
+    ),
+    (
+        "School Management",
+        json.dumps([{"name": "Student", "frequency": 1.0}, {"name": "Teacher", "frequency": 1.0}, {"name": "Admin", "frequency": 0.9}, {"name": "Parent", "frequency": 0.7}]),
+        json.dumps([{"name": "Course", "frequency": 1.0}, {"name": "Classroom", "frequency": 0.9}, {"name": "Grade", "frequency": 1.0}, {"name": "Assignment", "frequency": 1.0}, {"name": "Attendance", "frequency": 0.8}]),
+        json.dumps([{"name": "Class Timetable Scheduling", "frequency": 0.9}, {"name": "Student Grade Reporting", "frequency": 1.0}, {"name": "Homework Assignment Portal", "frequency": 0.95}]),
+        json.dumps([{"rule": "Grades can only be entered by the assigned course teacher.", "frequency": 0.95}, {"rule": "Class schedule changes must be approved by the administrator.", "frequency": 0.9}]),
+        10
+    ),
+    (
+        "Healthcare",
+        json.dumps([{"name": "Patient", "frequency": 1.0}, {"name": "Doctor", "frequency": 1.0}, {"name": "Admin", "frequency": 0.9}, {"name": "Nurse", "frequency": 0.8}]),
+        json.dumps([{"name": "Patient", "frequency": 1.0}, {"name": "Doctor", "frequency": 1.0}, {"name": "Appointment", "frequency": 1.0}, {"name": "MedicalRecord", "frequency": 0.95}, {"name": "Prescription", "frequency": 0.9}]),
+        json.dumps([{"name": "Schedule Appointment", "frequency": 1.0}, {"name": "Consultation", "frequency": 1.0}, {"name": "Prescription Management", "frequency": 0.9}]),
+        json.dumps([{"rule": "Medical records access must be logged for auditing.", "frequency": 1.0}, {"rule": "Prescriptions can only be written by certified doctors.", "frequency": 0.95}]),
+        10
+    ),
+    (
+        "Inventory Management",
+        json.dumps([{"name": "InventoryManager", "frequency": 1.0}, {"name": "Supplier", "frequency": 0.8}, {"name": "ProcurementOfficer", "frequency": 0.9}]),
+        json.dumps([{"name": "Item", "frequency": 1.0}, {"name": "Supplier", "frequency": 0.9}, {"name": "StockLevel", "frequency": 1.0}, {"name": "PurchaseOrder", "frequency": 0.95}]),
+        json.dumps([{"name": "Stock Levels Tracker", "frequency": 1.0}, {"name": "Supplier Catalog directory", "frequency": 0.9}]),
+        json.dumps([{"rule": "Stock count adjustments require manager approval.", "frequency": 0.95}, {"rule": "Reorder triggers automatically when stock falls below safety levels.", "frequency": 0.9}]),
+        10
+    ),
+    (
+        "Restaurant Management",
+        json.dumps([{"name": "Customer", "frequency": 1.0}, {"name": "RestaurantOwner", "frequency": 1.0}, {"name": "Staff", "frequency": 0.85}]),
+        json.dumps([{"name": "Menu", "frequency": 1.0}, {"name": "MenuItem", "frequency": 1.0}, {"name": "Order", "frequency": 1.0}, {"name": "Reservation", "frequency": 0.9}, {"name": "Payment", "frequency": 0.95}, {"name": "Review", "frequency": 0.7}]),
+        json.dumps([{"name": "Browse Menu", "frequency": 1.0}, {"name": "Place Order", "frequency": 1.0}, {"name": "Checkout", "frequency": 1.0}, {"name": "Reserve Table", "frequency": 0.85}, {"name": "Leave Review", "frequency": 0.75}]),
+        json.dumps([{"rule": "Only paid orders can be fulfilled.", "frequency": 0.9}, {"rule": "Reservations require available tables.", "frequency": 0.8}, {"rule": "Refunds require manager approval.", "frequency": 0.75}]),
+        10
+    ),
+    (
+        "E-Commerce",
+        json.dumps([{"name": "Buyer", "frequency": 1.0}, {"name": "Seller", "frequency": 0.9}, {"name": "Admin", "frequency": 0.9}]),
+        json.dumps([{"name": "Product", "frequency": 1.0}, {"name": "Cart", "frequency": 1.0}, {"name": "Order", "frequency": 1.0}, {"name": "Payment", "frequency": 1.0}, {"name": "Shipment", "frequency": 0.85}]),
+        json.dumps([{"name": "Product Search", "frequency": 1.0}, {"name": "Add to Cart", "frequency": 1.0}, {"name": "Checkout & Pay", "frequency": 1.0}, {"name": "Track Shipment", "frequency": 0.85}]),
+        json.dumps([{"rule": "Orders can only ship after full payment confirmation.", "frequency": 0.95}, {"rule": "Inventory must decrement upon successful order placement.", "frequency": 0.9}]),
+        10
+    ),
+    (
+        "Marketplace Platform",
+        json.dumps([{"name": "Buyer", "frequency": 1.0}, {"name": "Merchant", "frequency": 1.0}, {"name": "Moderator", "frequency": 0.8}, {"name": "Admin", "frequency": 0.9}]),
+        json.dumps([{"name": "Listing", "frequency": 1.0}, {"name": "Order", "frequency": 1.0}, {"name": "Payout", "frequency": 0.9}, {"name": "Dispute", "frequency": 0.75}]),
+        json.dumps([{"name": "Create Listing", "frequency": 1.0}, {"name": "Purchase Item", "frequency": 1.0}, {"name": "Escrow Release", "frequency": 0.85}, {"name": "Raise Dispute", "frequency": 0.75}]),
+        json.dumps([{"rule": "Funds are held in escrow until buyer confirms receipt.", "frequency": 0.95}, {"rule": "Merchant payouts are processed weekly.", "frequency": 0.9}]),
+        10
+    ),
+    (
+        "Hospitality Management",
+        json.dumps([{"name": "Guest", "frequency": 1.0}, {"name": "HotelManager", "frequency": 1.0}, {"name": "Housekeeping", "frequency": 0.8}]),
+        json.dumps([{"name": "Room", "frequency": 1.0}, {"name": "Booking", "frequency": 1.0}, {"name": "Guest", "frequency": 1.0}, {"name": "Payment", "frequency": 0.95}, {"name": "CleaningLog", "frequency": 0.8}]),
+        json.dumps([{"name": "Search Rooms", "frequency": 1.0}, {"name": "Book Room", "frequency": 1.0}, {"name": "Payment", "frequency": 1.0}, {"name": "Check In", "frequency": 0.9}]),
+        json.dumps([{"rule": "Rooms must be vacated by checkout time.", "frequency": 0.9}, {"rule": "Booking status updates require guest check-in confirmation.", "frequency": 0.85}]),
+        10
+    ),
+    (
+        "Banking System",
+        json.dumps([{"name": "Customer", "frequency": 1.0}, {"name": "BankClerk", "frequency": 0.9}, {"name": "Admin", "frequency": 0.9}]),
+        json.dumps([{"name": "Account", "frequency": 1.0}, {"name": "Transaction", "frequency": 1.0}, {"name": "Card", "frequency": 0.8}, {"name": "Loan", "frequency": 0.75}]),
+        json.dumps([{"name": "Transfer Funds", "frequency": 1.0}, {"name": "Deposit Cash", "frequency": 0.9}, {"name": "Approve Loan", "frequency": 0.8}]),
+        json.dumps([{"rule": "Transfers above $10,000 require secondary manager approval.", "frequency": 0.98}, {"rule": "Overdraft fees apply when account balance drops below zero.", "frequency": 0.95}]),
+        10
+    )
+]
+
 def initialize_database(db_path: str):
     """Initializes the database schema and seeds all tables."""
     conn = sqlite3.connect(db_path)
@@ -199,6 +304,8 @@ def initialize_database(db_path: str):
     cursor.execute("DROP TABLE IF EXISTS innovations;")
     cursor.execute("DROP TABLE IF EXISTS eval_results;")
     cursor.execute("DROP TABLE IF EXISTS eval_runs;")
+    cursor.execute("DROP TABLE IF EXISTS architecture_memory;")
+    cursor.execute("DROP TABLE IF EXISTS pattern_repository;")
     
     cursor.execute("PRAGMA foreign_keys = ON;")
     cursor.executescript(CREATE_TABLES_SQL)
@@ -244,4 +351,19 @@ def initialize_database(db_path: str):
         )
         conn.commit()
     
+    # Seed Pattern Repository
+    cursor.execute("SELECT COUNT(*) FROM pattern_repository;")
+    if cursor.fetchone()[0] == 0:
+        cursor.executemany(
+            """
+            INSERT OR IGNORE INTO pattern_repository (
+                domain, common_actors, common_entities, common_workflows, common_rules, evidence_count
+            )
+            VALUES (?, ?, ?, ?, ?, ?);
+            """,
+            SEED_PATTERN_REPOS
+        )
+        conn.commit()
+        
     conn.close()
+

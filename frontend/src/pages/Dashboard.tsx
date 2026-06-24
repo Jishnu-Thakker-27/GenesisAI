@@ -1,24 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { getDashboard, compileProject } from '../../frontend_api_client';
-import { DashboardScreen } from '../../frontend_models';
+import { getDashboard, compileProject, getProject } from '../../frontend_api_client';
+import { DashboardScreen, FinalCompiledApplication } from '../../frontend_models';
 import { Search, ChevronRight, Play, CheckCircle2, RotateCw } from 'lucide-react';
 
 interface DashboardProps {
+  currentProjectId: string;
   onViewSpec: (projectId: string) => void;
   onSetProjectId: (id: string) => void;
   onCompileStart: (prompt: string) => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId, onCompileStart }) => {  
+export const Dashboard: React.FC<DashboardProps> = ({ currentProjectId, onViewSpec, onSetProjectId, onCompileStart }) => {  
   const [data, setData] = useState<DashboardScreen | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState('Add tiered pricing logic and loyalty discount validators across the Booking ecosystem.');
+  const [prompt, setPrompt] = useState('Build me a restaurant app');
   const [compiling, setCompiling] = useState(false);
+  const [project, setProject] = useState<FinalCompiledApplication | null>(null);
 
   useEffect(() => {
     loadDashboard();
   }, []);
+
+  useEffect(() => {
+    if (currentProjectId) {
+      loadProject(currentProjectId);
+    }
+  }, [currentProjectId]);
+
+  const loadProject = async (id: string) => {
+    const res = await getProject(id);
+    if (res.success && res.data) {
+      setProject(res.data);
+    }
+  };
 
   const loadDashboard = async () => {
     setLoading(true);
@@ -70,6 +85,25 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
     );
   }
 
+  // Dynamic metrics derived from project
+  const valHealth = project?.validation_report?.is_valid ? 100 : Math.max(10, 100 - (project?.validation_report?.errors?.length || 0) * 15 - (project?.validation_report?.warnings?.length || 0) * 5);
+  const missingActorDeduction = (project?.ai_architect_report?.missing_information?.filter(m => m.category === 'actors').length || 0) * 10;
+  const missingEntityDeduction = (project?.ai_architect_report?.missing_information?.filter(m => m.category === 'workflows').length || 0) * 10;
+  const integrityScore = project ? Math.max(10, Math.min(100, Math.round((valHealth + (project?.ai_architect_report?.confidence_scores?.architecture_confidence || 0.8) * 100) / 2) - missingActorDeduction - missingEntityDeduction)) : 98;
+
+  const confidenceScore = project ? Math.round((project?.ai_architect_report?.confidence_scores?.overall_score || 0.9) * 100) : 94;
+
+  const riskCount = project?.ai_architect_report?.risks?.length || 0;
+  const missingCount = project?.ai_architect_report?.missing_information?.length || 0;
+  const riskScore = project ? Math.min(100, Math.max(10, (riskCount * 15) + (missingCount * 8))) : 12;
+
+  const valRate = project?.validation_report?.is_valid ? 100 : 70;
+  const repRate = project?.repair_report ? (project.repair_report.revalidation_results.is_valid ? 100 : 50) : 100;
+  const simRate = project ? Math.round(project.simulation_report?.success_rate || 97) : 97;
+  const readinessScore = project ? Math.round((valRate + repRate + simRate) / 3) : 97;
+
+  const isRepaired = valHealth === 100;
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       
@@ -90,8 +124,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
           justifyContent: 'space-between'
         }}>
           <div>
-            <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>Describe Application Evolution</h3>
-            <p style={{ fontSize: '13px', color: '#666666', marginBottom: '16px' }}>Input requirement modifications to auto-compile, repair, and test the evolved schemas.</p>
+            <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>Describe Application Requirements</h3>
+            <p style={{ fontSize: '13px', color: '#666666', marginBottom: '16px' }}>Compile natural language into actors, entities, workflows, validation findings, and final contracts.</p>
           </div>
           
           <form onSubmit={handleCompile} style={{ display: 'flex', gap: '12px', position: 'relative' }}>
@@ -100,7 +134,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
                 type="text"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Describe your application evolution..."
+                placeholder="Build me a restaurant app..."
                 style={{
                   width: '100%',
                   backgroundColor: '#0A0A0A',
@@ -192,15 +226,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
           textAlign: 'center',
           justifyContent: 'space-between'
         }}>
-          <h3 style={{ fontSize: '14px', color: '#888888', fontWeight: '500' }}>Architecture Integrity Score</h3>
+          <h3 style={{ fontSize: '14px', color: '#888888', fontWeight: '500' }}>Compiler Findings</h3>
           
           <div style={{ position: 'relative', width: '140px', height: '140px', margin: '20px 0' }}>
-            {/* Simple CSS Circular indicator */}
             <div style={{
               width: '100%',
               height: '100%',
               borderRadius: '50%',
-              background: `conic-gradient(#10B981 0% ${data.success_rate}%, #1E1E1E ${data.success_rate}% 100%)`,
+              background: `conic-gradient(#10B981 0% ${integrityScore}%, #1E1E1E ${integrityScore}% 100%)`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -215,20 +248,24 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                <span style={{ fontSize: '28px', fontWeight: 'bold', color: '#10B981' }}>{data.success_rate}%</span>
-                <span style={{ fontSize: '10px', color: '#666666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Passed</span>
+                <span style={{ fontSize: '28px', fontWeight: 'bold', color: '#10B981' }}>{missingCount}</span>
+                <span style={{ fontSize: '10px', color: '#666666', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Gaps</span>
               </div>
             </div>
           </div>
 
           <div style={{ display: 'flex', gap: '20px', width: '100%' }}>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: '11px', color: '#666666' }}>Repair Status</p>
-              <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#10B981', marginTop: '2px' }}>Stable</p>
+              <p style={{ fontSize: '11px', color: '#666666' }}>Validation</p>
+              <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#10B981', marginTop: '2px' }}>
+                {project?.validation_report?.is_valid ? 'Valid' : 'Review'}
+              </p>
             </div>
             <div style={{ flex: 1, borderLeft: '1px solid #1E1E1E' }}>
-              <p style={{ fontSize: '11px', color: '#666666' }}>Execution</p>
-              <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#10B981', marginTop: '2px' }}>Ready</p>
+              <p style={{ fontSize: '11px', color: '#666666' }}>Questions</p>
+              <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#10B981', marginTop: '2px' }}>
+                {project?.ai_architect_report?.clarification_questions.length || 0}
+              </p>
             </div>
           </div>
         </div>
@@ -242,46 +279,60 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
           {/* Card 1 */}
           <div style={{ backgroundColor: '#121212', border: '1px solid #1E1E1E', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontSize: '13px', color: '#666666' }}>Blueprint Confidence</p>
-              <h4 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '8px' }}>0.94 <span style={{ fontSize: '12px', color: '#10B981', fontWeight: 'normal' }}>(+0.02)</span></h4>
+              <p style={{ fontSize: '13px', color: '#666666' }}>Detected Domain</p>
+              <h4 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '8px' }}>
+                {project?.ai_architect_report?.detected_domain || 'No compile yet'}
+              </h4>
             </div>
             <div style={{ height: '4px', backgroundColor: '#1E1E1E', borderRadius: '2px', overflow: 'hidden', marginTop: '16px' }}>
-              <div style={{ width: '94%', height: '100%', backgroundColor: '#0070F3' }}></div>
+              <div style={{ width: project ? '100%' : '0%', height: '100%', backgroundColor: '#0070F3' }}></div>
             </div>
           </div>
 
           {/* Card 2 */}
           <div style={{ backgroundColor: '#121212', border: '1px solid #1E1E1E', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontSize: '13px', color: '#666666' }}>Validation Health</p>
-              <h4 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '8px', color: '#10B981' }}>100% <span style={{ fontSize: '12px', color: '#888888', fontWeight: 'normal' }}>(Passed 10 Layers)</span></h4>
+              <p style={{ fontSize: '13px', color: '#666666' }}>Validation Findings</p>
+              <h4 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '8px', color: isRepaired ? '#10B981' : '#F59E0B' }}>
+                {project?.validation_report?.errors.length || 0} errors{' '}
+                <span style={{ fontSize: '12px', color: '#888888', fontWeight: 'normal' }}>
+                  ({project?.validation_report?.warnings.length || 0} warnings)
+                </span>
+              </h4>
             </div>
             <div style={{ height: '4px', backgroundColor: '#1E1E1E', borderRadius: '2px', overflow: 'hidden', marginTop: '16px' }}>
-              <div style={{ width: '100%', height: '100%', backgroundColor: '#10B981' }}></div>
+              <div style={{ width: `${valHealth}%`, height: '100%', backgroundColor: isRepaired ? '#10B981' : '#F59E0B' }}></div>
             </div>
           </div>
 
           {/* Card 3 */}
           <div style={{ backgroundColor: '#121212', border: '1px solid #1E1E1E', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontSize: '13px', color: '#666666' }}>Repair Success Rate</p>
-              <h4 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '8px' }}>{data.repair_rate}% <span style={{ fontSize: '12px', color: '#10B981', fontWeight: 'normal' }}>Stable</span></h4>
+              <p style={{ fontSize: '13px', color: '#666666' }}>Requirement Gaps</p>
+              <h4 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '8px', color: riskScore > 50 ? '#EF4444' : riskScore > 25 ? '#F59E0B' : '#10B981' }}>
+                {missingCount}{' '}
+                <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#888888' }}>
+                  ({riskCount} risks)
+                </span>
+              </h4>
             </div>
             <div style={{ height: '4px', backgroundColor: '#1E1E1E', borderRadius: '2px', overflow: 'hidden', marginTop: '16px' }}>
-              <div style={{ width: '88%', height: '100%', backgroundColor: '#0070F3' }}></div>
+              <div style={{ width: `${riskScore}%`, height: '100%', backgroundColor: riskScore > 50 ? '#EF4444' : riskScore > 25 ? '#F59E0B' : '#10B981' }}></div>
             </div>
           </div>
 
           {/* Card 4 */}
           <div style={{ backgroundColor: '#121212', border: '1px solid #1E1E1E', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontSize: '13px', color: '#666666' }}>Execution Readiness</p>
-              <h4 style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '8px', color: '#FFFFFF' }}>Ready for Simulation</h4>
-              <p style={{ fontSize: '11px', color: '#666666', marginTop: '2px' }}>Target Env: AWS-West-2 cluster</p>
+              <p style={{ fontSize: '13px', color: '#666666' }}>Generated Architecture</p>
+              <h4 style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '8px', color: '#FFFFFF' }}>
+                {(project?.system_design?.entities?.length || 0)} entities, {(project?.system_design?.workflows?.length || 0)} workflows
+              </h4>
+              <p style={{ fontSize: '11px', color: '#666666', marginTop: '2px' }}>Target: {project?.app_type || 'Microservice API'}</p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '16px', fontSize: '12px', color: '#10B981' }}>
               <CheckCircle2 size={14} />
-              <span>Optimal Environment Status</span>
+              <span>Derived from compiled contract</span>
             </div>
           </div>
         </div>
@@ -315,7 +366,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
             overflow: 'auto',
             maxHeight: '260px'
           }}>
-{`{
+{project ? JSON.stringify({
+  app_name: project.app_name,
+  app_type: project.app_type,
+  prompt_summary: project.prompt.substring(0, 60) + "...",
+  actors: project.blueprint?.actors?.map((a: any) => a.name) || [],
+  entities: project.system_design?.entities?.map((e: any) => e.name) || [],
+  workflows: project.system_design?.workflows?.map((w: any) => w.workflow_name) || []
+}, null, 2) : `{
   "actors": [
     {"type": "SuperAdmin", "scope": "Global"},
     {"type": "ProjectCompiler", "permissions": "Full"}
@@ -330,7 +388,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
           </pre>
           
           <button
-            onClick={() => onViewSpec(data.recent_projects[0]?.project_id || 'proj_01')}
+            onClick={() => onViewSpec(project?.project_id || data.recent_projects[0]?.project_id || 'proj_01')}
             style={{
               marginTop: '16px',
               backgroundColor: 'transparent',
@@ -366,29 +424,24 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewSpec, onSetProjectId
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-              <div style={{ padding: '6px', backgroundColor: 'rgba(0, 112, 243, 0.1)', borderRadius: '6px', color: '#0070F3', fontSize: '11px', fontWeight: 'bold' }}>TRS</div>
-              <div>
-                <p style={{ fontSize: '13px', fontWeight: 'bold' }}>Schema Transition Alpha-09 <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 'normal', marginLeft: '8px' }}>+4.2% Confidence</span></p>
-                <p style={{ fontSize: '12px', color: '#666666', marginTop: '2px' }}>Applied 24 structural fixes to Actor Model.</p>
+            {data.recent_projects.slice(0, 3).map((p, idx) => (
+              <div key={p.project_id || idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                <div style={{ padding: '6px', backgroundColor: 'rgba(0, 112, 243, 0.1)', borderRadius: '6px', color: '#0070F3', fontSize: '11px', fontWeight: 'bold' }}>
+                  {p.project_id.substring(5, 8).toUpperCase() || 'EVO'}
+                </div>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 'bold' }}>
+                    {p.prompt.substring(0, 45)}...{' '}
+                    <span style={{ fontSize: '11px', color: p.final_status === 'SUCCESS' ? '#10B981' : '#EF4444', fontWeight: 'normal', marginLeft: '8px' }}>
+                      {p.final_status}
+                    </span>
+                  </p>
+                  <p style={{ fontSize: '12px', color: '#666666', marginTop: '2px' }}>
+                    Created {p.created_at || 'Just now'}. {p.latency ? `Latency: ${p.latency.toFixed(0)}ms` : ''}
+                  </p>
+                </div>
               </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-              <div style={{ padding: '6px', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderRadius: '6px', color: '#10B981', fontSize: '11px', fontWeight: 'bold' }}>STB</div>
-              <div>
-                <p style={{ fontSize: '13px', fontWeight: 'bold' }}>Protocol Re-alignment <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 'normal', marginLeft: '8px' }}>Stable</span></p>
-                <p style={{ fontSize: '12px', color: '#666666', marginTop: '2px' }}>Validated OAuth2 handshake sequence.</p>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-              <div style={{ padding: '6px', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderRadius: '6px', color: '#10B981', fontSize: '11px', fontWeight: 'bold' }}>SYN</div>
-              <div>
-                <p style={{ fontSize: '13px', fontWeight: 'bold' }}>Initial Synthesis <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 'normal', marginLeft: '8px' }}>Success</span></p>
-                <p style={{ fontSize: '12px', color: '#666666', marginTop: '2px' }}>Blueprint generation from natural language.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

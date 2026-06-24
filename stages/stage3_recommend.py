@@ -175,21 +175,55 @@ class BlueprintRecommendationEngine:
         user_tokens = []
         for feature in intent.features:
             user_tokens.extend(self._tokenize(feature.name))
-            user_tokens.extend(self._tokenize(feature.description))
+            if feature.description:
+                user_tokens.extend(self._tokenize(feature.description))
         user_tokens = list(set(user_tokens))
 
         # Retrieve structures from DB
         industry_features = self._retrieve_industry_patterns(category)
-        community_innovs = self._retrieve_community_innovations(category)
-
-        # 1. Map Features & Explanations
-        recommended_features: List[RecommendedFeature] = []
         
-        # Keep user requested features
+        # 1. Map Recommended Actors
+        recommended_actors: List[RecommendedActor] = []
+        for act in intent.actors:
+            # Exclude AccessPlatform/User generic profiles unless required
+            if act.name in ("User", "AccessPlatform") and intent.detected_domain != "Unspecified Platform":
+                continue
+            recommended_actors.append(RecommendedActor(
+                name=act.name,
+                description=act.description,
+                relevance_score=1.0,
+                why_needed="Requested actor profile for operations."
+            ))
+            
+        # Ensure Admin is added if not present (except for generic platforms)
+        if intent.detected_domain != "Unspecified Platform":
+            existing_actor_names = {a.name for a in recommended_actors}
+            if "Admin" not in existing_actor_names and "Administrator" not in existing_actor_names:
+                recommended_actors.append(RecommendedActor(
+                    name="Admin",
+                    description="System administrator overseeing database metrics and accounts.",
+                    relevance_score=0.90,
+                    why_needed="Required to manage application entities, records, and access permissions."
+                ))
+        else:
+            if not recommended_actors:
+                recommended_actors.append(RecommendedActor(
+                    name="User",
+                    description="Standard application user",
+                    relevance_score=1.0,
+                    why_needed="Baseline user profile."
+                ))
+
+        # 2. Map Features & Explanations
+        recommended_features: List[RecommendedFeature] = []
         for u_feat in intent.features:
+            # Exclude AccessPlatform or User features unless required
+            if u_feat.name in ("AccessPlatform", "UserFeature") and intent.detected_domain != "Unspecified Platform":
+                continue
+                
             source = RecommendationSource(
                 source_type="user_requirement",
-                source_description="Explicitly requested in prompt.",
+                source_description="Explicitly requested in requirements.",
                 relevance_score=1.0
             )
             reliability = self._compute_reliability("user_requirement")
@@ -217,6 +251,8 @@ class BlueprintRecommendationEngine:
         for ip in industry_features:
             if any(CanonicalNamingEngine.to_pascal_case(u.name) == CanonicalNamingEngine.to_pascal_case(ip["feature_name"]) for u in intent.features):
                 continue
+            if ip["feature_name"] in ("AccessPlatform", "UserFeature") and intent.detected_domain != "Unspecified Platform":
+                continue
 
             ip_tokens = self._tokenize(ip["feature_name"]) + self._tokenize(ip["description"])
             sim = self._calculate_similarity(user_tokens, ip_tokens)
@@ -243,12 +279,21 @@ class BlueprintRecommendationEngine:
             )
             
             actor = "Admin"
-            if "member" in ip["feature_name"].lower() or "user" in ip["feature_name"].lower():
+            ip_name_lower = ip["feature_name"].lower()
+            if "member" in ip_name_lower or "user" in ip_name_lower:
                 actor = "GymMember" if "gym" in category.lower() else "User"
-            elif "student" in ip["feature_name"].lower():
+            elif "student" in ip_name_lower:
                 actor = "Student"
-            elif "patient" in ip["feature_name"].lower():
+            elif "patient" in ip_name_lower:
                 actor = "Patient"
+            elif "customer" in ip_name_lower:
+                actor = "Customer"
+            elif "guest" in ip_name_lower:
+                actor = "Guest"
+            elif "buyer" in ip_name_lower:
+                actor = "Buyer"
+            elif "seller" in ip_name_lower:
+                actor = "Seller"
             
             recommended_features.append(RecommendedFeature(
                 name=ip["feature_name"],
@@ -257,27 +302,98 @@ class BlueprintRecommendationEngine:
                 explanation=explanation
             ))
 
-        # 2. Map Recommended Actors
-        recommended_actors: List[RecommendedActor] = []
-        for act in intent.actors:
-            recommended_actors.append(RecommendedActor(
-                name=act.name,
-                description=act.description,
-                relevance_score=1.0,
-                why_needed="Requested actor profile for operations."
-            ))
+        # 3. Map Workflows
+        recommended_workflows: List[RecommendedWorkflow] = []
+        for wf_name in intent.workflows:
+            steps = []
+            actor = "User"
             
-        existing_actor_names = {a.name for a in intent.actors}
-        if "Admin" not in existing_actor_names:
-            recommended_actors.append(RecommendedActor(
-                name="Admin",
-                description="System administrator overseeing database metrics and accounts.",
-                relevance_score=0.90,
-                why_needed="Required to manage application entities, records, and access permissions."
+            # Find a matching feature from the intent to extract the correct actor
+            matching_feature = None
+            wf_clean = wf_name.lower().replace(" ", "").replace("_", "").replace("-", "")
+            for feat in intent.features:
+                feat_clean = feat.name.lower().replace(" ", "").replace("_", "").replace("-", "")
+                if feat_clean in wf_clean or wf_clean in feat_clean:
+                    matching_feature = feat
+                    break
+            
+            if matching_feature:
+                actor = matching_feature.actor_involved
+            
+            if "order" in wf_name.lower():
+                steps = ["Browse Menu", "Select Items", "Add to Cart", "Submit Order"]
+                if not matching_feature:
+                    if "Customer" in [a.name for a in recommended_actors]:
+                        actor = "Customer"
+                    elif "Buyer" in [a.name for a in recommended_actors]:
+                        actor = "Buyer"
+                    elif "Guest" in [a.name for a in recommended_actors]:
+                        actor = "Guest"
+                    else:
+                        actor = "User"
+            elif "checkout" in wf_name.lower() or "pay" in wf_name.lower():
+                steps = ["Initiate Payment", "Select Payment Method", "Process Transaction", "Confirm Payment"]
+                if not matching_feature:
+                    if "Customer" in [a.name for a in recommended_actors]:
+                        actor = "Customer"
+                    elif "Buyer" in [a.name for a in recommended_actors]:
+                        actor = "Buyer"
+                    elif "Guest" in [a.name for a in recommended_actors]:
+                        actor = "Guest"
+                    else:
+                        actor = "User"
+            elif "appointment" in wf_name.lower():
+                steps = ["Select Date and Time", "Check Doctor Availability", "Confirm Appointment"]
+                if not matching_feature:
+                    actor = "Patient" if "Patient" in [a.name for a in recommended_actors] else "User"
+            elif "prescription" in wf_name.lower() or "consultation" in wf_name.lower():
+                steps = ["Select Patient", "Diagnose Patient", "Write Prescription", "Save Prescription"]
+                if not matching_feature:
+                    actor = "Doctor" if "Doctor" in [a.name for a in recommended_actors] else "User"
+            elif "room" in wf_name.lower() or "hotel" in wf_name.lower():
+                steps = ["Search Rooms", "Select Room", "Enter Guest Details", "Confirm Booking"]
+                if not matching_feature:
+                    actor = "Guest" if "Guest" in [a.name for a in recommended_actors] else "User"
+            else:
+                steps = [f"Start {wf_name}", "Process", "Complete"]
+                if not matching_feature:
+                    actor = recommended_actors[0].name if recommended_actors else "User"
+
+            recommended_workflows.append(RecommendedWorkflow(
+                name=CanonicalNamingEngine.to_pascal_case(wf_name),
+                description=f"Standard sequence for {wf_name}.",
+                steps=steps,
+                actor_involved=actor,
+                why_needed=f"Enables the {wf_name} capability."
             ))
 
-        # 3. Map Recommended Innovations
+
+        # 4. Map Recommended Permissions
+        recommended_permissions: List[RecommendedPermission] = []
+        for actor in recommended_actors:
+            if actor.name == "Admin":
+                recommended_permissions.append(RecommendedPermission(
+                    actor="Admin",
+                    action="ManageAllRecords",
+                    description="Full administrative system configurations overrides.",
+                    why_needed="Standard admin system access rights."
+                ))
+            else:
+                recommended_permissions.append(RecommendedPermission(
+                    actor=actor.name,
+                    action=f"Access{actor.name}Portal",
+                    description=f"Allows {actor.name} to view their registered attributes.",
+                    why_needed="Enforces fundamental privacy boundaries."
+                ))
+
+        # Retrieve innovations if category matches
+        community_innovs = self._retrieve_community_innovations(category)
         recommended_innovations: List[RecommendedInnovation] = []
+        user_tokens = []
+        for f in recommended_features:
+            user_tokens.extend(self._tokenize(f.name))
+        user_tokens = list(set(user_tokens))
+
         for ci in community_innovs:
             ci_tokens = self._tokenize(ci["feature_name"]) + self._tokenize(ci["description"]) + self._tokenize(ci["suggested_with"])
             sim = self._calculate_similarity(user_tokens, ci_tokens)
@@ -292,50 +408,6 @@ class BlueprintRecommendationEngine:
                     impact_score=ci["impact_score"],
                     innovation_origin=ci["innovation_origin"],
                     why_recommended=f"Highly accepted ({int(ci['acceptance_rate']*100)}% approval) in previous {category} projects. {ci['description']}"
-                ))
-
-        # 4. Map Workflows
-        recommended_workflows: List[RecommendedWorkflow] = []
-        if "gym" in category.lower():
-            recommended_workflows.append(RecommendedWorkflow(
-                name="ClassBookingFlow",
-                description="Sequential steps to book a spot in a class.",
-                steps=["Select Class", "Verify Capacity", "Deduct Class Credit", "Log Booking Record", "Send Notification"],
-                actor_involved="GymMember",
-                why_needed="Core member transaction path."
-            ))
-            recommended_workflows.append(RecommendedWorkflow(
-                name="MembershipPurchaseFlow",
-                description="Onboarding billing transaction.",
-                steps=["Select Tier Plan", "Verify Payment Gateway", "Set Subscription Active", "Log Account Profile"],
-                actor_involved="GymMember",
-                why_needed="Enables payment transactions."
-            ))
-        elif "crm" in category.lower():
-            recommended_workflows.append(RecommendedWorkflow(
-                name="LeadConversionFlow",
-                description="Progressing a sales lead to converted status.",
-                steps=["Qualify Lead", "Assess Budget", "Promote Deal Stage", "Generate Customer Record"],
-                actor_involved="SalesAgent",
-                why_needed="Standard sales progression workflow."
-            ))
-
-        # 5. Map Recommended Permissions
-        recommended_permissions: List[RecommendedPermission] = []
-        for actor in recommended_actors:
-            if actor.name == "Admin":
-                recommended_permissions.append(RecommendedPermission(
-                    actor="Admin",
-                    action="ManageAllRecords",
-                    description="Full administrative system configurations overrides.",
-                    why_needed="Standard admin system access rights."
-                ))
-            else:
-                recommended_permissions.append(RecommendedPermission(
-                    actor=actor.name,
-                    action="ReadOwnProfile",
-                    description="Allows user to view their registered attributes.",
-                    why_needed="Enforces fundamental privacy boundaries."
                 ))
 
         # Refactored: Run ranking engine sorting

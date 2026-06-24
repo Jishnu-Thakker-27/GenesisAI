@@ -537,8 +537,9 @@ export const mockAIArchitectReport: AIArchitectReport = {
   ],
   risks: [
     {
-      risk: "Architecture may encode the wrong workflow scope.",
-      severity: "HIGH",
+      category: "Requirement Risk",
+      level: "HIGH",
+      explanation: "Architecture may encode the wrong workflow scope.",
       mitigation: "Clarify attendance and cancellation rules before production build-out."
     }
   ],

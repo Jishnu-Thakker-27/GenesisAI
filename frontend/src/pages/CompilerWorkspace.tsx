@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getProject, compileProject } from '../../frontend_api_client';
 import { FinalCompiledApplication } from '../../frontend_models';
-import { Play, ShieldAlert, Terminal, CheckCircle2, RotateCw } from 'lucide-react';
+import { Play, ShieldAlert, Terminal, CheckCircle2, RotateCw, Cpu, BrainCircuit, ShieldCheck, Database, Wrench } from 'lucide-react';
+import { JsonInspector } from '../components/JsonInspector';
 
 interface CompilerWorkspaceProps {
   projectId: string;
@@ -13,6 +14,7 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
   const [error, setError] = useState<string | null>(null);
   const [evolving, setEvolving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [selectedStage, setSelectedStage] = useState<string>('System Design');
 
   useEffect(() => {
     loadProject();
@@ -33,7 +35,7 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
   const handleEvolve = async () => {
     if (!project) return;
     setEvolving(true);
-    const res = await compileProject(project.prompt);
+    const res = await compileProject(project.prompt, project.execution_mode || "BALANCED", project.ai_architect_report?.mode || "HYBRID");
     if (res.success && res.data) {
       setProject(res.data);
       setToastMessage('Evolution Successful - Genesis Schema EV-002-TRS in action.');
@@ -63,17 +65,170 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
     );
   }
 
-  // Define compiler stage checkpoints
+  // Compiler stages linked to selected tabs
   const stages = [
-    { name: 'Intent Extraction', status: 'Checked' },
-    { name: 'Blueprint Recommendation', status: 'Checked' },
-    { name: 'System Design', status: 'Checked' },
-    { name: 'Schema Generation', status: 'Active' },
-    { name: 'Validation', status: 'Pending' },
-    { name: 'Repair', status: 'Pending' },
-    { name: 'Simulation', status: 'Pending' },
-    { name: 'Evaluation', status: 'Pending' }
+    { name: 'Intent Extraction', icon: Cpu, desc: 'Natural language semantic parsing.' },
+    { name: 'AI Architect Report', icon: BrainCircuit, desc: 'Ambiguity & assumptions engine.' },
+    { name: 'Blueprint Recommendation', icon: Database, desc: 'Recommended actors and structures.' },
+    { name: 'System Design', icon: Terminal, desc: 'Specification of entities and relations.' },
+    { name: 'Schema Generation', icon: Database, desc: 'Database, API, and UI schemas.' },
+    { name: 'Validation', icon: ShieldCheck, desc: 'Multi-layer integrity scan.' },
+    { name: 'Self-Healing Repair', icon: Wrench, desc: 'Autonomous conflict patch engine.' }
   ];
+
+  // Dynamic code viewer selector content
+  const renderStageContent = () => {
+    switch (selectedStage) {
+      case 'Intent Extraction':
+        return {
+          filename: 'intent_extraction.json',
+          content: JSON.stringify({
+            prompt: project.prompt,
+            extracted_intent: project.intent
+          }, null, 2)
+        };
+      case 'AI Architect Report':
+        return {
+          filename: 'ai_architect_report.json',
+          content: JSON.stringify({
+            mode: project.ai_architect_report.mode,
+            ambiguity_score: project.ai_architect_report.ambiguity_score,
+            missing_information: project.ai_architect_report.missing_information,
+            assumptions_made: project.ai_architect_report.assumptions_made,
+            clarification_questions: project.ai_architect_report.clarification_questions,
+            confidence_scores: project.ai_architect_report.confidence_scores
+          }, null, 2)
+        };
+      case 'Blueprint Recommendation':
+        return {
+          filename: 'blueprint_recommendation.json',
+          content: JSON.stringify(project.blueprint, null, 2)
+        };
+      case 'System Design':
+        return {
+          filename: 'master_specification.json',
+          content: JSON.stringify({
+            schema_version: '2.4.0-alpha',
+            metadata: project.system_design.metadata || {},
+            entities: project.system_design.entities,
+            relationships: project.system_design.relationships,
+            workflows: project.system_design.workflows,
+            design_decisions: project.system_design.design_decisions
+          }, null, 2)
+        };
+      case 'Schema Generation':
+        return {
+          filename: 'compiled_schema_bundle.json',
+          content: JSON.stringify(project.schema_bundle, null, 2)
+        };
+      case 'Validation':
+        return {
+          filename: 'validation_report.json',
+          content: JSON.stringify(project.validation_report, null, 2)
+        };
+      case 'Self-Healing Repair':
+        return {
+          filename: 'repair_report.json',
+          content: JSON.stringify(project.repair_report || {
+            repair_status: 'No repair needed',
+            validation_passed: project.validation_report.is_valid,
+            repair_history: []
+          }, null, 2)
+        };
+      default:
+        return { filename: 'unknown.json', content: '{}' };
+    }
+  };
+
+  const activeViewer = renderStageContent();
+
+  // Dynamic Right-Sidebar Reasoning details based on current stage
+  const renderReasoningMeta = () => {
+    switch (selectedStage) {
+      case 'Intent Extraction':
+        return (
+          <>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Extraction Engine</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Intent Confidence</p>
+              <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#10B981', marginTop: '4px' }}>
+                {Math.round((project.intent?.confidence_score || 0.9) * 100)}%
+              </p>
+            </div>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Actors Found</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>
+                {project.intent?.actors?.length || 0} Actors Extracted
+              </p>
+              <p style={{ fontSize: '12px', color: '#888888', marginTop: '4px' }}>
+                {project.intent?.actors?.map((a: any) => a.name).join(', ')}
+              </p>
+            </div>
+          </>
+        );
+      case 'AI Architect Report':
+        return (
+          <>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Ambiguity Rating</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Ambiguity Level</p>
+              <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#F59E0B', marginTop: '4px' }}>
+                {Math.round(project.ai_architect_report.ambiguity_score * 100)}%
+              </p>
+            </div>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Clarification Triggered</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>
+                {project.ai_architect_report.clarification_questions.length} Open Questions
+              </p>
+            </div>
+          </>
+        );
+      case 'Blueprint Recommendation':
+        return (
+          <>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Blueprint Contents</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>{project.blueprint.actors.length} actors</p>
+              <p style={{ fontSize: '12px', color: '#888888', marginTop: '4px' }}>{project.blueprint.features.length} features, {project.blueprint.workflows.length} workflows</p>
+            </div>
+          </>
+        );
+      case 'System Design':
+        return (
+          <>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Active Specification</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Compiled Spec</p>
+              <p style={{ fontSize: '12px', color: '#888888', marginTop: '6px', lineHeight: '1.4' }}>
+                Generated dynamically from natural language requirements mapping core relational models.
+              </p>
+            </div>
+          </>
+        );
+      case 'Validation':
+        return (
+          <>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Scan Verdict</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Integrity Scan</p>
+              <p style={{ fontSize: '18px', fontWeight: 'bold', color: project.validation_report.is_valid ? '#10B981' : '#F59E0B', marginTop: '4px' }}>
+                {project.validation_report.is_valid ? 'PASSED' : 'WARNING'}
+              </p>
+            </div>
+          </>
+        );
+      default:
+        return (
+          <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+            <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Pipeline Log</p>
+            <p style={{ fontSize: '12px', color: '#888888', marginTop: '6px', lineHeight: '1.4' }}>
+              Select a compiler stage on the left sidebar to audit its serialized code outputs.
+            </p>
+          </div>
+        );
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -109,7 +264,7 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
       {/* Main Grid: Checklist - JSON Spec Editor - Reasoning side panel */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '240px 1fr 340px',
+        gridTemplateColumns: '260px 1fr 340px',
         gap: '24px',
         height: 'calc(100vh - 280px)',
         minHeight: '500px'
@@ -123,36 +278,43 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
           padding: '20px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px'
+          gap: '16px',
+          overflowY: 'auto'
         }}>
           <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#FFFFFF' }}>Compiler Stages</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {stages.map((stage) => (
-              <div key={stage.name} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '4px',
-                  border: stage.status === 'Pending' ? '1px solid #333333' : 'none',
-                  backgroundColor: stage.status === 'Checked' ? '#0070F3' : stage.status === 'Active' ? '#F59E0B' : 'transparent',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#FFFFFF',
-                  fontSize: '10px',
-                  fontWeight: 'bold'
-                }}>
-                  {stage.status === 'Checked' ? '✓' : stage.status === 'Active' ? '•' : ''}
-                </div>
-                <span style={{
-                  fontSize: '13px',
-                  color: stage.status === 'Pending' ? '#666666' : '#FFFFFF',
-                  fontWeight: stage.status === 'Active' ? 'bold' : 'normal'
-                }}>
-                  {stage.name}
-                </span>
-              </div>
-            ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {stages.map((stage) => {
+              const StageIcon = stage.icon;
+              const isSelected = selectedStage === stage.name;
+              return (
+                <button
+                  key={stage.name}
+                  onClick={() => setSelectedStage(stage.name)}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    gap: '4px',
+                    width: '100%',
+                    padding: '10px 12px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    backgroundColor: isSelected ? '#0070F3' : 'transparent',
+                    color: isSelected ? '#FFFFFF' : '#888888',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: isSelected ? 'bold' : 'normal' }}>
+                    <StageIcon size={14} />
+                    <span>{stage.name}</span>
+                  </div>
+                  <span style={{ fontSize: '10px', color: isSelected ? 'rgba(255,255,255,0.7)' : '#666666' }}>{stage.desc}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -165,45 +327,11 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
           flexDirection: 'column',
           overflow: 'hidden'
         }}>
-          {/* Editor Header */}
-          <div style={{
-            padding: '12px 20px',
-            borderBottom: '1px solid #1E1E1E',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: '#161616'
-          }}>
-            <span style={{ fontSize: '13px', fontFamily: 'var(--font-mono)', color: '#888888' }}>master_spec.json (1402 lines)</span>
-            <span style={{ fontSize: '11px', color: '#666666' }}>UTF-8 | JSON</span>
-          </div>
-
-          {/* Editor Content */}
-          <pre style={{
-            flexGrow: 1,
-            margin: 0,
-            padding: '20px',
-            backgroundColor: '#0A0A0A',
-            overflow: 'auto',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '13px',
-            lineHeight: '1.6',
-            color: '#D4D4D4'
-          }}>
-            <code>
-{JSON.stringify({
-  schema_version: "2.4.0-alpha",
-  application: {
-    name: project.app_name,
-    type: project.app_type,
-    prompt: project.prompt
-  },
-  entities: project.system_design.entities,
-  relationships: project.system_design.relationships,
-  workflows: project.system_design.workflows
-}, null, 2)}
-            </code>
-          </pre>
+          <JsonInspector
+            title={activeViewer.filename}
+            data={JSON.parse(activeViewer.content)}
+            filename={activeViewer.filename}
+          />
         </div>
 
         {/* Right Reasoning & Traceability Panel */}
@@ -222,22 +350,16 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
             <p style={{ fontSize: '12px', color: '#666666', marginTop: '4px' }}>Underlying rationales for compiled design entities.</p>
           </div>
 
-          <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
-            <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Active Analysis</p>
-            <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Entity: Booking</p>
-            <p style={{ fontSize: '12px', color: '#888888', marginTop: '6px', lineHeight: '1.4' }}>
-              Generated to satisfy core Genesis requirements for transactional integrity and client scheduling.
-            </p>
-          </div>
+          {renderReasoningMeta()}
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '12px' }}>
-              <p style={{ fontSize: '11px', color: '#666666' }}>Coverage</p>
-              <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#10B981', marginTop: '4px' }}>98.4%</p>
+              <p style={{ fontSize: '11px', color: '#666666' }}>Missing Requirements</p>
+              <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#F59E0B', marginTop: '4px' }}>{project.ai_architect_report.missing_information.length}</p>
             </div>
             <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '12px' }}>
-              <p style={{ fontSize: '11px', color: '#666666' }}>Latency</p>
-              <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#FFFFFF', marginTop: '4px' }}>12ms</p>
+              <p style={{ fontSize: '11px', color: '#666666' }}>Open Questions</p>
+              <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#FFFFFF', marginTop: '4px' }}>{project.ai_architect_report.clarification_questions.length}</p>
             </div>
           </div>
 
@@ -250,7 +372,7 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
               marginTop: '8px',
               lineHeight: '1.4'
             }}>
-SOURCE_1: Genesis core 'Feeder' evolves 'Booking' via the primary interface.
+{project.pipeline_traces.map((trace) => `${trace.phase_name}: ${trace.status}`).join('\n')}
             </pre>
           </div>
         </div>
@@ -268,8 +390,8 @@ SOURCE_1: Genesis core 'Feeder' evolves 'Booking' via the primary interface.
         padding: '16px 24px'
       }}>
         <div style={{ display: 'flex', gap: '16px', color: '#888888', fontSize: '13px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><CheckCircle2 size={16} style={{ color: '#10B981' }} /> 0 Errors</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><ShieldAlert size={16} style={{ color: '#666666' }} /> 0 Warnings</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><CheckCircle2 size={16} style={{ color: '#10B981' }} /> {project.validation_report.errors.length} Errors</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><ShieldAlert size={16} style={{ color: '#666666' }} /> {project.validation_report.warnings.length} Warnings</span>
         </div>
         
         <div style={{ display: 'flex', gap: '12px' }}>

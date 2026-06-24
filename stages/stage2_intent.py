@@ -71,6 +71,11 @@ class ConfidenceBreakdown(BaseModel):
 class IntentExtractionResult(BaseModel):
     app_name: str = Field(..., description="Proposed name of the application")
     app_type: str = Field(..., description="Identified application category")
+    detected_domain: Optional[str] = Field(None, description="Classified domain category")
+    detected_subdomain: Optional[str] = Field(None, description="Classified subdomain category")
+    domain_confidence: Optional[float] = Field(None, description="Domain classification confidence")
+    entities: List[str] = Field(default_factory=list, description="Extracted system entities")
+    workflows: List[str] = Field(default_factory=list, description="Extracted system workflows")
     actors: List[IntentActor] = Field(default_factory=list)
     features: List[IntentFeature] = Field(default_factory=list)
     business_rules: List[str] = Field(default_factory=list)
@@ -84,6 +89,7 @@ class IntentExtractionResult(BaseModel):
     confidence_breakdown: Optional[ConfidenceBreakdown] = Field(None, description="Granular confidence scores per layer")
     processing_mode: Literal["MODE_A", "MODE_B", "MODE_C"] = Field("MODE_B")
 
+
     @field_validator("confidence_score")
     @classmethod
     def clamp_confidence(cls, v: float) -> float:
@@ -92,24 +98,27 @@ class IntentExtractionResult(BaseModel):
 
 # --- PROMPT TEMPLATES ---
 
-SYSTEM_PROMPT = """You are the Intent Extraction Engine of an AI Software Compiler.
-Your primary role is to dissect natural language application prompts and organize them into structured components.
+SYSTEM_PROMPT = """You are the AI Requirements Architect of GenesisAI.
+Your primary role is to dissect natural language application prompts and organize them into structured requirements before generating architecture.
 
 You must:
-1. Detect the Application Type and suggest a clean, functional App Name.
-2. Identify distinct Actors/Roles involved in the application.
-3. Extract core Features mapping them to actors, and mark their source.
-4. Extract Business Rules and technical constraints.
-5. Identify Gaps or missing details in the prompt (e.g., roles, flows, database requirements).
-6. Detect Workflow Gaps specifically (e.g., Membership Purchase Flow, Class Booking Flow).
-7. Provide logical, structured assumptions to fill missing slots, including their impact levels.
-8. Generate high-quality clarification questions to resolve critical gaps.
-9. Assess the prompt completeness and generate a confidence score with explanations.
+1. Detect the Domain, Subdomain, and Domain Confidence. Set detected_domain, detected_subdomain, and domain_confidence.
+2. Identify distinct Actors/Roles involved in the application. Do NOT use generic AccessPlatform or User profiles unless requested.
+3. Extract core Features mapping them to actors.
+4. Extract key Domain Entities (e.g. Menu, Order, Payment for Restaurant).
+5. Extract key Domain Workflows (e.g. Place Order, Checkout for Restaurant).
+6. Extract Business Rules and technical constraints.
+7. Identify Gaps or missing details in the prompt.
+8. Detect Workflow Gaps specifically.
+9. Provide logical, structured assumptions to fill missing slots.
+10. Generate high-quality clarification questions to resolve critical gaps.
+11. Assess overall confidence score.
 
 Rules:
 - Actors must have PascalCase names.
 - Normalize actor references in features, assumptions, and workflows.
 - Maintain high logical consistency across all extracted fields.
+- Do NOT generate generic AccessPlatform or User entities unless explicitly required.
 """
 
 INTENT_USER_PROMPT = """Analyze the following user prompt for application development:
@@ -294,6 +303,11 @@ class IntentExtractionEngine:
             return IntentExtractionResult(
                 app_name="GymFitnessManager",
                 app_type="Gym Management",
+                detected_domain="Gym Management",
+                detected_subdomain="Facility Check-In & Class Booking",
+                domain_confidence=0.90,
+                entities=["Member", "Trainer", "ClassSchedule", "ClassBooking"],
+                workflows=["Class Booking", "Membership Purchase"],
                 actors=[
                     IntentActor(name="GymMember", description="Standard members who book classes"),
                     IntentActor(name="GymTrainer", description="Instructors who host classes"),
@@ -356,6 +370,11 @@ class IntentExtractionEngine:
                 return IntentExtractionResult(
                     app_name="ConflictCRM",
                     app_type="Customer Relationship Management",
+                    detected_domain="CRM Application",
+                    detected_subdomain="Sales Pipeline Tracking",
+                    domain_confidence=0.88,
+                    entities=["Contact", "Deal", "PipelineStage", "InteractionLog"],
+                    workflows=["Lead Conversion", "Follow Up"],
                     actors=[IntentActor(name="Agent", description="Sales person")],
                     features=[
                         IntentFeature(
@@ -384,6 +403,11 @@ class IntentExtractionEngine:
             return IntentExtractionResult(
                 app_name="SalesCoreCRM",
                 app_type="CRM Application",
+                detected_domain="CRM Application",
+                detected_subdomain="Sales Pipeline Tracking",
+                domain_confidence=0.88,
+                entities=["Customer", "Lead", "InteractionLog"],
+                workflows=["Lead Conversion Flow", "Follow Up Flow"],
                 actors=[
                     IntentActor(name="SalesAgent", description="Tracks leads and conversions"),
                     IntentActor(name="SalesManager", description="Views team pipeline dashboards")
@@ -427,13 +451,19 @@ class IntentExtractionEngine:
             )
 
         # --- CASE 3: Hospital/Medical ---
-        elif "hospital" in prompt_lower or "medical" in prompt_lower:
+        elif ("hospital" in prompt_lower and "hospitality" not in prompt_lower) or "medical" in prompt_lower or "clinic" in prompt_lower or "health" in prompt_lower:
             return IntentExtractionResult(
                 app_name="HealthSyncPortal",
-                app_type="Healthcare Management",
+                app_type="Healthcare",
+                detected_domain="Healthcare",
+                detected_subdomain="Patient Care & Appointment Scheduling",
+                domain_confidence=0.95,
+                entities=["Patient", "Doctor", "Appointment", "MedicalRecord", "Prescription"],
+                workflows=["Schedule Appointment", "Consultation", "Prescription Management"],
                 actors=[
                     IntentActor(name="Patient", description="Book appointments and view records"),
-                    IntentActor(name="Doctor", description="Manage appointments and issue prescriptions")
+                    IntentActor(name="Doctor", description="Manage appointments and issue prescriptions"),
+                    IntentActor(name="Admin", description="Manages system configuration and audits")
                 ],
                 features=[
                     IntentFeature(
@@ -474,10 +504,15 @@ class IntentExtractionEngine:
             )
 
         # --- CASE 4: School/Education ---
-        elif "school" in prompt_lower or "education" in prompt_lower:
+        elif "school" in prompt_lower or "education" in prompt_lower or "student" in prompt_lower or "university" in prompt_lower:
             return IntentExtractionResult(
                 app_name="EduPulsePortal",
                 app_type="School Information System",
+                detected_domain="School Information System",
+                detected_subdomain="Student Portals & Academics",
+                domain_confidence=0.87,
+                entities=["Student", "Teacher", "Course", "Enrollment", "Grade"],
+                workflows=["Course Enrollment", "Grade Reporting"],
                 actors=[
                     IntentActor(name="Student", description="Access grades and classes"),
                     IntentActor(name="Teacher", description="Post assignments and grades")
@@ -531,6 +566,11 @@ class IntentExtractionEngine:
             return IntentExtractionResult(
                 app_name="StockCoreHub",
                 app_type="Inventory Management",
+                detected_domain="Inventory Management",
+                detected_subdomain="Stock Replenishment & Supply Chain",
+                domain_confidence=0.86,
+                entities=["Product", "Supplier", "StockOrder", "WarehouseLocation"],
+                workflows=["Log Stock Arrival", "Initiate Reorder"],
                 actors=[
                     IntentActor(name="WarehouseAgent", description="Logs arrivals and shipments"),
                     IntentActor(name="ProcurementOfficer", description="Approves buy orders")
@@ -573,11 +613,281 @@ class IntentExtractionEngine:
                 confidence_explanation=[]
             )
 
+        # --- CASE 6: Restaurant Management ---
+        elif "restaurant" in prompt_lower or "food" in prompt_lower or "dining" in prompt_lower or "cafe" in prompt_lower:
+            return IntentExtractionResult(
+                app_name="RestaurantManagementSystem",
+                app_type="Restaurant Management",
+                detected_domain="Restaurant Management",
+                detected_subdomain="Food Ordering & Reservations",
+                domain_confidence=0.94,
+                entities=["Menu", "MenuItem", "Order", "Payment", "Reservation", "Review"],
+                workflows=["Browse Menu", "Place Order", "Checkout", "Reserve Table", "Leave Review"],
+                actors=[
+                    IntentActor(name="Customer", description="Standard customer placing orders and booking tables"),
+                    IntentActor(name="RestaurantOwner", description="Owner managing menu and viewing reports"),
+                    IntentActor(name="Staff", description="Restaurant staff preparing and serving orders")
+                ],
+                features=[
+                    IntentFeature(name="BrowseMenu", description="Browse menu items", actor_involved="Customer"),
+                    IntentFeature(name="PlaceOrder", description="Place ordering transaction", actor_involved="Customer"),
+                    IntentFeature(name="Checkout", description="Check out and pay", actor_involved="Customer"),
+                    IntentFeature(name="ReserveTable", description="Book a dining table in advance", actor_involved="Customer"),
+                    IntentFeature(name="LeaveReview", description="Submit feedback on menu items", actor_involved="Customer"),
+                    IntentFeature(name="ManageMenu", description="Modify categories and item prices", actor_involved="RestaurantOwner"),
+                    IntentFeature(name="FulfillOrder", description="Prepare and complete orders", actor_involved="Staff")
+                ],
+                business_rules=[
+                    "Paid order required before fulfillment.",
+                    "Reservation requires available table.",
+                    "Refund requires manager approval."
+                ],
+                constraints=["Menu must support multiple categories."],
+                workflow_gaps=["Delivery service integration rules"],
+                assumptions=[
+                    AssumptionModel(
+                        assumption="Restaurant supports online ordering",
+                        reason="Required for browse/place order features",
+                        source="industry_best_practice",
+                        confidence=0.95,
+                        impact_level="HIGH"
+                    ),
+                    AssumptionModel(
+                        assumption="Users authenticate via email/password",
+                        reason="Standard user sign in",
+                        source="industry_best_practice",
+                        confidence=0.90,
+                        impact_level="MEDIUM"
+                    ),
+                    AssumptionModel(
+                        assumption="Orders require payment confirmation",
+                        reason="Prevents empty orders",
+                        source="industry_best_practice",
+                        confidence=0.92,
+                        impact_level="HIGH"
+                    ),
+                    AssumptionModel(
+                        assumption="Restaurant owner manages menu",
+                        reason="Standard admin rights",
+                        source="logical_inference",
+                        confidence=0.95,
+                        impact_level="MEDIUM"
+                    )
+                ],
+                missing_information=["Delivery workflow details."],
+                clarification_questions=[
+                    ClarificationQuestion(
+                        question="Do you require delivery support?",
+                        category="workflows",
+                        importance="high"
+                    ),
+                    ClarificationQuestion(
+                        question="Should customers reserve tables?",
+                        category="features",
+                        importance="medium"
+                    ),
+                    ClarificationQuestion(
+                        question="Do you support multiple branches?",
+                        category="constraints",
+                        importance="medium"
+                    ),
+                    ClarificationQuestion(
+                        question="Should customer reviews be enabled?",
+                        category="features",
+                        importance="low"
+                    )
+                ],
+                confidence_score=0.91,
+                confidence_explanation=[]
+            )
+
+        # --- CASE 7: E-Commerce ---
+        elif "ecommerce" in prompt_lower or "e-commerce" in prompt_lower or "shopify" in prompt_lower or "shop" in prompt_lower:
+            return IntentExtractionResult(
+                app_name="ECommerceMarketplace",
+                app_type="E-Commerce",
+                detected_domain="E-Commerce",
+                detected_subdomain="Digital Retail & Cart Management",
+                domain_confidence=0.93,
+                entities=["Product", "Cart", "Order", "Payment", "Inventory"],
+                workflows=["Browse Products", "Add To Cart", "Checkout", "Order Fulfillment"],
+                actors=[
+                    IntentActor(name="Buyer", description="Browses and buys products"),
+                    IntentActor(name="Seller", description="Registers store and lists products"),
+                    IntentActor(name="Admin", description="Oversees marketplace transactions")
+                ],
+                features=[
+                    IntentFeature(name="BrowseProducts", description="View listed items", actor_involved="Buyer"),
+                    IntentFeature(name="AddToCart", description="Add items to cart", actor_involved="Buyer"),
+                    IntentFeature(name="Checkout", description="Initiate payment checkout", actor_involved="Buyer"),
+                    IntentFeature(name="OrderFulfillment", description="Seller ships items", actor_involved="Seller")
+                ],
+                business_rules=[
+                    "Products must be in stock to be purchased.",
+                    "Payments must be verified."
+                ],
+                constraints=["Payment gateway integrations required."],
+                workflow_gaps=["Refund return request flow"],
+                assumptions=[
+                    AssumptionModel(
+                        assumption="Store features single-currency checkout",
+                        reason="Simplifies early versions",
+                        source="logical_inference",
+                        confidence=0.88,
+                        impact_level="LOW"
+                    )
+                ],
+                missing_information=["Refund policy details."],
+                clarification_questions=[
+                    ClarificationQuestion(
+                        question="Should the marketplace support multi-vendor single carts?",
+                        category="workflows",
+                        importance="medium"
+                    )
+                ],
+                confidence_score=0.93,
+                confidence_explanation=[]
+            )
+
+        # --- CASE 8: Marketplace ---
+        elif "marketplace" in prompt_lower:
+            return IntentExtractionResult(
+                app_name="VendorMarketplace",
+                app_type="Marketplace Platform",
+                detected_domain="Marketplace Platform",
+                detected_subdomain="Multi-vendor Catalog & Order Dispatch",
+                domain_confidence=0.92,
+                entities=["Listing", "Store", "Transaction", "OrderItem"],
+                workflows=["Create Listing", "Complete Checkout"],
+                actors=[
+                    IntentActor(name="Buyer", description="Buy items"),
+                    IntentActor(name="Seller", description="Sell items"),
+                    IntentActor(name="Operator", description="Manage system")
+                ],
+                features=[
+                    IntentFeature(name="CreateListing", description="List products", actor_involved="Seller"),
+                    IntentFeature(name="CompleteCheckout", description="Fulfill checkout", actor_involved="Buyer")
+                ],
+                business_rules=["Seller payout happens after checkout."],
+                constraints=["Sellers must complete registration KYC."],
+                workflow_gaps=["Vendor payout dispute flow"],
+                assumptions=[],
+                missing_information=["Payout rules"],
+                clarification_questions=[
+                    ClarificationQuestion(
+                        question="Do you require escrow support?",
+                        category="workflows",
+                        importance="high"
+                    )
+                ],
+                confidence_score=0.92,
+                confidence_explanation=[]
+            )
+
+        # --- CASE 9: Hotel Booking ---
+        elif "hotel" in prompt_lower or "lodging" in prompt_lower or "hospitality" in prompt_lower:
+            return IntentExtractionResult(
+                app_name="HotelBookingPlatform",
+                app_type="Hospitality Management",
+                detected_domain="Hospitality Management",
+                detected_subdomain="Room Reservation & Guest Lodging",
+                domain_confidence=0.89,
+                entities=["Room", "Booking", "Guest", "Payment"],
+                workflows=["Search Rooms", "Book Room", "Payment", "Check In"],
+                actors=[
+                    IntentActor(name="Guest", description="Browse and book hotel rooms"),
+                    IntentActor(name="HotelManager", description="Manage room listings and guest bookings")
+                ],
+                features=[
+                    IntentFeature(name="SearchRooms", description="Find available rooms", actor_involved="Guest"),
+                    IntentFeature(name="BookRoom", description="Book room reservation", actor_involved="Guest"),
+                    IntentFeature(name="Payment", description="Pay room invoice", actor_involved="Guest"),
+                    IntentFeature(name="CheckIn", description="Confirm hotel check in", actor_involved="HotelManager")
+                ],
+                business_rules=[
+                    "Rooms must be vacated by checkout time.",
+                    "Booking status updates require guest check-in confirmation."
+                ],
+                constraints=["Room availability checks must be atomic."],
+                workflow_gaps=["Room upgrade selection flow"],
+                assumptions=[
+                    AssumptionModel(
+                        assumption="Guests pay in full at booking time",
+                        reason="Standard automation workflow",
+                        source="industry_best_practice",
+                        confidence=0.85,
+                        impact_level="HIGH"
+                    )
+                ],
+                missing_information=["Cleaning scheduling rules."],
+                clarification_questions=[
+                    ClarificationQuestion(
+                        question="Should guests be able to order room service?",
+                        category="features",
+                        importance="medium"
+                    )
+                ],
+                confidence_score=0.89,
+                confidence_explanation=[]
+            )
+
+        # --- CASE 10: Banking ---
+        elif "banking" in prompt_lower or "bank" in prompt_lower or "financial" in prompt_lower:
+            return IntentExtractionResult(
+                app_name="RetailBankingSystem",
+                app_type="Financial Services",
+                detected_domain="Financial Services",
+                detected_subdomain="Retail Banking & Asset Transactions",
+                domain_confidence=0.96,
+                entities=["Account", "Transaction", "Card", "LoanApplication"],
+                workflows=["Transfer Funds", "Apply for Loan", "View Statements"],
+                actors=[
+                    IntentActor(name="Customer", description="Manage bank accounts"),
+                    IntentActor(name="Teller", description="Process transaction requests"),
+                    IntentActor(name="Auditor", description="Audit bank metrics and logs")
+                ],
+                features=[
+                    IntentFeature(name="TransferFunds", description="Transfer ledger funds", actor_involved="Customer"),
+                    IntentFeature(name="ApplyForLoan", description="Apply for credit", actor_involved="Customer"),
+                    IntentFeature(name="ViewStatements", description="Review balance statements", actor_involved="Customer")
+                ],
+                business_rules=[
+                    "Transfers require sufficient funds.",
+                    "Loans must be approved by teller/auditor."
+                ],
+                constraints=["SOC2 security guidelines simulated."],
+                workflow_gaps=["Loan default dispute flow"],
+                assumptions=[
+                    AssumptionModel(
+                        assumption="Accounts begin with zero balance",
+                        reason="Standard ledger setup",
+                        source="logical_inference",
+                        confidence=0.95,
+                        impact_level="LOW"
+                    )
+                ],
+                missing_information=["Interest calculation method."],
+                clarification_questions=[
+                    ClarificationQuestion(
+                        question="Should we support cryptocurrency accounts?",
+                        category="features",
+                        importance="low"
+                    )
+                ],
+                confidence_score=0.96,
+                confidence_explanation=[]
+            )
+
         # --- EDGE CASE: "Everyone is admin but nobody has admin rights" ---
         elif "everyone is admin but nobody has admin rights" in prompt_lower:
             return IntentExtractionResult(
                 app_name="ParadoxApp",
                 app_type="Experimental System",
+                detected_domain="Unspecified Platform",
+                detected_subdomain="Vague Experimental Layout",
+                domain_confidence=0.30,
+                entities=["User"],
+                workflows=["Do Nothing"],
                 actors=[IntentActor(name="Admin", description="User role")],
                 features=[
                     IntentFeature(
@@ -608,6 +918,11 @@ class IntentExtractionEngine:
             return IntentExtractionResult(
                 app_name="GenericPlatform",
                 app_type="Unspecified Platform",
+                detected_domain="Unspecified Platform",
+                detected_subdomain="Vague Operational Shell",
+                domain_confidence=0.30,
+                entities=["User"],
+                workflows=["Access Platform"],
                 actors=[IntentActor(name="User", description="Standard application user")],
                 features=[
                     IntentFeature(

@@ -34,12 +34,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   systemVersion
 }) => {
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'compiler', label: 'Compiler', icon: Cpu },
     { id: 'ai-architect', label: 'AI Architect', icon: BrainCircuit },
+    { id: 'compiler', label: 'Contracts', icon: Cpu },
     { id: 'architecture', label: 'Architecture', icon: Network },
-    { id: 'validation', label: 'Validation', icon: ShieldCheck },
+    { id: 'validation', label: 'Review', icon: ShieldCheck },
     { id: 'repair', label: 'Repair', icon: Wrench },
+    { id: 'dashboard', label: 'Projects', icon: LayoutDashboard },
     { id: 'simulation', label: 'Simulation', icon: Play },
     { id: 'evaluation', label: 'Evaluation', icon: LineChart },
     { id: 'timeline', label: 'Timeline', icon: History }
@@ -62,7 +62,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           {/* Logo Branding */}
           <div style={{ marginBottom: '32px', paddingLeft: '8px' }}>
             <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '-0.5px', color: '#FFFFFF' }}>GenesisAI</h1>
-            <p style={{ fontSize: '11px', color: '#666666', marginTop: '2px' }}>From Idea to Executable Blueprint</p>
+            <p style={{ fontSize: '11px', color: '#666666', marginTop: '2px' }}>AI Application Compiler</p>
           </div>
 
           {/* Navigation Links */}
@@ -125,7 +125,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
             }}
           >
             <Plus size={16} />
-            <span>New Evolution</span>
+            <span>New Architecture</span>
           </button>
 
           <hr style={{ border: 'none', borderTop: '1px solid #1E1E1E' }} />
@@ -188,9 +188,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         }}>
           {/* Header Navigation Tabs */}
           <div style={{ display: 'flex', gap: '24px' }}>
-            <span style={{ color: '#FFFFFF', fontWeight: '600', fontSize: '14px', borderBottom: '2px solid #0070F3', paddingBottom: '21px', cursor: 'pointer' }}>Projects</span>
-            <span style={{ color: '#666666', fontSize: '14px', paddingBottom: '21px', cursor: 'pointer' }}>Compilers</span>
-            <span style={{ color: '#666666', fontSize: '14px', paddingBottom: '21px', cursor: 'pointer' }}>Deployments</span>
+            <span style={{ color: '#FFFFFF', fontWeight: '600', fontSize: '14px', borderBottom: '2px solid #0070F3', paddingBottom: '21px' }}>Requirements</span>
+            <span style={{ color: '#666666', fontSize: '14px', paddingBottom: '21px' }}>Architecture</span>
+            <span style={{ color: '#666666', fontSize: '14px', paddingBottom: '21px' }}>Contracts</span>
           </div>
 
           {/* Search bar & Badges */}
@@ -200,7 +200,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
               <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#666666' }} />
               <input
                 type="text"
-                placeholder="Search logs..."
+                placeholder="Search project outputs..."
                 style={{
                   backgroundColor: '#0A0A0A',
                   border: '1px solid #1E1E1E',
@@ -214,7 +214,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
               />
             </div>
 
-            {/* Validation Pill Badge */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -228,7 +227,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
               color: '#10B981'
             }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }}></span>
-              Validated {systemVersion}
+              Project {systemVersion}
             </div>
 
             {/* Icon buttons */}

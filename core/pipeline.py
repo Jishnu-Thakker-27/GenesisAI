@@ -52,7 +52,7 @@ class GenesisPipeline:
 
         # 2. Run requirements intelligence before blueprint recommendation
         self.run_requirements_intelligence_phase()
-        
+
         # 3. Run blueprint recommendation
         self.run_blueprint_phase()
         
@@ -100,6 +100,7 @@ class GenesisPipeline:
             created_at=now,
             updated_at=now
         )
+
         return app
 
     def run_intent_phase(self, prompt: Optional[str] = None) -> IntentExtractionResult:
@@ -165,12 +166,49 @@ class GenesisPipeline:
             ))
         return self.ai_architect_report
 
+    def run_pattern_intelligence_phase(self) -> Optional[AIArchitectReport]:
+        """Future roadmap hook kept dormant for the internship submission.
+
+        Stage 11 remains available for direct experimentation, but the default
+        compiler path does not invoke pattern memory, similarity matching, or
+        continuous learning.
+        """
+        if not self.ai_architect_report or not self.intent or not self.prompt:
+            raise ValueError("Requirements intelligence report is required before running pattern intelligence.")
+            
+        start_str = datetime.now().isoformat()
+        t0 = time.time()
+        errors = []
+        try:
+            from stages.stage11_pattern_intelligence import PatternIntelligenceEngine
+            self.ai_architect_report = PatternIntelligenceEngine.run_pattern_intelligence(
+                self.prompt, self.intent, self.ai_architect_report
+            )
+            status = "SUCCESS"
+        except Exception as e:
+            status = "FAILED"
+            errors.append(str(e))
+            raise e
+        finally:
+            duration = (time.time() - t0) * 1000.0
+            self.traces.append(PipelineTrace(
+                phase_name="Pattern Intelligence Engine",
+                start_time=start_str,
+                end_time=datetime.now().isoformat(),
+                duration_ms=duration,
+                status=status,
+                errors=errors,
+                warnings=[]
+            ))
+        return self.ai_architect_report
+
     def enrich_architecture_reasoning_trace(self) -> Optional[AIArchitectReport]:
         if self.ai_architect_report and self.blueprint and self.system_design:
             self.ai_architect_report = RequirementsIntelligenceEngine.attach_architecture_trace(
                 self.ai_architect_report,
                 self.blueprint,
-                self.system_design
+                self.system_design,
+                self.intent
             )
         return self.ai_architect_report
 
@@ -225,7 +263,7 @@ class GenesisPipeline:
         t0 = time.time()
         errors = []
         try:
-            self.system_design = MasterSpecificationBuilder.compile_specification(self.blueprint)
+            self.system_design = MasterSpecificationBuilder.compile_specification(self.blueprint, self.ai_architect_report)
             status = "SUCCESS"
         except Exception as e:
             status = "FAILED"
