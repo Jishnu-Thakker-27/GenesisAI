@@ -6,6 +6,7 @@ import { ChevronRight, GitBranch, KeyRound, Network, RotateCw } from 'lucide-rea
 
 interface ArchitectureMapProps {
   projectId: string;
+  onNavigate?: (tab: string) => void;
 }
 
 const sectionOrder = [
@@ -20,16 +21,21 @@ const sectionOrder = [
   'json'
 ];
 
-export const ArchitectureMap: React.FC<ArchitectureMapProps> = ({ projectId }) => {
+export const ArchitectureMap: React.FC<ArchitectureMapProps> = ({ projectId, onNavigate }) => {
   const [project, setProject] = useState<FinalCompiledApplication | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(
     Object.fromEntries(sectionOrder.map((section) => [section, section !== 'json']))
   );
 
   useEffect(() => {
-    loadProject();
+    if (projectId) {
+      loadProject();
+    } else {
+      setProject(null);
+      setError(null);
+    }
   }, [projectId]);
 
   const loadProject = async () => {
@@ -45,6 +51,57 @@ export const ArchitectureMap: React.FC<ArchitectureMapProps> = ({ projectId }) =
   };
 
   const toggle = (id: string) => setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  if (!projectId || (!project && !loading && !error)) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '400px',
+        textAlign: 'center',
+        backgroundColor: '#121212',
+        border: '1px solid #1E1E1E',
+        borderRadius: '12px',
+        padding: '40px'
+      }}>
+        <div style={{
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          backgroundColor: 'rgba(0,112,243,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '20px',
+          color: '#0070F3'
+        }}>
+          <Network size={28} />
+        </div>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#FFFFFF', margin: '0 0 8px 0' }}>No Architecture Generated Yet</h3>
+        <p style={{ color: '#888888', fontSize: '14px', maxWidth: '400px', margin: '0 0 24px 0', lineHeight: '1.5' }}>
+          The system architecture map is compiled automatically from your prompt requirements.
+        </p>
+        <button
+          onClick={() => onNavigate?.('ai-architect')}
+          style={{
+            backgroundColor: '#0070F3',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '10px 20px',
+            fontSize: '14px',
+            fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'background-color 0.2s'
+          }}
+        >
+          Go to AI Architect
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

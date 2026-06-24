@@ -459,7 +459,7 @@ class IntentExtractionEngine:
                 detected_subdomain="Patient Care & Appointment Scheduling",
                 domain_confidence=0.95,
                 entities=["Patient", "Doctor", "Appointment", "MedicalRecord", "Prescription"],
-                workflows=["Schedule Appointment", "Consultation", "Prescription Management"],
+                workflows=["Request Appointment", "Schedule Appointment", "Consultation", "Prescription Management"],
                 actors=[
                     IntentActor(name="Patient", description="Book appointments and view records"),
                     IntentActor(name="Doctor", description="Manage appointments and issue prescriptions"),
@@ -622,19 +622,18 @@ class IntentExtractionEngine:
                 detected_subdomain="Food Ordering & Reservations",
                 domain_confidence=0.94,
                 entities=["Menu", "MenuItem", "Order", "Payment", "Reservation", "Review"],
-                workflows=["Browse Menu", "Place Order", "Checkout", "Reserve Table", "Leave Review"],
+                workflows=["Browse Menu", "Place Order", "Checkout", "Reserve Table", "Manage Menu", "Fulfill Order"],
                 actors=[
                     IntentActor(name="Customer", description="Standard customer placing orders and booking tables"),
-                    IntentActor(name="RestaurantOwner", description="Owner managing menu and viewing reports"),
+                    IntentActor(name="Restaurant Owner", description="Owner managing menu and viewing reports"),
                     IntentActor(name="Staff", description="Restaurant staff preparing and serving orders")
                 ],
                 features=[
                     IntentFeature(name="BrowseMenu", description="Browse menu items", actor_involved="Customer"),
                     IntentFeature(name="PlaceOrder", description="Place ordering transaction", actor_involved="Customer"),
-                    IntentFeature(name="Checkout", description="Check out and pay", actor_involved="Customer"),
+                    IntentFeature(name="Pay", description="Check out and pay", actor_involved="Customer"),
                     IntentFeature(name="ReserveTable", description="Book a dining table in advance", actor_involved="Customer"),
-                    IntentFeature(name="LeaveReview", description="Submit feedback on menu items", actor_involved="Customer"),
-                    IntentFeature(name="ManageMenu", description="Modify categories and item prices", actor_involved="RestaurantOwner"),
+                    IntentFeature(name="ManageMenu", description="Modify categories and item prices", actor_involved="Restaurant Owner"),
                     IntentFeature(name="FulfillOrder", description="Prepare and complete orders", actor_involved="Staff")
                 ],
                 business_rules=[
@@ -709,8 +708,8 @@ class IntentExtractionEngine:
                 detected_domain="E-Commerce",
                 detected_subdomain="Digital Retail & Cart Management",
                 domain_confidence=0.93,
-                entities=["Product", "Cart", "Order", "Payment", "Inventory"],
-                workflows=["Browse Products", "Add To Cart", "Checkout", "Order Fulfillment"],
+                entities=["Product", "Inventory", "Order", "Payment", "Cart"],
+                workflows=["Browse Products", "Add To Cart", "Checkout", "Order Fulfillment", "Manage Inventory"],
                 actors=[
                     IntentActor(name="Buyer", description="Browses and buys products"),
                     IntentActor(name="Seller", description="Registers store and lists products"),
@@ -720,7 +719,8 @@ class IntentExtractionEngine:
                     IntentFeature(name="BrowseProducts", description="View listed items", actor_involved="Buyer"),
                     IntentFeature(name="AddToCart", description="Add items to cart", actor_involved="Buyer"),
                     IntentFeature(name="Checkout", description="Initiate payment checkout", actor_involved="Buyer"),
-                    IntentFeature(name="OrderFulfillment", description="Seller ships items", actor_involved="Seller")
+                    IntentFeature(name="ProcessPayment", description="Securely process ordering payments", actor_involved="Buyer"),
+                    IntentFeature(name="ManageInventory", description="Update listed items stock levels", actor_involved="Seller")
                 ],
                 business_rules=[
                     "Products must be in stock to be purchased.",

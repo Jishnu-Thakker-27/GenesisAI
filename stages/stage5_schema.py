@@ -609,6 +609,8 @@ class CrossLayerConsistencyEngine:
                 tbl = db_tables[src_tbl]
                 # check if there is a foreign key references target_tbl
                 has_fk = any(fk["references_table"] == trg_tbl for fk in tbl.foreign_keys)
+                if not has_fk and trg_tbl in db_tables:
+                    has_fk = any(fk["references_table"] == src_tbl for fk in db_tables[trg_tbl].foreign_keys)
                 if not has_fk:
                     violations.append(ConsistencyViolation(
                         violation_id=f"viol_db_relationship_{rel.relationship_id}",

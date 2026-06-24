@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getProject, validateProject, repairProject } from '../../frontend_api_client';
-import { FinalCompiledApplication, ValidationError } from '../../frontend_models';
+import { FinalCompiledApplication, ValidationError, ValidationReport } from '../../frontend_models';
 import { ShieldCheck, RotateCw, AlertTriangle, CheckCircle2, ChevronRight, Wrench, ShieldAlert } from 'lucide-react';
 
 const severityColor = (severity: string) => {
@@ -12,11 +12,12 @@ const severityColor = (severity: string) => {
 interface ValidationRepairProps {
   projectId: string;
   activeSubTab?: 'validation' | 'repair';
+  onNavigate?: (tab: string) => void;
 }
 
-export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, activeSubTab = 'validation' }) => {
+export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, activeSubTab = 'validation', onNavigate }) => {
   const [project, setProject] = useState<FinalCompiledApplication | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
   const [repairing, setRepairing] = useState(false);
@@ -27,7 +28,12 @@ export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, a
   ]);
 
   useEffect(() => {
-    loadProjectDetails();
+    if (projectId) {
+      loadProjectDetails();
+    } else {
+      setProject(null);
+      setError(null);
+    }
   }, [projectId]);
 
   const loadProjectDetails = async () => {
@@ -91,6 +97,57 @@ export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, a
     setRepairing(false);
   };
 
+  if (!projectId || (!project && !loading && !error)) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '400px',
+        textAlign: 'center',
+        backgroundColor: '#121212',
+        border: '1px solid #1E1E1E',
+        borderRadius: '12px',
+        padding: '40px'
+      }}>
+        <div style={{
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          backgroundColor: 'rgba(0,112,243,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '20px',
+          color: '#0070F3'
+        }}>
+          <ShieldAlert size={28} />
+        </div>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#FFFFFF', margin: '0 0 8px 0' }}>No Validation Results Yet</h3>
+        <p style={{ color: '#888888', fontSize: '14px', maxWidth: '400px', margin: '0 0 24px 0', lineHeight: '1.5' }}>
+          Validation scans and self-healing repair execute immediately after architecture generation.
+        </p>
+        <button
+          onClick={() => onNavigate?.('ai-architect')}
+          style={{
+            backgroundColor: '#0070F3',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '10px 20px',
+            fontSize: '14px',
+            fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'background-color 0.2s'
+          }}
+        >
+          Go to AI Architect
+        </button>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px', flexDirection: 'column', gap: '16px' }}>
@@ -110,13 +167,13 @@ export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, a
     );
   }
 
-  const report = project.validation_report;
+  const report = project.validation_report || { is_valid: true, errors: [], warnings: [], critical_count: 0 } as ValidationReport;
   const aiReport = project.ai_architect_report;
 
   // Calculate validation metrics
-  const totalErrors = report.errors.length;
-  const totalWarnings = report.warnings.length;
-  const criticalCount = report.critical_count || report.errors.filter(e => e.severity === 'CRITICAL' || e.severity === 'HIGH').length;
+  const totalErrors = (report.errors || []).length;
+  const totalWarnings = (report.warnings || []).length;
+  const criticalCount = report.critical_count || (report.errors || []).filter(e => e.severity === 'CRITICAL' || e.severity === 'HIGH').length;
 
   const valScore = report.is_valid ? 100 : Math.max(10, 100 - (totalErrors * 15) - (totalWarnings * 5));
   const isRepaired = valScore === 100;
@@ -175,6 +232,36 @@ export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, a
         </div>
       </div>
 
+      {/* Sub Tab Navigation */}
+      <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #1E1E1E', paddingBottom: '12px' }}>
+        {[
+          { id: 'validation', label: 'Architectural Validation Scan' },
+          { id: 'repair', label: 'Self-Healing Repair Center' }
+        ].map((tab) => {
+          const isActive = activeSubTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onNavigate?.(tab.id)}
+              style={{
+                backgroundColor: isActive ? 'rgba(0,112,243,0.12)' : 'transparent',
+                border: isActive ? '1px solid rgba(0,112,243,0.3)' : '1px solid transparent',
+                color: isActive ? '#FFFFFF' : '#888888',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                fontSize: '13px',
+                fontWeight: isActive ? 600 : 400,
+                transition: 'all 0.2s'
+              }}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
       {activeSubTab === 'validation' ? (
         /* VALIDATION VIEW */
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px' }}>
@@ -183,9 +270,9 @@ export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, a
             <div style={{ backgroundColor: '#121212', border: '1px solid #1E1E1E', borderRadius: '16px', padding: '24px' }}>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', marginBottom: '16px' }}>Detected Requirements</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-                <RequirementBox label="Actors" values={aiReport?.actors || project.blueprint.actors.map((actor: any) => actor.name)} />
-                <RequirementBox label="Entities" values={aiReport?.entities || project.system_design.entities.map((entity: any) => entity.name)} />
-                <RequirementBox label="Workflows" values={aiReport?.workflows || project.system_design.workflows.map((workflow: any) => workflow.workflow_name)} />
+                <RequirementBox label="Actors" values={aiReport?.actors || (project.blueprint?.actors || []).map((actor: any) => actor.name)} />
+                <RequirementBox label="Entities" values={aiReport?.entities || (project.system_design?.entities || []).map((entity: any) => entity.name)} />
+                <RequirementBox label="Workflows" values={aiReport?.workflows || (project.system_design?.workflows || []).map((workflow: any) => workflow.workflow_name)} />
               </div>
             </div>
             
@@ -200,7 +287,7 @@ export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, a
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {report.errors.map((err, idx) => (
+                  {(report.errors || []).map((err, idx) => (
                     <div key={idx} style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '14px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '13px', fontWeight: 'bold', color: severityColor(err.severity) }}>{err.error_code}</span>
@@ -229,7 +316,7 @@ export const ValidationRepair: React.FC<ValidationRepairProps> = ({ projectId, a
                   <p style={{ fontSize: '24px', fontWeight: 'bold', color: totalWarnings > 0 ? '#F59E0B' : '#10B981', marginTop: '6px' }}>{totalWarnings}</p>
                 </div>
               </div>
-              {report.warnings.map((warn, idx) => (
+              {(report.warnings || []).map((warn, idx) => (
                 <div key={idx} style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '12px', marginTop: '10px' }}>
                   <p style={{ fontSize: '13px', color: '#F59E0B', fontWeight: 'bold' }}>{warn.error_code}</p>
                   <p style={{ fontSize: '12px', color: '#888888', marginTop: '4px' }}>{warn.message}</p>

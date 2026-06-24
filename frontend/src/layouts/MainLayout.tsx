@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
   Cpu, 
@@ -14,7 +14,8 @@ import {
   Terminal,
   Settings,
   BookOpen,
-  BrainCircuit
+  BrainCircuit,
+  ChevronRight
 } from 'lucide-react';
 
 interface MainLayoutProps {
@@ -26,6 +27,22 @@ interface MainLayoutProps {
   systemVersion: string;
 }
 
+// Workflow sections defining the core user journey
+const workflowItems = [
+  { id: 'ai-architect', label: 'AI Architect', icon: BrainCircuit, step: '01' },
+  { id: 'architecture', label: 'Architecture', icon: Network, step: '02' },
+  { id: 'compiler', label: 'Generated Contracts', icon: Cpu, step: '03' },
+  { id: 'validation', label: 'Validation & Repair', icon: ShieldCheck, step: '04' },
+];
+
+// Supporting tools (less prominent)
+const toolItems = [
+  { id: 'dashboard', label: 'Projects', icon: LayoutDashboard },
+  { id: 'simulation', label: 'Simulation', icon: Play },
+  { id: 'evaluation', label: 'Evaluation', icon: LineChart },
+  { id: 'timeline', label: 'Timeline', icon: History },
+];
+
 export const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   activeTab,
@@ -33,18 +50,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   onNewEvolution,
   systemVersion
 }) => {
-  const menuItems = [
-    { id: 'ai-architect', label: 'AI Architect', icon: BrainCircuit },
-    { id: 'compiler', label: 'Contracts', icon: Cpu },
-    { id: 'architecture', label: 'Architecture', icon: Network },
-    { id: 'validation', label: 'Review', icon: ShieldCheck },
-    { id: 'repair', label: 'Repair', icon: Wrench },
-    { id: 'dashboard', label: 'Projects', icon: LayoutDashboard },
-    { id: 'simulation', label: 'Simulation', icon: Play },
-    { id: 'evaluation', label: 'Evaluation', icon: LineChart },
-    { id: 'timeline', label: 'Timeline', icon: History }
-  ];
-
+  const [showAdvancedTools, setShowAdvancedTools] = useState(false);
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#0A0A0A', color: '#FFFFFF', overflow: 'hidden' }}>
       {/* Sidebar Section */}
@@ -60,16 +66,21 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       }}>
         <div>
           {/* Logo Branding */}
-          <div style={{ marginBottom: '32px', paddingLeft: '8px' }}>
+          <div style={{ marginBottom: '28px', paddingLeft: '8px' }}>
             <h1 style={{ fontSize: '20px', fontWeight: 'bold', letterSpacing: '-0.5px', color: '#FFFFFF' }}>GenesisAI</h1>
             <p style={{ fontSize: '11px', color: '#666666', marginTop: '2px' }}>AI Application Compiler</p>
           </div>
 
-          {/* Navigation Links */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {menuItems.map((item) => {
+          {/* Primary Workflow Navigation */}
+          <div style={{ marginBottom: '8px', paddingLeft: '8px' }}>
+            <p style={{ fontSize: '10px', color: '#444444', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>Compiler Workflow</p>
+          </div>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '20px' }}>
+            {workflowItems.map((item, index) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
+              // Also highlight validation nav item when repair is active
+              const isHighlighted = isActive || (item.id === 'validation' && activeTab === 'repair');
               return (
                 <button
                   key={item.id}
@@ -79,25 +90,99 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                     alignItems: 'center',
                     gap: '12px',
                     width: '100%',
-                    padding: '12px 16px',
+                    padding: '10px 16px',
                     borderRadius: '8px',
-                    border: 'none',
-                    backgroundColor: isActive ? '#0070F3' : 'transparent',
-                    color: isActive ? '#FFFFFF' : '#888888',
+                    border: isHighlighted ? '1px solid rgba(0,112,243,0.3)' : '1px solid transparent',
+                    backgroundColor: isHighlighted ? 'rgba(0,112,243,0.12)' : 'transparent',
+                    color: isHighlighted ? '#FFFFFF' : '#888888',
                     fontFamily: 'inherit',
-                    fontSize: '14px',
-                    fontWeight: isActive ? 600 : 400,
+                    fontSize: '13px',
+                    fontWeight: isHighlighted ? 600 : 400,
                     textAlign: 'left',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease'
                   }}
                 >
-                  <Icon size={18} />
-                  <span>{item.label}</span>
+                  <span style={{
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    color: isHighlighted ? '#0070F3' : '#333333',
+                    minWidth: '18px'
+                  }}>
+                    {item.step}
+                  </span>
+                  <Icon size={16} />
+                  <span style={{ flexGrow: 1 }}>{item.label}</span>
+                  {isHighlighted && <ChevronRight size={14} style={{ color: '#0070F3' }} />}
                 </button>
               );
             })}
           </nav>
+
+          {/* Separator */}
+          <hr style={{ border: 'none', borderTop: '1px solid #1E1E1E', marginBottom: '16px' }} />
+
+          {/* Collapsible Advanced Tools */}
+          <div style={{ marginBottom: '8px', paddingLeft: '8px' }}>
+            <button
+              onClick={() => setShowAdvancedTools(!showAdvancedTools)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+                background: 'none',
+                border: 'none',
+                color: '#444444',
+                cursor: 'pointer',
+                fontSize: '10px',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                fontWeight: 700,
+                padding: '4px 0',
+                textAlign: 'left',
+                fontFamily: 'inherit',
+                outline: 'none'
+              }}
+            >
+              <span>Advanced Tools</span>
+              <span style={{ fontSize: '9px', color: '#666666' }}>{showAdvancedTools ? '▼' : '►'}</span>
+            </button>
+          </div>
+          {showAdvancedTools && (
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '20px' }}>
+              {toolItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      width: '100%',
+                      padding: '9px 16px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      backgroundColor: isActive ? '#0070F3' : 'transparent',
+                      color: isActive ? '#FFFFFF' : '#666666',
+                      fontFamily: 'inherit',
+                      fontSize: '13px',
+                      fontWeight: isActive ? 600 : 400,
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <Icon size={16} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          )}
         </div>
 
         {/* Bottom controls */}
@@ -132,10 +217,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
           {/* Utility Links */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingLeft: '8px' }}>
-            <a href="#help" style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#666666', textDecoration: 'none', fontSize: '13px' }}>
-              <Settings size={16} />
-              <span>Help & Settings</span>
-            </a>
             <a href="#docs" style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#666666', textDecoration: 'none', fontSize: '13px' }}>
               <BookOpen size={16} />
               <span>Docs</span>
@@ -186,11 +267,17 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           padding: '0 24px',
           flexShrink: 0
         }}>
-          {/* Header Navigation Tabs */}
-          <div style={{ display: 'flex', gap: '24px' }}>
-            <span style={{ color: '#FFFFFF', fontWeight: '600', fontSize: '14px', borderBottom: '2px solid #0070F3', paddingBottom: '21px' }}>Requirements</span>
-            <span style={{ color: '#666666', fontSize: '14px', paddingBottom: '21px' }}>Architecture</span>
-            <span style={{ color: '#666666', fontSize: '14px', paddingBottom: '21px' }}>Contracts</span>
+          {/* Path / Workspace Identifier */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '14px', fontWeight: 600, color: '#E0E0E0' }}>Workspace</span>
+            <span style={{ fontSize: '12px', color: '#666666' }}>/</span>
+            <span style={{ fontSize: '13px', color: '#888888', fontStyle: 'italic' }}>
+              {activeTab === 'ai-architect' ? 'AI Architect' :
+               activeTab === 'architecture' ? 'Architecture Design' :
+               activeTab === 'compiler' ? 'Generated Contracts' :
+               activeTab === 'validation' || activeTab === 'repair' ? 'Validation & Repair' :
+               activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+            </span>
           </div>
 
           {/* Search bar & Badges */}
@@ -226,7 +313,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
               fontWeight: '500',
               color: '#10B981'
             }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }}></span>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }}></span>
               Project {systemVersion}
             </div>
 

@@ -165,6 +165,17 @@ class EntityDiscoveryEngine:
                     EntityField(name="party_size", type="integer")
                 ]
             ),
+            "Review": EntityDefinition(
+                entity_id="ent_review", entity_name="Review", name="Review",
+                description="Customer ratings and feedback for orders or menu experiences.", source="industry_pattern", confidence=1.0,
+                fields=[
+                    EntityField(name="id", type="string", is_key=True),
+                    EntityField(name="customer_id", type="string"),
+                    EntityField(name="order_id", type="relationship", references="Order.id"),
+                    EntityField(name="rating", type="integer"),
+                    EntityField(name="comment", type="string")
+                ]
+            ),
             "Payment": EntityDefinition(
                 entity_id="ent_payment", entity_name="Payment", name="Payment",
                 description="Payments received for orders.", source="industry_pattern", confidence=1.0,
@@ -220,6 +231,7 @@ class EntityDiscoveryEngine:
                 fields=[
                     EntityField(name="id", type="string", is_key=True),
                     EntityField(name="patient_id", type="relationship", references="Patient.id"),
+                    EntityField(name="doctor_id", type="relationship", references="Doctor.id"),
                     EntityField(name="medication", type="string"),
                     EntityField(name="dosage", type="string")
                 ]
@@ -551,7 +563,7 @@ class EntityDiscoveryEngine:
                 for k in ["Product", "Supplier", "StockOrder", "WarehouseLocation"]:
                     entities_map[k] = all_predefined_entities[k]
             elif "restaurant" in category or "food" in category:
-                for k in ["Menu", "MenuItem", "Order", "Reservation", "Payment"]:
+                for k in ["Menu", "MenuItem", "Order", "Reservation", "Payment", "Review"]:
                     entities_map[k] = all_predefined_entities[k]
             elif "ecommerce" in category or "e-commerce" in category or "shop" in category:
                 for k in ["Product", "Cart", "Order", "Payment", "Inventory"]:
@@ -577,10 +589,38 @@ class EntityDiscoveryEngine:
                     ]
                 )
 
-        # Merge any custom entities suggested in blueprint features/innovations
+        # Merge any custom entities from blueprint features — but EXCLUDE names that are workflow names.
+        # Workflow names (like BrowseMenu, AddToCart, PlaceOrder) leaked into entities because
+        # blueprint.features includes workflow-named items when report.entities drives the entity list.
+        workflow_names = {CanonicalNamingEngine.to_pascal_case(w.name) for w in blueprint.workflows}
+        # Also exclude names that match a pattern of: Verb + Noun where verb is a common action word
+        # Examples to EXCLUDE: BrowseMenu, AddToCart, PlaceOrder, ReserveTable, FulfillOrder
+        # Examples to KEEP: BookClass, ClassBooking, LeadTracking, AppointmentScheduling (domain nouns)
+        _pure_action_verbs = {
+            "request", "write"
+        }
+
+        def _is_action_workflow_name(name: str) -> bool:
+            """Returns True if name looks like a workflow action (Verb+Noun), not a domain entity."""
+            # BrowseMenu -> first token is 'Browse' -> pure action verb -> not an entity
+            # BookClass -> first token is 'Book' -> ambiguous (book can be a noun)
+            # PlaceOrder -> 'Place' -> pure action verb
+            import re
+            tokens = re.sub(r'([A-Z])', r' \1', name).strip().split()
+            if not tokens:
+                return False
+            first_token = tokens[0].lower()
+            return first_token in _pure_action_verbs
+
         for feature in blueprint.features:
             entity_name = CanonicalNamingEngine.to_pascal_case(feature.name)
             if entity_name not in entities_map and len(entity_name) > 3:
+                # Skip if this exactly matches a workflow name
+                if entity_name in workflow_names:
+                    continue
+                # Skip if name starts with a pure action verb (not domain nouns like Book, Manage)
+                if _is_action_workflow_name(entity_name):
+                    continue
                 entities_map[entity_name] = EntityDefinition(
                     entity_id=f"ent_{CanonicalNamingEngine.to_snake_case(entity_name)}",
                     entity_name=entity_name,
@@ -604,6 +644,27 @@ class RelationshipDiscoveryEngine:
         """Discovers entity relationships by analyzing EntityField reference attributes."""
         relationships: List[RelationshipDefinition] = []
         entity_names = {e.name for e in entities}
+        actor_side_sources = {"Customer", "Buyer", "Guest", "Patient", "Doctor", "Member", "Trainer", "Teacher", "Student", "Supplier", "Account"}
+
+        def add_relationship(source: str, target: str, label: str, description: str, relationship_type: str = "one-to-many") -> None:
+            if source not in entity_names and source not in actor_side_sources:
+                return
+            if target not in entity_names and target not in actor_side_sources:
+                return
+            rel_id = f"rel_{source.lower()}_{target.lower()}_{CanonicalNamingEngine.to_snake_case(label)}"
+            exists = any(
+                rel.source_entity == source and rel.target_entity == target and rel.description == description
+                for rel in relationships
+            )
+            if exists:
+                return
+            relationships.append(RelationshipDefinition(
+                relationship_id=rel_id,
+                source_entity=source,
+                target_entity=target,
+                relationship_type=relationship_type,
+                description=description
+            ))
 
         for ent in entities:
             for field in ent.fields:
@@ -618,6 +679,41 @@ class RelationshipDiscoveryEngine:
                             relationship_type="many-to-one",
                             description=f"Links {ent.name} to its parent {target} record."
                         ))
+
+        domain_relationships = [
+            ("Menu", "MenuItem", "contains", "Menu contains MenuItem records."),
+            ("Customer", "Order", "places", "Customer places Order records."),
+            ("Order", "Payment", "uses", "Order uses Payment for checkout settlement.", "one-to-one"),
+            ("Customer", "Reservation", "creates", "Customer creates Reservation records."),
+            ("Customer", "Review", "writes", "Customer writes Review records."),
+            ("Patient", "Appointment", "schedules", "Patient schedules Appointment records."),
+            ("Doctor", "Appointment", "attends", "Doctor attends Appointment records."),
+            ("Patient", "MedicalRecord", "owns", "Patient owns MedicalRecord history."),
+            ("Patient", "Prescription", "receives", "Patient receives Prescription records."),
+            ("Doctor", "Prescription", "writes", "Doctor writes Prescription records."),
+            ("Product", "Cart", "added_to", "Product is added to Cart entries."),
+            ("Product", "Inventory", "tracked_by", "Product stock is tracked by Inventory."),
+            ("Member", "ClassBooking", "books", "Member books ClassBooking records."),
+            ("ClassSchedule", "ClassBooking", "contains", "ClassSchedule contains ClassBooking reservations."),
+            ("Trainer", "ClassSchedule", "teaches", "Trainer teaches ClassSchedule sessions."),
+            ("Customer", "Lead", "originates", "Customer originates Lead records."),
+            ("Lead", "InteractionLog", "has", "Lead has InteractionLog activity."),
+            ("Contact", "Deal", "owns", "Contact owns Deal opportunities."),
+            ("Student", "Enrollment", "creates", "Student creates Enrollment records."),
+            ("Course", "Enrollment", "contains", "Course contains Enrollment records."),
+            ("Teacher", "Course", "teaches", "Teacher teaches Course records."),
+            ("Enrollment", "Grade", "receives", "Enrollment receives Grade records."),
+            ("Product", "StockOrder", "requested_in", "Product is requested in StockOrder records."),
+            ("Supplier", "StockOrder", "fulfills", "Supplier fulfills StockOrder requests."),
+            ("Guest", "Booking", "creates", "Guest creates Booking records."),
+            ("Room", "Booking", "reserved_by", "Room is reserved by Booking records."),
+            ("Booking", "Payment", "settled_by", "Booking is settled by Payment.", "one-to-one"),
+            ("Account", "Card", "has", "Account has Card records."),
+            ("Account", "LoanApplication", "submits", "Account submits LoanApplication records."),
+            ("Account", "Transaction", "records", "Account records Transaction ledger entries.")
+        ]
+        for relationship in domain_relationships:
+            add_relationship(*relationship)
         return relationships
 
 
@@ -626,6 +722,9 @@ class WorkflowDesigner:
     def design_workflows(blueprint: ApprovedBlueprint, report: Optional[Any] = None) -> List[WorkflowDefinition]:
         """Converts blueprint workflows into logical designs, tracking their actor and entity dependencies."""
         workflows: List[WorkflowDefinition] = []
+        actor_names = [a.name for a in blueprint.actors]
+        domain = report.detected_domain.lower() if (report and report.detected_domain) else blueprint.app_type.lower()
+        is_restaurant_domain = "restaurant" in domain or "food" in domain
         
         target_workflows = []
         if report and report.workflows:
@@ -651,40 +750,79 @@ class WorkflowDesigner:
                     if matching_feature:
                         actor = matching_feature.actor_involved
                     
-                    if "order" in wf_key:
-                        steps = ["Browse Menu", "Select Items", "Add to Cart", "Submit Order"]
+                    if is_restaurant_domain and "browse" in wf_key and "menu" in wf_key:
+                        steps = ["Open Menu", "Filter Categories", "View Menu Items", "Select Items"]
+                        actor = "Customer" if "Customer" in actor_names else actor
+                    elif is_restaurant_domain and ("reserve" in wf_key or "reservation" in wf_key):
+                        steps = ["Select Date and Time", "Check Table Availability", "Create Reservation", "Send Confirmation"]
+                        actor = "Customer" if "Customer" in actor_names else actor
+                    elif is_restaurant_domain and "review" in wf_key:
+                        steps = ["Select Completed Order", "Write Review", "Submit Rating", "Publish Review"]
+                        actor = "Customer" if "Customer" in actor_names else actor
+                    elif is_restaurant_domain and "manage" in wf_key and "menu" in wf_key:
+                        steps = ["Authenticate Owner", "View Current Menu", "Edit Items and Prices", "Save Menu Changes"]
+                        actor = "Restaurant Owner" if "Restaurant Owner" in actor_names else actor
+                    elif is_restaurant_domain and "fulfill" in wf_key and "order" in wf_key:
+                        steps = ["Receive Ticket", "Prepare Food Items", "Mark Order Ready", "Deliver to Table"]
+                        actor = "Staff" if "Staff" in actor_names else actor
+                    elif "cart" in wf_key and "add" in wf_key:
+                        steps = ["Select Product", "Choose Quantity", "Add to Cart", "View Cart Summary"]
+                        actor = "Buyer" if "Buyer" in actor_names else ("Customer" if "Customer" in actor_names else "User")
+                    elif "browse" in wf_key and "product" in wf_key:
+                        steps = ["Search Products", "Apply Filters", "View Product Details", "Compare Items"]
+                        actor = "Buyer" if "Buyer" in actor_names else ("Customer" if "Customer" in actor_names else "User")
+                    elif "manage" in wf_key and "inventory" in wf_key:
+                        steps = ["Log Stock Items", "Check Current Levels", "Update Stock Counts", "Save Inventory Changes"]
+                        actor = "Seller" if "Seller" in actor_names else "User"
+                    elif "process" in wf_key and "payment" in wf_key:
+                        steps = ["Receive Payment Token", "Validate Credit Funds", "Authorize Transfer", "Generate Receipt"]
+                        actor = "Buyer" if "Buyer" in actor_names else "User"
+                    elif "fulfill" in wf_key or "fulfillment" in wf_key:
+                        steps = ["Receive Confirmed Order", "Pick & Pack Items", "Update Shipment Status", "Notify Buyer"]
+                        actor = "Seller" if "Seller" in actor_names else ("Admin" if "Admin" in actor_names else "User")
+                    elif "order" in wf_key:
+                        steps = ["Browse Products", "Add to Cart", "Proceed to Checkout", "Confirm Order"]
                         if not matching_feature:
-                            if "Customer" in [a.name for a in blueprint.actors]:
+                            if "Customer" in actor_names:
                                 actor = "Customer"
-                            elif "Buyer" in [a.name for a in blueprint.actors]:
+                            elif "Buyer" in actor_names:
                                 actor = "Buyer"
-                            elif "Guest" in [a.name for a in blueprint.actors]:
+                            elif "Guest" in actor_names:
                                 actor = "Guest"
                             else:
                                 actor = "User"
                     elif "checkout" in wf_key or "pay" in wf_key:
                         steps = ["Initiate Payment", "Select Payment Method", "Process Transaction", "Confirm Payment"]
                         if not matching_feature:
-                            if "Customer" in [a.name for a in blueprint.actors]:
+                            if "Customer" in actor_names:
                                 actor = "Customer"
-                            elif "Buyer" in [a.name for a in blueprint.actors]:
+                            elif "Buyer" in actor_names:
                                 actor = "Buyer"
-                            elif "Guest" in [a.name for a in blueprint.actors]:
+                            elif "Guest" in actor_names:
                                 actor = "Guest"
                             else:
                                 actor = "User"
+                    elif "request" in wf_key and "appointment" in wf_key:
+                        steps = ["Enter Patient Details", "Choose Preferred Time", "Submit Booking Request"]
+                        actor = "Patient" if "Patient" in actor_names else "User"
+                    elif "schedule" in wf_key and "appointment" in wf_key:
+                        steps = ["Review Request Queue", "Assign Doctor and Room", "Confirm Schedule Slot", "Notify Patient"]
+                        actor = "Admin" if "Admin" in actor_names else "User"
+                    elif "consultation" in wf_key:
+                        steps = ["Retrieve Patient History", "Conduct Examination", "Log Diagnosis Findings", "Create Treatment Plan"]
+                        actor = "Doctor" if "Doctor" in actor_names else "User"
                     elif "appointment" in wf_key:
                         steps = ["Select Date and Time", "Check Doctor Availability", "Confirm Appointment"]
                         if not matching_feature:
-                            actor = "Patient" if "Patient" in [a.name for a in blueprint.actors] else "User"
-                    elif "prescription" in wf_key or "consultation" in wf_key:
+                            actor = "Patient" if "Patient" in actor_names else "User"
+                    elif "prescription" in wf_key:
                         steps = ["Select Patient", "Diagnose Patient", "Write Prescription", "Save Prescription"]
                         if not matching_feature:
-                            actor = "Doctor" if "Doctor" in [a.name for a in blueprint.actors] else "User"
+                            actor = "Doctor" if "Doctor" in actor_names else "User"
                     elif "room" in wf_key or "booking" in wf_key:
                         steps = ["Search Rooms", "Select Room", "Enter Guest Details", "Confirm Booking"]
                         if not matching_feature:
-                            actor = "Guest" if "Guest" in [a.name for a in blueprint.actors] else "User"
+                            actor = "Guest" if "Guest" in actor_names else "User"
                     
                     target_workflows.append(RecommendedWorkflow(
                         name=CanonicalNamingEngine.to_pascal_case(wf_name),
@@ -700,17 +838,73 @@ class WorkflowDesigner:
             deps = []
             workflow_deps = []
             name_lower = wf.name.lower()
-            
+            workflow_steps = list(wf.steps)
+
+            if is_restaurant_domain:
+                if "browse" in name_lower and "menu" in name_lower:
+                    workflow_steps = ["Open Menu", "Filter Categories", "View Menu Items", "Select Items"]
+                    deps = ["Menu", "MenuItem"]
+                elif "reserve" in name_lower or "reservation" in name_lower:
+                    workflow_steps = ["Select Date and Time", "Check Table Availability", "Create Reservation", "Send Confirmation"]
+                    deps = ["Reservation", "Customer"]
+                elif "review" in name_lower:
+                    workflow_steps = ["Select Completed Order", "Write Review", "Submit Rating", "Publish Review"]
+                    deps = ["Review", "Customer", "Order"]
+                elif "checkout" in name_lower or "payment" in name_lower or "pay" in name_lower:
+                    workflow_steps = ["Review Order", "Choose Payment Method", "Payment Processing", "Confirm Paid Order"]
+                    deps = ["Payment", "Order"]
+                elif "fulfill" in name_lower:
+                    workflow_steps = ["Receive Paid Order", "Prepare Items", "Update Order Status", "Notify Customer"]
+                    deps = ["Order", "MenuItem"]
+                elif "manage" in name_lower and "menu" in name_lower:
+                    workflow_steps = ["Authenticate Owner", "View Current Menu", "Edit Items and Prices", "Save Menu Changes"]
+                    deps = ["Menu", "MenuItem"]
+                elif "order" in name_lower:
+                    workflow_steps = ["Browse Menu", "Select Items", "Create Order", "Checkout"]
+                    deps = ["Order", "MenuItem", "Menu"]
+
+            is_ecommerce_domain = report and report.detected_domain and any(
+                kw in report.detected_domain.lower() for kw in ["ecommerce", "e-commerce", "shop", "marketplace"]
+            )
+            if is_ecommerce_domain and not is_restaurant_domain:
+                if "cart" in name_lower and "add" in name_lower:
+                    workflow_steps = ["Select Product", "Choose Quantity", "Add to Cart", "View Cart Summary"]
+                    deps = ["Cart", "Product", "Buyer"]
+                elif "browse" in name_lower and "product" in name_lower:
+                    workflow_steps = ["Search Products", "Apply Filters", "View Product Details", "Compare Items"]
+                    deps = ["Product"]
+                elif "fulfill" in name_lower or "fulfillment" in name_lower:
+                    workflow_steps = ["Receive Confirmed Order", "Pick & Pack Items", "Update Shipment Status", "Notify Buyer"]
+                    deps = ["Order", "Product", "Inventory"]
+                elif "order" in name_lower:
+                    workflow_steps = ["Browse Products", "Add to Cart", "Proceed to Checkout", "Confirm Order"]
+                    deps = ["Order", "Product", "Cart"]
+                elif "checkout" in name_lower or "payment" in name_lower or "pay" in name_lower:
+                    workflow_steps = ["Initiate Payment", "Select Payment Method", "Process Transaction", "Confirm Payment"]
+                    deps = ["Payment", "Order"]
+                elif "process" in name_lower and "payment" in name_lower:
+                    workflow_steps = ["Receive Payment Token", "Validate Credit Funds", "Authorize Transfer", "Generate Receipt"]
+                    deps = ["Payment", "Order"]
+                elif "manage" in name_lower and "inventory" in name_lower:
+                    workflow_steps = ["Log Stock Items", "Check Current Levels", "Update Stock Counts", "Save Inventory Changes"]
+                    deps = ["Product", "Inventory"]
+
             if "booking" in name_lower or "class" in name_lower:
                 deps = ["ClassBooking", "ClassSchedule", "Member"]
             elif "purchase" in name_lower or "membership" in name_lower:
                 deps = ["Member"]
             elif "lead" in name_lower:
                 deps = ["Lead", "Customer"]
+            elif "appointment" in name_lower and "request" in name_lower:
+                deps = ["Appointment", "Patient"]
+            elif "appointment" in name_lower and "schedule" in name_lower:
+                deps = ["Appointment", "Doctor", "Patient"]
             elif "appointment" in name_lower:
                 deps = ["Appointment", "Doctor", "Patient"]
             elif "consultation" in name_lower or "diagnos" in name_lower:
-                deps = ["MedicalRecord", "Patient"]
+                deps = ["MedicalRecord", "Patient", "Doctor"]
+            elif "prescription" in name_lower:
+                deps = ["Prescription", "Doctor", "Patient"]
             elif "enroll" in name_lower:
                 deps = ["Enrollment", "Course", "Student"]
             elif "grade" in name_lower or "grading" in name_lower:
@@ -742,7 +936,7 @@ class WorkflowDesigner:
                 workflow_id=wf.name.lower(),
                 workflow_name=wf.name,
                 description=wf.description,
-                workflow_steps=wf.steps,
+                workflow_steps=workflow_steps,
                 actors=[wf.actor_involved],
                 dependencies=deps,
                 workflow_dependencies=workflow_deps,
@@ -807,11 +1001,18 @@ class PermissionDesigner:
                 perms = ["UpdateInventory", "ReadInventory"]
                 reason = "Staff stocking logs permissions."
             elif name == "Customer":
-                perms = ["BrowseMenu", "PlaceOrder", "Checkout", "ReadOwnProfile"]
-                reason = "Customer ordering and checkout rights."
-            elif name == "RestaurantOwner":
-                perms = ["ManageMenu", "ViewOrders", "ManageRestaurant"]
+                if report and "restaurant" in report.detected_domain.lower():
+                    perms = ["BrowseMenu", "PlaceOrder", "ReserveTable", "LeaveReview", "ReadOwnProfile"]
+                    reason = "Customer menu browsing, ordering, reservation, and review rights."
+                else:
+                    perms = ["BrowseMenu", "PlaceOrder", "Checkout", "ReadOwnProfile"]
+                    reason = "Customer ordering and checkout rights."
+            elif name in ("RestaurantOwner", "Restaurant Owner"):
+                perms = ["ManageMenu", "ManageOrders", "ViewReports"]
                 reason = "Restaurant owner administrative access."
+            elif name == "Staff":
+                perms = ["UpdateOrderStatus", "ManageReservations"]
+                reason = "Restaurant staff operational order and reservation access."
             elif name == "Buyer":
                 perms = ["BrowseProducts", "AddToCart", "Checkout", "ReadOwnProfile"]
                 reason = "Buyer marketplace browsing and purchasing rights."
@@ -892,6 +1093,24 @@ class BusinessRuleCompiler:
                 description="Prescriptions require an associated patient and diagnosis.",
                 enforcement_logic="Prescription.patient_id IS NOT NULL AND MedicalRecord.diagnosis IS NOT NULL"
             ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_003",
+                rule="Medical records may only be updated by licensed Doctors.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["MedicalRecord", "Doctor"],
+                description="HIPAA compliance requires all medical record writes to be attributed to a licensed doctor.",
+                enforcement_logic="MedicalRecord.updated_by IN (SELECT id FROM Doctor WHERE licensed = true)"
+            ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_004",
+                rule="Patients must have an active appointment before a prescription can be issued.",
+                source="approved_blueprint",
+                priority="MEDIUM",
+                affected_entities=["Appointment", "Prescription", "Patient"],
+                description="Ensures prescriptions are always tied to a legitimate consultation visit.",
+                enforcement_logic="Prescription.appointment_id IN (SELECT id FROM Appointment WHERE status = 'completed')"
+            ))
         elif "school" in domain or "education" in domain or "student" in domain:
             rules.append(BusinessRuleDefinition(
                 rule_id="BR_001",
@@ -940,6 +1159,15 @@ class BusinessRuleCompiler:
                 description="Refund requires manager approval.",
                 enforcement_logic="Refund.status == 'approved_by_manager' BEFORE Payment.status == 'refunded'"
             ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_004",
+                rule="Menu items must have valid pricing.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["MenuItem"],
+                description="Menu items must have valid pricing.",
+                enforcement_logic="MenuItem.price > 0"
+            ))
         elif "ecommerce" in domain or "marketplace" in domain or "e-commerce" in domain:
             rules.append(BusinessRuleDefinition(
                 rule_id="BR_001",
@@ -958,6 +1186,24 @@ class BusinessRuleCompiler:
                 affected_entities=["Product"],
                 description="Product stock quantity cannot drop below zero.",
                 enforcement_logic="Product.stock_quantity >= 0"
+            ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_003",
+                rule="Payment must be confirmed before order status is set to fulfilled.",
+                source="approved_blueprint",
+                priority="HIGH",
+                affected_entities=["Payment", "Order"],
+                description="Prevents fulfillment of unpaid orders.",
+                enforcement_logic="Payment.status == 'confirmed' BEFORE Order.status = 'fulfilled'"
+            ))
+            rules.append(BusinessRuleDefinition(
+                rule_id="BR_004",
+                rule="Cart items must be removed from inventory on checkout completion.",
+                source="approved_blueprint",
+                priority="MEDIUM",
+                affected_entities=["Cart", "Inventory", "Product"],
+                description="Ensures inventory is decremented atomically when a purchase is finalized.",
+                enforcement_logic="Inventory.quantity -= Cart.quantity ON Order.status = 'confirmed'"
             ))
         elif "hotel" in domain or "booking" in domain:
             rules.append(BusinessRuleDefinition(
@@ -1034,6 +1280,22 @@ class DesignDecisionEngine:
                 impact_level="HIGH",
                 affected_components=["Doctor", "MedicalRecord"]
             ))
+            decisions.append(DesignDecision(
+                decision_id="DD_002",
+                decision="Prescription is modeled as a separate entity from MedicalRecord.",
+                reason="Allows independent lifecycle management: prescriptions can be renewed without modifying the base medical record.",
+                source="approved_blueprint",
+                impact_level="HIGH",
+                affected_components=["Prescription", "MedicalRecord", "Patient"]
+            ))
+            decisions.append(DesignDecision(
+                decision_id="DD_003",
+                decision="Appointment acts as the scheduling junction between Patient and Doctor.",
+                reason="Centralizes booking logic, availability checks, and conflict detection in a single entity.",
+                source="approved_blueprint",
+                impact_level="MEDIUM",
+                affected_components=["Appointment", "Patient", "Doctor"]
+            ))
         elif "school" in domain or "education" in domain or "student" in domain:
             decisions.append(DesignDecision(
                 decision_id="DD_001",
@@ -1061,7 +1323,23 @@ class DesignDecisionEngine:
                 impact_level="HIGH",
                 affected_components=["MenuItem", "Menu"]
             ))
-        elif "ecommerce" in domain or "marketplace" in domain:
+            decisions.append(DesignDecision(
+                decision_id="DD_002",
+                decision="Reservation is modeled separately from Order.",
+                reason="Reservation modeled separately to support scheduling and capacity planning.",
+                source="approved_blueprint",
+                impact_level="HIGH",
+                affected_components=["Reservation", "Customer"]
+            ))
+            decisions.append(DesignDecision(
+                decision_id="DD_003",
+                decision="Payment is separated from Order fulfillment.",
+                reason="Keeps checkout, refunds, and paid-order fulfillment auditable.",
+                source="approved_blueprint",
+                impact_level="HIGH",
+                affected_components=["Payment", "Order"]
+            ))
+        elif "ecommerce" in domain or "e-commerce" in domain or "marketplace" in domain or "shop" in domain:
             decisions.append(DesignDecision(
                 decision_id="DD_001",
                 decision="Inventory updates are tied directly to Order fulfillment.",
@@ -1069,6 +1347,22 @@ class DesignDecisionEngine:
                 source="approved_blueprint",
                 impact_level="HIGH",
                 affected_components=["Inventory", "Order"]
+            ))
+            decisions.append(DesignDecision(
+                decision_id="DD_002",
+                decision="Cart is a transient staging entity separate from Order.",
+                reason="Allows buyers to modify selections freely before committing to a purchase transaction.",
+                source="approved_blueprint",
+                impact_level="HIGH",
+                affected_components=["Cart", "Order", "Product"]
+            ))
+            decisions.append(DesignDecision(
+                decision_id="DD_003",
+                decision="Payment is decoupled from Order to support multiple payment methods and refunds.",
+                reason="Isolates financial concerns from fulfillment logic — enables partial refunds, payment retries, and auditing.",
+                source="approved_blueprint",
+                impact_level="HIGH",
+                affected_components=["Payment", "Order", "Buyer"]
             ))
         elif "hotel" in domain:
             decisions.append(DesignDecision(
@@ -1178,14 +1472,29 @@ class MasterSpecificationBuilder:
                 perms = ["ManageAllRecords"]
             elif a.name == "GymMember":
                 perms = ["BookClasses"]
+            elif a.name == "GymTrainer":
+                perms = ["ManageSchedules", "ViewAssignedMembers"]
+            elif a.name == "SalesAgent":
+                perms = ["ManageLeads", "LogInteractions"]
             elif a.name == "Doctor":
                 perms = ["CreateDiagnosis"]
+            elif a.name == "Patient":
+                perms = ["ReadOwnProfile", "ScheduleAppointments"]
             elif a.name == "Teacher":
                 perms = ["GradeStudents"]
+            elif a.name == "Student":
+                perms = ["EnrollCourses", "ReadOwnGrades"]
             elif a.name == "WarehouseStaff":
                 perms = ["UpdateInventory"]
             elif a.name == "Customer":
-                perms = ["BrowseMenu", "PlaceOrder", "Checkout"]
+                if report and "restaurant" in report.detected_domain.lower():
+                    perms = ["BrowseMenu", "PlaceOrder", "ReserveTable", "LeaveReview"]
+                else:
+                    perms = ["BrowseMenu", "PlaceOrder", "Checkout"]
+            elif a.name in ("RestaurantOwner", "Restaurant Owner"):
+                perms = ["ManageMenu", "ManageOrders", "ViewReports"]
+            elif a.name == "Staff":
+                perms = ["UpdateOrderStatus", "ManageReservations"]
             elif a.name == "Buyer":
                 perms = ["BrowseProducts", "AddToCart", "Checkout"]
             elif a.name == "Seller":

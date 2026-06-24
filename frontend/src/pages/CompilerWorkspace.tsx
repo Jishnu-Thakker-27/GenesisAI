@@ -6,18 +6,29 @@ import { JsonInspector } from '../components/JsonInspector';
 
 interface CompilerWorkspaceProps {
   projectId: string;
+  selectedFile?: string;
+  onSelectFile?: (file: string) => void;
+  onNavigate?: (tab: string) => void;
 }
 
-export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId }) => {
+export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId, selectedFile, onSelectFile, onNavigate }) => {
   const [project, setProject] = useState<FinalCompiledApplication | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [evolving, setEvolving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [selectedStage, setSelectedStage] = useState<string>('System Design');
+  
+  const [selectedFileLocal, setSelectedFileLocal] = useState<string>('master_specification.json');
+  const activeFile = selectedFile || selectedFileLocal;
+  const setActiveFile = onSelectFile || setSelectedFileLocal;
 
   useEffect(() => {
-    loadProject();
+    if (projectId) {
+      loadProject();
+    } else {
+      setProject(null);
+      setError(null);
+    }
   }, [projectId]);
 
   const loadProject = async () => {
@@ -46,6 +57,74 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
     setEvolving(false);
   };
 
+  if (!projectId || (!project && !loading && !error)) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '400px',
+        textAlign: 'center',
+        backgroundColor: '#121212',
+        border: '1px solid #1E1E1E',
+        borderRadius: '12px',
+        padding: '40px'
+      }}>
+        <div style={{
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          backgroundColor: 'rgba(0,112,243,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '20px',
+          color: '#0070F3'
+        }}>
+          <Cpu size={28} />
+        </div>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#FFFFFF', margin: '0 0 8px 0' }}>No Contracts Generated Yet</h3>
+        <p style={{ color: '#888888', fontSize: '14px', maxWidth: '480px', margin: '0 0 20px 0', lineHeight: '1.5' }}>
+          Compilation produces 6 core contract artifacts:
+        </p>
+        <div style={{
+          textAlign: 'left',
+          fontSize: '13px',
+          color: '#AAAAAA',
+          marginBottom: '24px',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '8px 16px',
+          maxWidth: '440px'
+        }}>
+          <div>📄 requirements_report.json</div>
+          <div>📄 blueprint.json</div>
+          <div>📄 master_specification.json</div>
+          <div>📄 validation_report.json</div>
+          <div>📄 repair_report.json</div>
+          <div>📄 final_contract.json</div>
+        </div>
+        <button
+          onClick={() => onNavigate?.('ai-architect')}
+          style={{
+            backgroundColor: '#0070F3',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '10px 20px',
+            fontSize: '14px',
+            fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'background-color 0.2s'
+          }}
+        >
+          Go to AI Architect
+        </button>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px', flexDirection: 'column', gap: '16px' }}>
@@ -65,168 +144,139 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
     );
   }
 
-  // Compiler stages linked to selected tabs
-  const stages = [
-    { name: 'Intent Extraction', icon: Cpu, desc: 'Natural language semantic parsing.' },
-    { name: 'AI Architect Report', icon: BrainCircuit, desc: 'Ambiguity & assumptions engine.' },
-    { name: 'Blueprint Recommendation', icon: Database, desc: 'Recommended actors and structures.' },
-    { name: 'System Design', icon: Terminal, desc: 'Specification of entities and relations.' },
-    { name: 'Schema Generation', icon: Database, desc: 'Database, API, and UI schemas.' },
-    { name: 'Validation', icon: ShieldCheck, desc: 'Multi-layer integrity scan.' },
-    { name: 'Self-Healing Repair', icon: Wrench, desc: 'Autonomous conflict patch engine.' }
+  // Compiler generated artifacts List
+  const filesList = [
+    { name: 'requirements_report.json', label: 'requirements_report.json', icon: BrainCircuit, desc: 'Ambiguity & requirements trace.' },
+    { name: 'blueprint.json', label: 'blueprint.json', icon: Database, desc: 'Extracted actors and features.' },
+    { name: 'master_specification.json', label: 'master_specification.json', icon: Terminal, desc: 'Compiled specifications and schemas.' },
+    { name: 'validation_report.json', label: 'validation_report.json', icon: ShieldCheck, desc: 'Integrity scan diagnostics.' },
+    { name: 'repair_report.json', label: 'repair_report.json', icon: Wrench, desc: 'Autonomous patch repair details.' },
+    { name: 'final_contract.json', label: 'final_contract.json', icon: Cpu, desc: 'Complete compiled application contract.' }
   ];
 
   // Dynamic code viewer selector content
-  const renderStageContent = () => {
-    switch (selectedStage) {
-      case 'Intent Extraction':
+  const renderFileContent = () => {
+    switch (activeFile) {
+      case 'requirements_report.json':
         return {
-          filename: 'intent_extraction.json',
-          content: JSON.stringify({
-            prompt: project.prompt,
-            extracted_intent: project.intent
-          }, null, 2)
+          filename: 'requirements_report.json',
+          content: JSON.stringify(project.ai_architect_report || {}, null, 2)
         };
-      case 'AI Architect Report':
+      case 'blueprint.json':
         return {
-          filename: 'ai_architect_report.json',
-          content: JSON.stringify({
-            mode: project.ai_architect_report.mode,
-            ambiguity_score: project.ai_architect_report.ambiguity_score,
-            missing_information: project.ai_architect_report.missing_information,
-            assumptions_made: project.ai_architect_report.assumptions_made,
-            clarification_questions: project.ai_architect_report.clarification_questions,
-            confidence_scores: project.ai_architect_report.confidence_scores
-          }, null, 2)
+          filename: 'blueprint.json',
+          content: JSON.stringify(project.blueprint || {}, null, 2)
         };
-      case 'Blueprint Recommendation':
-        return {
-          filename: 'blueprint_recommendation.json',
-          content: JSON.stringify(project.blueprint, null, 2)
-        };
-      case 'System Design':
+      case 'master_specification.json':
         return {
           filename: 'master_specification.json',
-          content: JSON.stringify({
-            schema_version: '2.4.0-alpha',
-            metadata: project.system_design.metadata || {},
-            entities: project.system_design.entities,
-            relationships: project.system_design.relationships,
-            workflows: project.system_design.workflows,
-            design_decisions: project.system_design.design_decisions
-          }, null, 2)
+          content: JSON.stringify(project.system_design || {}, null, 2)
         };
-      case 'Schema Generation':
-        return {
-          filename: 'compiled_schema_bundle.json',
-          content: JSON.stringify(project.schema_bundle, null, 2)
-        };
-      case 'Validation':
+      case 'validation_report.json':
         return {
           filename: 'validation_report.json',
-          content: JSON.stringify(project.validation_report, null, 2)
+          content: JSON.stringify(project.validation_report || {}, null, 2)
         };
-      case 'Self-Healing Repair':
+      case 'repair_report.json':
         return {
           filename: 'repair_report.json',
           content: JSON.stringify(project.repair_report || {
             repair_status: 'No repair needed',
-            validation_passed: project.validation_report.is_valid,
+            validation_passed: project.validation_report?.is_valid || true,
             repair_history: []
           }, null, 2)
         };
+      case 'final_contract.json':
+        return {
+          filename: 'final_contract.json',
+          content: JSON.stringify(project, null, 2)
+        };
       default:
-        return { filename: 'unknown.json', content: '{}' };
+        return { filename: 'master_specification.json', content: JSON.stringify(project.system_design || {}, null, 2) };
     }
   };
 
-  const activeViewer = renderStageContent();
+  const activeViewer = renderFileContent();
 
-  // Dynamic Right-Sidebar Reasoning details based on current stage
+  // Dynamic Right-Sidebar Reasoning details based on current active file
   const renderReasoningMeta = () => {
-    switch (selectedStage) {
-      case 'Intent Extraction':
-        return (
-          <>
-            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
-              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Extraction Engine</p>
-              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Intent Confidence</p>
-              <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#10B981', marginTop: '4px' }}>
-                {Math.round((project.intent?.confidence_score || 0.9) * 100)}%
-              </p>
-            </div>
-            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
-              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Actors Found</p>
-              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>
-                {project.intent?.actors?.length || 0} Actors Extracted
-              </p>
-              <p style={{ fontSize: '12px', color: '#888888', marginTop: '4px' }}>
-                {project.intent?.actors?.map((a: any) => a.name).join(', ')}
-              </p>
-            </div>
-          </>
-        );
-      case 'AI Architect Report':
+    switch (activeFile) {
+      case 'requirements_report.json':
         return (
           <>
             <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
               <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Ambiguity Rating</p>
               <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Ambiguity Level</p>
               <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#F59E0B', marginTop: '4px' }}>
-                {Math.round(project.ai_architect_report.ambiguity_score * 100)}%
+                {Math.round((project.ai_architect_report?.ambiguity_score || 0.3) * 100)}%
               </p>
             </div>
             <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
-              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Clarification Triggered</p>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Open Questions</p>
               <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>
-                {project.ai_architect_report.clarification_questions.length} Open Questions
+                {project.ai_architect_report?.clarification_questions?.length || 0} Clarifications
               </p>
             </div>
           </>
         );
-      case 'Blueprint Recommendation':
+      case 'blueprint.json':
         return (
           <>
             <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
-              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Blueprint Contents</p>
-              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>{project.blueprint.actors.length} actors</p>
-              <p style={{ fontSize: '12px', color: '#888888', marginTop: '4px' }}>{project.blueprint.features.length} features, {project.blueprint.workflows.length} workflows</p>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Blueprint Recommendations</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>
+                {project.blueprint?.actors?.length || 0} Actors, {project.blueprint?.features?.length || 0} Features
+              </p>
             </div>
           </>
         );
-      case 'System Design':
+      case 'master_specification.json':
         return (
           <>
             <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
-              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Active Specification</p>
-              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Compiled Spec</p>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Specification Details</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>
+                {project.system_design?.entities?.length || 0} Entities, {project.system_design?.workflows?.length || 0} Workflows
+              </p>
+            </div>
+          </>
+        );
+      case 'validation_report.json':
+        return (
+          <>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Validation Status</p>
+              <p style={{ fontSize: '18px', fontWeight: 'bold', color: project.validation_report?.is_valid ? '#10B981' : '#EF4444', marginTop: '4px' }}>
+                {project.validation_report?.is_valid ? 'PASSED' : 'REJECTED'}
+              </p>
+            </div>
+          </>
+        );
+      case 'repair_report.json':
+        return (
+          <>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Healing Diagnostics</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>
+                {project.repair_report?.repair_actions_executed?.length || 0} Applied Patches
+              </p>
+            </div>
+          </>
+        );
+      case 'final_contract.json':
+        return (
+          <>
+            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
+              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Contract Details</p>
+              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Version 1.0.0-Stable</p>
               <p style={{ fontSize: '12px', color: '#888888', marginTop: '6px', lineHeight: '1.4' }}>
-                Generated dynamically from natural language requirements mapping core relational models.
-              </p>
-            </div>
-          </>
-        );
-      case 'Validation':
-        return (
-          <>
-            <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
-              <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Scan Verdict</p>
-              <p style={{ fontSize: '13px', fontWeight: 'bold', marginTop: '6px' }}>Integrity Scan</p>
-              <p style={{ fontSize: '18px', fontWeight: 'bold', color: project.validation_report.is_valid ? '#10B981' : '#F59E0B', marginTop: '4px' }}>
-                {project.validation_report.is_valid ? 'PASSED' : 'WARNING'}
+                This is the complete, signed system architecture contract. Ready for deployment pipeline.
               </p>
             </div>
           </>
         );
       default:
-        return (
-          <div style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '8px', padding: '16px' }}>
-            <p style={{ fontSize: '11px', color: '#666666', textTransform: 'uppercase' }}>Pipeline Log</p>
-            <p style={{ fontSize: '12px', color: '#888888', marginTop: '6px', lineHeight: '1.4' }}>
-              Select a compiler stage on the left sidebar to audit its serialized code outputs.
-            </p>
-          </div>
-        );
+        return null;
     }
   };
 
@@ -281,15 +331,15 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
           gap: '16px',
           overflowY: 'auto'
         }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#FFFFFF' }}>Compiler Stages</h3>
+          <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#FFFFFF' }}>Generated Files</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {stages.map((stage) => {
-              const StageIcon = stage.icon;
-              const isSelected = selectedStage === stage.name;
+            {filesList.map((file) => {
+              const FileIcon = file.icon;
+              const isSelected = activeFile === file.name;
               return (
                 <button
-                  key={stage.name}
-                  onClick={() => setSelectedStage(stage.name)}
+                  key={file.name}
+                  onClick={() => setActiveFile(file.name)}
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -308,10 +358,10 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: isSelected ? 'bold' : 'normal' }}>
-                    <StageIcon size={14} />
-                    <span>{stage.name}</span>
+                    <FileIcon size={14} />
+                    <span>{file.label}</span>
                   </div>
-                  <span style={{ fontSize: '10px', color: isSelected ? 'rgba(255,255,255,0.7)' : '#666666' }}>{stage.desc}</span>
+                  <span style={{ fontSize: '10px', color: isSelected ? 'rgba(255,255,255,0.7)' : '#666666' }}>{file.desc}</span>
                 </button>
               );
             })}
@@ -372,7 +422,7 @@ export const CompilerWorkspace: React.FC<CompilerWorkspaceProps> = ({ projectId 
               marginTop: '8px',
               lineHeight: '1.4'
             }}>
-{project.pipeline_traces.map((trace) => `${trace.phase_name}: ${trace.status}`).join('\n')}
+{(project.pipeline_traces || []).map((trace) => `${trace.phase_name}: ${trace.status}`).join('\n')}
             </pre>
           </div>
         </div>

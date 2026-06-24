@@ -118,6 +118,8 @@ class ValidationEngine:
                 if CanonicalNamingEngine.to_snake_case(rel.source_entity) == tbl.table_name:
                     trg_tbl = CanonicalNamingEngine.to_snake_case(rel.target_entity)
                     has_fk = any(fk.get("references_table") == trg_tbl for fk in tbl.foreign_keys)
+                    if not has_fk and trg_tbl in db_tables:
+                        has_fk = any(fk.get("references_table") == tbl.table_name for fk in db_tables[trg_tbl].foreign_keys)
                     if not has_fk:
                         log_issue("DB_BROKEN_RELATIONSHIP", "HIGH", "Database", f"Table:{tbl.table_name}", f"Logical relationship '{rel.relationship_id}' is missing a compiled foreign key column in table '{tbl.table_name}'.", f"Relationship:{rel.relationship_id}", f"Add a relationship field on entity '{rel.source_entity}' referencing '{rel.target_entity}.id'.")
 
