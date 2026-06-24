@@ -13,7 +13,8 @@ import {
   ValidationError,
   RepairReport,
   ExecutionSimulationReport,
-  RequirementChangeReport
+  RequirementChangeReport,
+  AIArchitectReport
 } from "./frontend_models";
 
 export const mockPipelineTraces: PipelineTrace[] = [
@@ -496,6 +497,74 @@ export const mockTimelineData: VersionHistoryEvolutionScreen = {
   ]
 };
 
+export const mockAIArchitectReport: AIArchitectReport = {
+  mode: "HYBRID",
+  ambiguity_score: 0.68,
+  missing_information: [
+    {
+      category: "workflows",
+      description: "Membership purchase, class booking, attendance, and cancellation flows need full rules.",
+      impact: "MEDIUM"
+    },
+    {
+      category: "integrations",
+      description: "Payment gateway and notification integrations are not specified.",
+      impact: "MEDIUM"
+    }
+  ],
+  assumptions_made: [
+    {
+      assumption: "Admin console required",
+      confidence: 0.88,
+      reason: "Operational systems need administrative record management and access control.",
+      risk_level: "LOW",
+      source: "requirements_intelligence"
+    },
+    {
+      assumption: "External integrations will be modeled as replaceable adapters",
+      confidence: 0.7,
+      reason: "Adapter boundaries preserve deployment compatibility until provider choices are known.",
+      risk_level: "MEDIUM",
+      source: "requirements_intelligence"
+    }
+  ],
+  clarification_questions: [
+    {
+      question: "Should attendance tracking be included in the first version?",
+      category: "workflows",
+      priority: "HIGH"
+    }
+  ],
+  risks: [
+    {
+      risk: "Architecture may encode the wrong workflow scope.",
+      severity: "HIGH",
+      mitigation: "Clarify attendance and cancellation rules before production build-out."
+    }
+  ],
+  confidence_scores: {
+    prompt_completeness: 0.64,
+    architecture_confidence: 0.8,
+    requirement_confidence: 0.7,
+    assumption_confidence: 0.79,
+    overall_score: 0.73
+  },
+  architecture_reasoning_trace: [
+    {
+      component: "ClassBooking",
+      component_type: "Entity",
+      reason: "Generated because class scheduling requires reservation records."
+    },
+    {
+      component: "MembershipPurchaseFlow",
+      component_type: "Workflow",
+      reason: "Generated because payment transactions are needed for member onboarding."
+    }
+  ],
+  recommended_architecture_strategy:
+    "Proceed with a hybrid architecture: ask critical questions, isolate uncertain integrations, and auto-assume low-risk defaults."
+};
+
 // Full FinalCompiledApplication matching compile output for mock runs
 export const mockFinalCompiledApplication: FinalCompiledApplication = {
   project_id: "proj_01",
@@ -503,6 +572,7 @@ export const mockFinalCompiledApplication: FinalCompiledApplication = {
   app_type: "Backend API",
   prompt: "Gym Management System with Bookings and Payments",
   intent: mockCompilerData.intent,
+  ai_architect_report: mockAIArchitectReport,
   blueprint: mockCompilerData.blueprint,
   system_design: mockCompilerData.system_design,
   schema_bundle: mockCompilerData.schema_bundle,
@@ -566,4 +636,3 @@ export const mockRepairReport: RepairReport = {
   },
   timestamp: "2026-06-23T20:05:00Z"
 };
-

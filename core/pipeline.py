@@ -12,13 +12,16 @@ from stages.stage6_validate import ValidationEngine, ValidationReport
 from stages.stage7_repair import RepairEngine, RepairReport
 from stages.stage8_execution import ExecutionSimulator, ExecutionSimulationReport
 from stages.stage9_change import RequirementChangeEngine, RequirementChangeReport, RequirementChangeRequest
+from stages.stage10_requirements_intelligence import RequirementsIntelligenceEngine, AIArchitectReport, IntelligenceMode
 from core.naming import CanonicalNamingEngine
 
 class GenesisPipeline:
-    def __init__(self, execution_mode: str = "BALANCED"):
+    def __init__(self, execution_mode: str = "BALANCED", intelligence_mode: IntelligenceMode = "HYBRID"):
         self.execution_mode = execution_mode
+        self.intelligence_mode = intelligence_mode
         self.prompt: Optional[str] = None
         self.intent: Optional[IntentExtractionResult] = None
+        self.ai_architect_report: Optional[AIArchitectReport] = None
         self.blueprint: Optional[ApprovedBlueprint] = None
         self.system_design: Optional[MasterSpecification] = None
         self.schema_bundle: Optional[CompiledSchemaBundle] = None
@@ -30,35 +33,48 @@ class GenesisPipeline:
         self.start_time: float = 0.0
         self.execution_time: float = 0.0
 
-    def run_pipeline(self, prompt: str, execution_mode: Optional[str] = None) -> FinalCompiledApplication:
+    def run_pipeline(
+        self,
+        prompt: str,
+        execution_mode: Optional[str] = None,
+        intelligence_mode: Optional[IntelligenceMode] = None
+    ) -> FinalCompiledApplication:
         if execution_mode:
             self.execution_mode = execution_mode
+        if intelligence_mode:
+            self.intelligence_mode = intelligence_mode
         self.prompt = prompt
         self.traces = []
         self.start_time = time.time()
         
         # 1. Run intent extraction
         self.run_intent_phase()
+
+        # 2. Run requirements intelligence before blueprint recommendation
+        self.run_requirements_intelligence_phase()
         
-        # 2. Run blueprint recommendation
+        # 3. Run blueprint recommendation
         self.run_blueprint_phase()
         
-        # 3. Run system design specification
+        # 4. Run system design specification
         self.run_system_design_phase()
+
+        # 5. Enrich AI architect report with the concrete architecture trace
+        self.enrich_architecture_reasoning_trace()
         
-        # 4. Run schema compilation
+        # 6. Run schema compilation
         self.run_schema_phase()
         
-        # 5. Run validation phase
+        # 7. Run validation phase
         self.run_validation_phase()
         
-        # 6. Run repair phase
+        # 8. Run repair phase
         self.run_repair_phase()
         
-        # 7. Run simulation phase
+        # 9. Run simulation phase
         self.run_simulation_phase()
         
-        # 8. Run evolution phase
+        # 10. Run evolution phase
         self.run_evolution_phase()
         
         self.execution_time = time.time() - self.start_time
@@ -71,6 +87,7 @@ class GenesisPipeline:
             app_type=self.intent.app_type if self.intent else "Generic",
             prompt=self.prompt,
             intent=self.intent,
+            ai_architect_report=self.ai_architect_report,
             blueprint=self.blueprint,
             system_design=self.system_design,
             schema_bundle=self.schema_bundle,
@@ -114,6 +131,48 @@ class GenesisPipeline:
                 warnings=[]
             ))
         return self.intent
+
+    def run_requirements_intelligence_phase(self, intent: Optional[IntentExtractionResult] = None) -> AIArchitectReport:
+        if intent is not None:
+            self.intent = intent
+        if not self.intent or not self.prompt:
+            raise ValueError("Intent and prompt are required for requirements intelligence.")
+
+        start_str = datetime.now().isoformat()
+        t0 = time.time()
+        errors = []
+        try:
+            self.ai_architect_report = RequirementsIntelligenceEngine.analyze(
+                self.prompt,
+                self.intent,
+                self.intelligence_mode
+            )
+            status = "SUCCESS"
+        except Exception as e:
+            status = "FAILED"
+            errors.append(str(e))
+            raise e
+        finally:
+            duration = (time.time() - t0) * 1000.0
+            self.traces.append(PipelineTrace(
+                phase_name="AI Requirements Intelligence Engine",
+                start_time=start_str,
+                end_time=datetime.now().isoformat(),
+                duration_ms=duration,
+                status=status,
+                errors=errors,
+                warnings=[]
+            ))
+        return self.ai_architect_report
+
+    def enrich_architecture_reasoning_trace(self) -> Optional[AIArchitectReport]:
+        if self.ai_architect_report and self.blueprint and self.system_design:
+            self.ai_architect_report = RequirementsIntelligenceEngine.attach_architecture_trace(
+                self.ai_architect_report,
+                self.blueprint,
+                self.system_design
+            )
+        return self.ai_architect_report
 
     def run_blueprint_phase(self, intent: Optional[IntentExtractionResult] = None) -> ApprovedBlueprint:
         if intent is not None:

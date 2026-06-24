@@ -33,6 +33,7 @@ export interface FinalCompiledApplication {
   app_type: string;
   prompt: string;
   intent: any; // IntentExtractionResult
+  ai_architect_report: AIArchitectReport;
   blueprint: any; // ApprovedBlueprint
   system_design: any; // MasterSpecification
   schema_bundle: any; // CompiledSchemaBundle
@@ -44,6 +45,58 @@ export interface FinalCompiledApplication {
   execution_mode: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface MissingRequirement {
+  category: "actors" | "workflows" | "business_rules" | "integrations" | "constraints";
+  description: string;
+  impact: "LOW" | "MEDIUM" | "HIGH";
+}
+
+export interface ArchitectAssumption {
+  assumption: string;
+  confidence: number;
+  reason: string;
+  risk_level: "LOW" | "MEDIUM" | "HIGH";
+  source: string;
+}
+
+export interface ArchitectClarificationQuestion {
+  question: string;
+  category: "actors" | "workflows" | "business_rules" | "integrations" | "constraints";
+  priority: "LOW" | "MEDIUM" | "HIGH";
+}
+
+export interface ArchitectConfidenceScores {
+  prompt_completeness: number;
+  architecture_confidence: number;
+  requirement_confidence: number;
+  assumption_confidence: number;
+  overall_score: number;
+}
+
+export interface ArchitectureReasoningItem {
+  component: string;
+  component_type: string;
+  reason: string;
+}
+
+export interface ArchitectRisk {
+  risk: string;
+  severity: "LOW" | "MEDIUM" | "HIGH";
+  mitigation: string;
+}
+
+export interface AIArchitectReport {
+  mode: "ASK_ONLY" | "ASSUME_ONLY" | "HYBRID";
+  ambiguity_score: number;
+  missing_information: MissingRequirement[];
+  assumptions_made: ArchitectAssumption[];
+  clarification_questions: ArchitectClarificationQuestion[];
+  risks: ArchitectRisk[];
+  confidence_scores: ArchitectConfidenceScores;
+  architecture_reasoning_trace: ArchitectureReasoningItem[];
+  recommended_architecture_strategy: string;
 }
 
 export interface ValidationError {
@@ -280,6 +333,10 @@ export interface ArchitectureMapScreen {
   entity_relationships: Record<string, any>[];
   workflow_relationships: Record<string, any>[];
   dependency_graph: Record<string, any>;
+}
+
+export interface AIArchitectScreen {
+  report: AIArchitectReport;
 }
 
 export interface ExecutionVerificationScreen {

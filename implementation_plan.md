@@ -43,6 +43,12 @@ To address these vulnerabilities, the system will use a **Compiler AST Approach*
                                            |
                                            v
                               +------------+------------+
+                              | AI Requirements         |
+                              | Intelligence Engine     |
+                              +------------+------------+
+                                           |
+                                           v
+                              +------------+------------+
                               |      Master Spec        |
                               |    Generation (AST)     |
                               +------------+------------+

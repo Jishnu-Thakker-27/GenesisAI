@@ -33,23 +33,25 @@ It converts prompts into strongly typed AST specifications, validates database n
 ```mermaid
 graph TD
     Prompt[Prompt] -->|1. Parse| Intent[Intent Engine]
-    Intent -->|2. Extract| Blueprint[Blueprint Engine]
-    Blueprint -->|3. Recommend & Edit| Spec[System Design Engine]
-    Spec -->|4. Design Specs| Schema[Schema Engine]
-    Schema -->|5. Schema Bundle| Validation[Validation Engine]
-    Validation -->|6. Audit| Repair[Repair Engine]
-    Repair -->|7. Correct| Simulation[Execution Simulator]
-    Simulation -->|8. Verify state & rules| Evolution[Requirement Evolution]
+    Intent -->|2. Ambiguity, Assumptions & Questions| Architect[AI Requirements Intelligence Engine]
+    Architect -->|3. Informed Requirements Context| Blueprint[Blueprint Engine]
+    Blueprint -->|4. Recommend & Edit| Spec[System Design Engine]
+    Spec -->|5. Design Specs & Reasoning Trace| Schema[Schema Engine]
+    Schema -->|6. Schema Bundle| Validation[Validation Engine]
+    Validation -->|7. Audit| Repair[Repair Engine]
+    Repair -->|8. Correct| Simulation[Execution Simulator]
+    Simulation -->|9. Verify state & rules| Evolution[Requirement Evolution]
 ```
 
 1. **Intent Extraction**: Deconstructs prompt details to identify actors, features, rules, and constraints.
-2. **Blueprint Recommendation**: Suggests ranked best practices (industry patterns) and community innovations.
-3. **Specification Compilation**: Maps entities, fields, relationships, workflows, and permissions into a logical AST specification.
-4. **Schema Generation**: Compiles the AST into Database Tables, REST APIs, UI Views, and Auth schemas.
-5. **Validation Engine**: Performs cross-layer consistency and structural checks (14 validators).
-6. **Repair Engine**: Resolves compilation errors surgically using a libraries catalog of 13+ repair strategies.
-7. **Execution Simulation**: Steps through workflows in-memory checking virtual auth access, database tables, and business rules.
-8. **Requirement Evolution**: Propagates change requests incrementally, tracking version timelines and rollback snapshots.
+2. **AI Requirements Intelligence**: Detects ambiguity, missing actors, workflows, rules, integrations, and constraints, then selects questions or assumptions through ASK_ONLY, ASSUME_ONLY, or HYBRID mode.
+3. **Blueprint Recommendation**: Suggests ranked best practices (industry patterns) and community innovations.
+4. **Specification Compilation**: Maps entities, fields, relationships, workflows, and permissions into a logical AST specification.
+5. **Schema Generation**: Compiles the AST into Database Tables, REST APIs, UI Views, and Auth schemas.
+6. **Validation Engine**: Performs cross-layer consistency and structural checks (14 validators).
+7. **Repair Engine**: Resolves compilation errors surgically using a libraries catalog of 13+ repair strategies.
+8. **Execution Simulation**: Steps through workflows in-memory checking virtual auth access, database tables, and business rules.
+9. **Requirement Evolution**: Propagates change requests incrementally, tracking version timelines and rollback snapshots.
 
 ---
 
@@ -67,6 +69,7 @@ GenesisAI exposes a developer portal backend via FastAPI on `http://127.0.0.1:80
 | **POST** | `/repair` | Repair validation errors found in a project. |
 | **POST** | `/simulate` | Simulate workflow steps in-memory. |
 | **GET** | `/dashboard` | Retrieve global statistics and compile latency averages. |
+| **GET** | `/ai-architect/{project_id}` | Retrieve ambiguity, assumptions, questions, risks, confidence scores, and architecture reasoning trace. |
 | **GET** | `/architecture/{project_id}` | Retrieve graph layout nodes, edges, and relationships. |
 | **GET** | `/versions/{project_id}` | Retrieve version lists and requirement evolution timelines. |
 | **GET** | `/project/{project_id}` | Retrieve full compiled application JSON dump. |

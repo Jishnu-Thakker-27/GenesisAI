@@ -9,7 +9,7 @@ from core.storage import ProjectStorage
 from core.contracts import (
     DashboardScreen, CompilerScreen, ValidationRepairScreen,
     ArchitectureMapScreen, ExecutionVerificationScreen, VersionHistoryEvolutionScreen,
-    FinalCompiledApplication, DashboardMetrics, PipelineTrace
+    FinalCompiledApplication, DashboardMetrics, PipelineTrace, AIArchitectScreen
 )
 from stages.stage6_validate import ValidationReport, ValidationError
 from stages.stage7_repair import RepairReport
@@ -33,6 +33,7 @@ def read_root():
 class CompileRequest(BaseModel):
     prompt: str
     execution_mode: Optional[str] = "BALANCED"
+    intelligence_mode: Optional[str] = "HYBRID"
 
 class ValidateRequest(BaseModel):
     project_id: str
@@ -45,7 +46,10 @@ class SimulateRequest(BaseModel):
 
 @app.post("/compile", response_model=FinalCompiledApplication)
 def compile_project(request: CompileRequest):
-    pipeline = GenesisPipeline(execution_mode=request.execution_mode)
+    pipeline = GenesisPipeline(
+        execution_mode=request.execution_mode,
+        intelligence_mode=request.intelligence_mode
+    )
     try:
         app_res = pipeline.run_pipeline(request.prompt)
         ProjectStorage.save_project(
@@ -211,6 +215,15 @@ def get_architecture(project_id: str):
         workflow_relationships=workflow_relationships,
         dependency_graph=dependency_graph
     )
+
+@app.get("/ai-architect/{project_id}", response_model=AIArchitectScreen)
+def get_ai_architect_report(project_id: str):
+    proj = ProjectStorage.get_project(project_id)
+    if not proj:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    res = FinalCompiledApplication(**proj["pipeline_results"])
+    return AIArchitectScreen(report=res.ai_architect_report)
 
 @app.get("/versions/{project_id}", response_model=VersionHistoryEvolutionScreen)
 def get_versions(project_id: str):

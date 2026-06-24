@@ -8,6 +8,7 @@ from stages.stage6_validate import ValidationReport, ValidationError
 from stages.stage7_repair import RepairReport
 from stages.stage8_execution import ExecutionSimulationReport
 from stages.stage9_change import RequirementChangeReport, RequirementVersion, ChangeRiskAssessment, ImpactAnalysisReport, EvolutionTimelineEntry
+from stages.stage10_requirements_intelligence import AIArchitectReport
 
 class PipelineTrace(BaseModel):
     phase_name: str
@@ -34,6 +35,7 @@ class FinalCompiledApplication(BaseModel):
     app_type: str
     prompt: str
     intent: IntentExtractionResult
+    ai_architect_report: AIArchitectReport
     blueprint: ApprovedBlueprint
     system_design: MasterSpecification
     schema_bundle: CompiledSchemaBundle
@@ -61,6 +63,9 @@ class CompilerScreen(BaseModel):
     system_design: MasterSpecification
     schema_bundle: CompiledSchemaBundle
     compiler_logs: List[str] = Field(default_factory=list)
+
+class AIArchitectScreen(BaseModel):
+    report: AIArchitectReport
 
 class ValidationRepairScreen(BaseModel):
     validation_report: ValidationReport

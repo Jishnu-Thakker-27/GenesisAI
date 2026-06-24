@@ -13,7 +13,8 @@ import {
   Bell, 
   Terminal,
   Settings,
-  BookOpen
+  BookOpen,
+  BrainCircuit
 } from 'lucide-react';
 
 interface MainLayoutProps {
@@ -35,6 +36,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'compiler', label: 'Compiler', icon: Cpu },
+    { id: 'ai-architect', label: 'AI Architect', icon: BrainCircuit },
     { id: 'architecture', label: 'Architecture', icon: Network },
     { id: 'validation', label: 'Validation', icon: ShieldCheck },
     { id: 'repair', label: 'Repair', icon: Wrench },

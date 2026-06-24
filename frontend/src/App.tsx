@@ -7,6 +7,7 @@ import { ArchitectureMap } from './pages/ArchitectureMap';
 import { SimulationPlatform } from './pages/SimulationPlatform';
 import { VersionHistory } from './pages/VersionHistory';
 import { Evaluation } from './pages/Evaluation';
+import { AIArchitect } from './pages/AIArchitect';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -35,6 +36,8 @@ const App: React.FC = () => {
         );
       case 'compiler':
         return <CompilerWorkspace projectId={projectId} />;
+      case 'ai-architect':
+        return <AIArchitect projectId={projectId} />;
       case 'architecture':
         return <ArchitectureMap projectId={projectId} />;
       case 'validation':

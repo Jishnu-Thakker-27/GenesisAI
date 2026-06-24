@@ -11,7 +11,8 @@ import {
   ExecutionSimulationReport,
   DashboardScreen,
   ArchitectureMapScreen,
-  VersionHistoryEvolutionScreen
+  VersionHistoryEvolutionScreen,
+  AIArchitectScreen
 } from "./frontend_models";
 import * as mockData from "./mock_data";
 
@@ -65,13 +66,15 @@ async function requestWrapper<T>(
  */
 export async function compileProject(
   prompt: string,
-  executionMode: string = "BALANCED"
+  executionMode: string = "BALANCED",
+  intelligenceMode: string = "HYBRID"
 ): Promise<ApiResponse<FinalCompiledApplication>> {
   return requestWrapper(
     () =>
       client.post<FinalCompiledApplication>("/demo/compile", {
         prompt,
-        execution_mode: executionMode
+        execution_mode: executionMode,
+        intelligence_mode: intelligenceMode
       }),
     mockData.mockFinalCompiledApplication
   );
@@ -146,6 +149,19 @@ export async function getArchitecture(
   return requestWrapper(
     () => client.get<ArchitectureMapScreen>(`/architecture/${projectId}`),
     mockData.mockArchitectureData
+  );
+}
+
+/**
+ * Retrieve the AI Requirements Intelligence report for a project.
+ * GET /ai-architect/{project_id}
+ */
+export async function getAIArchitectReport(
+  projectId: string
+): Promise<ApiResponse<AIArchitectScreen>> {
+  return requestWrapper(
+    () => client.get<AIArchitectScreen>(`/ai-architect/${projectId}`),
+    { report: mockData.mockAIArchitectReport }
   );
 }
 
