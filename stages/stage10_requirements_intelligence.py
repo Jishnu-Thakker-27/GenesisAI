@@ -175,6 +175,11 @@ class RequirementsIntelligenceEngine:
             ("business_rules", "Reorder thresholds, supplier approval, audits, and stock adjustment rules need definition.", "MEDIUM"),
             ("integrations", "Barcode, sales, procurement, and supplier integrations are not specified.", "MEDIUM"),
         ],
+        "mall": [
+            ("workflows", "Tenant onboarding, store listing, offer management, and event booking flows need scope.", "HIGH"),
+            ("integrations", "Payment gateway, parking system, and facility management integrations are not specified.", "MEDIUM"),
+            ("actors", "Security, maintenance staff, and event coordinator roles may be needed.", "MEDIUM"),
+        ],
     }
 
     @classmethod
@@ -193,7 +198,7 @@ class RequirementsIntelligenceEngine:
             questions = []
         else:
             assumptions = [a for a in raw_assumptions if a.risk_level != "HIGH"]
-            questions = [q for q in raw_questions if q.priority == "HIGH"]
+            questions = [q for q in raw_questions if q.priority in ("HIGH", "MEDIUM")]
 
         scores = cls._calculate_confidence(intent, missing, assumptions)
         strategy = cls._recommend_strategy(scores, questions, assumptions)

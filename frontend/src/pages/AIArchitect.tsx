@@ -65,6 +65,7 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
   const [compiling, setCompiling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [jsonTarget, setJsonTarget] = useState<JsonTarget>('requirements');
+  const [discoveryMode, setDiscoveryMode] = useState<'ASK_ONLY' | 'ASSUME_ONLY' | 'HYBRID'>('HYBRID');
 
   useEffect(() => {
     if (projectId) {
@@ -72,12 +73,21 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
     }
   }, [projectId]);
 
+  useEffect(() => {
+    if (project?.ai_architect_report?.mode) {
+      setDiscoveryMode(project.ai_architect_report.mode as any);
+    }
+  }, [project]);
+
   const loadProject = async (id: string) => {
     setLoading(true);
     const res = await getProject(id);
     if (res.success && res.data) {
       setProject(res.data);
       setPrompt(res.data.prompt || '');
+      if (res.data.ai_architect_report?.mode) {
+        setDiscoveryMode(res.data.ai_architect_report.mode as any);
+      }
       setError(null);
     } else {
       setError(null);
@@ -89,7 +99,7 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
     event.preventDefault();
     if (!prompt.trim()) return;
     setCompiling(true);
-    const res = await compileProject(prompt, project?.execution_mode || 'BALANCED', project?.ai_architect_report?.mode || 'HYBRID');
+    const res = await compileProject(prompt, project?.execution_mode || 'BALANCED', discoveryMode);
     if (res.success && res.data) {
       setProject(res.data);
       onSetProjectId?.(res.data.project_id);
@@ -206,6 +216,63 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
               </div>
             </div>
 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
+              <span style={{ fontSize: '11px', color: '#888888', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Requirements Discovery Mode
+              </span>
+              <div style={{ display: 'flex', gap: '4px', backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '10px', padding: '4px', width: 'fit-content' }}>
+                {[
+                  { id: 'ASK_ONLY', label: 'Ask Questions First', desc: 'Ask clarifying questions before generation', icon: '?' },
+                  { id: 'ASSUME_ONLY', label: 'Auto-Assume & Continue', desc: 'Generate assumptions and continue', icon: '→' },
+                  { id: 'HYBRID', label: 'Hybrid', desc: 'Ask critical, assume non-critical, continue', icon: '⚡' }
+                ].map((modeOption) => {
+                  const isSelected = discoveryMode === modeOption.id;
+                  return (
+                    <button
+                      key={modeOption.id}
+                      type="button"
+                      onClick={() => setDiscoveryMode(modeOption.id as any)}
+                      title={modeOption.desc}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '7px',
+                        backgroundColor: isSelected ? 'rgba(0, 112, 243, 0.15)' : 'transparent',
+                        border: isSelected ? '1px solid rgba(0, 112, 243, 0.5)' : '1px solid transparent',
+                        borderRadius: '7px',
+                        color: isSelected ? '#FFFFFF' : '#666666',
+                        padding: '7px 14px',
+                        fontSize: '12px',
+                        fontWeight: isSelected ? 700 : 500,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        fontFamily: 'inherit',
+                        outline: 'none'
+                      }}
+                    >
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '16px',
+                        height: '16px',
+                        borderRadius: '50%',
+                        border: isSelected ? '2px solid #0070F3' : '2px solid #444444',
+                        backgroundColor: isSelected ? '#0070F3' : 'transparent',
+                        fontSize: '9px',
+                        color: isSelected ? '#FFFFFF' : '#444444',
+                        flexShrink: 0,
+                        transition: 'all 0.2s ease'
+                      }}>
+                        {isSelected ? '✓' : ''}
+                      </span>
+                      {modeOption.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <form onSubmit={handleCompile} style={{ display: 'flex', gap: '10px', marginTop: '18px' }}>
               <input
                 value={prompt}
@@ -273,6 +340,9 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
             <h3 style={{ fontSize: 18, marginTop: 8 }}>{domain}</h3>
             <p style={{ color: '#888888', fontSize: 13, marginTop: 4 }}>{subdomain}</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
+              <span style={{ ...pillStyle, border: '1px solid rgba(0, 112, 243, 0.4)', color: '#0070F3', fontWeight: 600 }}>
+                Mode: {discoveryMode === 'ASK_ONLY' ? 'Ask Questions' : discoveryMode === 'ASSUME_ONLY' ? 'Auto-Assume' : 'Hybrid'}
+              </span>
               <span style={pillStyle}>{actors.length} actors</span>
               <span style={pillStyle}>{entities.length} entities</span>
               <span style={pillStyle}>{workflows.length} workflows</span>
@@ -281,7 +351,7 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
           </div>
         </div>
       </section>
-
+ 
       {loading && !project ? (
         <div style={{ ...cardStyle, padding: 24, textAlign: 'center', color: '#888888' }}>Loading current project...</div>
       ) : !project || !report ? (
@@ -327,7 +397,10 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
               })}
               <div style={{ flexGrow: 1 }} />
               {confidenceScore !== null && (
-                <div style={{ display: 'flex', gap: 16, fontSize: 12 }}>
+                <div style={{ display: 'flex', gap: 16, fontSize: 12, alignItems: 'center' }}>
+                  <span style={{ color: '#0070F3' }}>
+                    Discovery Mode: <strong>{discoveryMode === 'ASK_ONLY' ? 'Ask Questions First' : discoveryMode === 'ASSUME_ONLY' ? 'Auto-Assume & Continue' : 'Hybrid'}</strong>
+                  </span>
                   <span style={{ color: '#10B981' }}>
                     Confidence: <strong>{confidenceScore}%</strong>
                   </span>
@@ -429,6 +502,66 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
             </div>
           </section>
 
+          {/* Discovery Mode Info Panel */}
+          <section style={{
+            ...cardStyle,
+            padding: '16px 20px',
+            backgroundColor: 'rgba(0, 112, 243, 0.04)',
+            border: '1px solid rgba(0, 112, 243, 0.15)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <BrainCircuit size={16} color="#0070F3" />
+              <span style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF' }}>
+                Requirements Discovery Mode: {discoveryMode === 'ASK_ONLY' ? 'Ask Questions First' : discoveryMode === 'ASSUME_ONLY' ? 'Auto-Assume & Continue' : 'Hybrid'}
+              </span>
+            </div>
+            <p style={{ color: '#D4D4D4', fontSize: '12px', lineHeight: '1.5', margin: 0 }}>
+              {discoveryMode === 'ASK_ONLY' ? (
+                <span>
+                  <strong>Ask Questions First Mode:</strong> Clarification questions are shown first to resolve ambiguities before generation. No assumptions were automatically made.
+                </span>
+              ) : discoveryMode === 'ASSUME_ONLY' ? (
+                <span>
+                  <strong>Auto-Assume & Continue Mode:</strong> GenesisAI automatically generated default assumptions for all ambiguous areas and proceeded with code compilation.
+                </span>
+              ) : (
+                <span>
+                  <strong>Hybrid Mode:</strong> Critical ambiguity is flagged via high-priority questions, while non-critical details are handled using auto-assumptions.
+                </span>
+              )}
+            </p>
+          </section>
+
+          {/* Missing Requirements + Clarification Questions (Bubbled up if ASK_ONLY) */}
+          {discoveryMode === 'ASK_ONLY' && (
+            <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <FindingPanel
+                title="Clarification Questions"
+                icon={<CircleHelp size={17} color="#0070F3" />}
+                items={(report.clarification_questions || []).map((item) => ({
+                  title: item.category,
+                  body: item.question,
+                  level: item.priority
+                }))}
+                emptyText="No clarification questions required."
+                highlight={true}
+              />
+              <FindingPanel
+                title="Missing Requirements"
+                icon={<AlertTriangle size={17} color="#F59E0B" />}
+                items={(report.missing_information || []).map((item) => ({
+                  title: item.category,
+                  body: item.description,
+                  level: item.impact
+                }))}
+                emptyText="No major missing requirements detected."
+              />
+            </section>
+          )}
+
           {/* Actors / Entities / Workflows */}
           <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
             <SummaryPanel title="Detected Actors" items={actors} icon={<CheckCircle2 size={16} color="#10B981" />} />
@@ -500,29 +633,31 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
             </div>
           </section>
 
-          {/* Missing Requirements + Clarification Questions */}
-          <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <FindingPanel
-              title="Missing Requirements"
-              icon={<AlertTriangle size={17} color="#F59E0B" />}
-              items={(report.missing_information || []).map((item) => ({
-                title: item.category,
-                body: item.description,
-                level: item.impact
-              }))}
-              emptyText="No major missing requirements detected."
-            />
-            <FindingPanel
-              title="Clarification Questions"
-              icon={<CircleHelp size={17} color="#0070F3" />}
-              items={(report.clarification_questions || []).map((item) => ({
-                title: item.category,
-                body: item.question,
-                level: item.priority
-              }))}
-              emptyText="No clarification questions required."
-            />
-          </section>
+          {/* Missing Requirements + Clarification Questions (Original Position - only if NOT ASK_ONLY) */}
+          {discoveryMode !== 'ASK_ONLY' && (
+            <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <FindingPanel
+                title="Missing Requirements"
+                icon={<AlertTriangle size={17} color="#F59E0B" />}
+                items={(report.missing_information || []).map((item) => ({
+                  title: item.category,
+                  body: item.description,
+                  level: item.impact
+                }))}
+                emptyText="No major missing requirements detected."
+              />
+              <FindingPanel
+                title="Clarification Questions"
+                icon={<CircleHelp size={17} color="#0070F3" />}
+                items={(report.clarification_questions || []).map((item) => ({
+                  title: item.category,
+                  body: item.question,
+                  level: item.priority
+                }))}
+                emptyText="No clarification questions required."
+              />
+            </section>
+          )}
 
           {/* Assumptions + Business Risks */}
           <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
@@ -535,6 +670,7 @@ export const AIArchitect: React.FC<AIArchitectProps> = ({ projectId, onSetProjec
                 level: item.risk_level
               }))}
               emptyText="No assumptions were needed."
+              highlight={discoveryMode === 'ASSUME_ONLY'}
             />
             <FindingPanel
               title="Business Risks"
@@ -745,9 +881,31 @@ const FindingPanel: React.FC<{
   icon: React.ReactNode;
   items: Array<{ title: string; body: string; level: string }>;
   emptyText: string;
-}> = ({ title, icon, items, emptyText }) => (
-  <div style={{ backgroundColor: '#121212', border: '1px solid #1E1E1E', borderRadius: '8px', padding: 18 }}>
-    <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 15 }}>{icon} {title}</h3>
+  highlight?: boolean;
+}> = ({ title, icon, items, emptyText, highlight }) => (
+  <div style={{
+    backgroundColor: '#121212',
+    border: highlight ? '1px solid rgba(0, 112, 243, 0.6)' : '1px solid #1E1E1E',
+    boxShadow: highlight ? '0 0 12px rgba(0, 112, 243, 0.15)' : 'none',
+    borderRadius: '8px',
+    padding: 18
+  }}>
+    <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 15 }}>
+      {icon} {title}
+      {highlight && (
+        <span style={{
+          marginLeft: 'auto',
+          fontSize: '11px',
+          backgroundColor: 'rgba(0, 112, 243, 0.15)',
+          color: '#0070F3',
+          padding: '2px 8px',
+          borderRadius: '12px',
+          fontWeight: 700
+        }}>
+          Attention Required
+        </span>
+      )}
+    </h3>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
       {items.length ? items.map((item, index) => (
         <div key={`${item.title}-${index}`} style={{ backgroundColor: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: 8, padding: 12 }}>

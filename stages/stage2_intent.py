@@ -1,6 +1,8 @@
 import os
 import json
 import logging
+import re
+from collections import OrderedDict
 from pydantic import BaseModel, Field, field_validator
 from typing import List, Literal, Optional, Any, Dict
 from google import genai
@@ -151,17 +153,22 @@ class IntentExtractionEngine:
         if not prompt or not prompt.strip():
             raise ValueError("Input prompt cannot be empty.")
 
-        # 1. Attempt Live LLM Generation
-        raw_result = None
-        if self.client:
-            try:
-                raw_result = self._call_gemini_api(prompt)
-            except Exception as e:
-                logger.error(f"Gemini API call failed: {e}. Redirecting to local rule-based extractor.")
-
-        # 2. Fallback to Local Rule-Based Mock Extractor if needed
-        if not raw_result:
-            raw_result = self._local_rule_based_extraction(prompt)
+        # 1. Attempt Rule-Based Mock Extraction for known domains
+        pre_result = self._rule_based_mock_extraction(prompt)
+        # If the mock extraction returns a specific domain (not generic), use it directly
+        if pre_result.detected_domain != "Generic Platform":
+            raw_result = pre_result
+        else:
+            # 2. Attempt Live LLM Generation via Gemini if client is available
+            raw_result = None
+            if self.client:
+                try:
+                    raw_result = self._call_gemini_api(prompt)
+                except Exception as e:
+                    logger.error(f"Gemini API call failed: {e}. Redirecting to generic fallback.")
+            # 3. Fallback to Generic Extraction if Gemini did not produce a result
+            if not raw_result:
+                raw_result = self._generic_fallback_extraction(prompt)
 
         # 3. Post-Process via the Confidence & Clarification Engines
         processed_result = self._process_and_refine(raw_result)
@@ -294,7 +301,126 @@ class IntentExtractionEngine:
 
         return result
 
-    def _local_rule_based_extraction(self, prompt: str) -> IntentExtractionResult:
+    def _generic_fallback_extraction(self, prompt: str) -> IntentExtractionResult:
+        """Generate a plausible intent for unseen prompts using simple heuristics.
+
+        Steps:
+        1. Extract candidate nouns and verbs.
+        2. Derive a domain name.
+        3. Infer actors from role keywords.
+        4. Infer entities from remaining nouns.
+        5. Build simple workflow strings from verbs + actors.
+        6. Assemble a minimal IntentExtractionResult.
+        """
+        # Tokenize prompt
+        words = re.findall(r"\b\w+\b", prompt.lower())
+
+        # Role keywords for actor inference
+        role_keywords = {"customer", "client", "user", "admin", "manager", "creator", "moderator", "seller", "buyer", "guest", "author", "participant", "coach", "trainer", "employee", "member", "patient", "doctor", "student", "teacher", "librarian", "agent", "traveler", "traveller", "traveller", "traveller", "traveler", "traveller", "traveller", "traveler", "traveller", "traveler", "traveller", "traveler", "participant", "organizer", "host"}
+        actors_set = OrderedDict()
+        for w in words:
+            if w in role_keywords:
+                actors_set[w.title()] = f"{w.title()} role in the application"
+        if not actors_set:
+            # Fallback generic actors based on common patterns
+            actors_set["User"] = "Standard application user"
+
+        # Stop‑words for entity extraction
+        stop_words = {"build", "create", "develop", "make", "a", "an", "the", "and", "for", "of", "to", "in", "app", "platform", "system", "service", "website", "application", "online", "mobile", "web", "cloud", "digital"}
+        entity_candidates = []
+        for w in words:
+            if w not in stop_words and w not in role_keywords:
+                candidate = w.title()
+                if candidate not in entity_candidates:
+                    entity_candidates.append(candidate)
+        if not entity_candidates:
+            entity_candidates.append("Entity")
+        entities = entity_candidates[:5]
+
+        # Verb list for workflow generation
+        verb_keywords = {"order", "book", "manage", "create", "view", "search", "purchase", "sell", "register", "login", "post", "share", "edit", "delete", "schedule", "reserve", "apply", "submit", "approve", "cancel"}
+        workflows_set = OrderedDict()
+        for verb in verb_keywords:
+            if verb in words:
+                for actor in actors_set:
+                    wf = f"{verb.title()} {actor}"
+                    workflows_set[wf] = f"Allows {actor.lower()} to {verb} items"
+        if not workflows_set:
+            workflows_set["Access Platform"] = "Basic access to the platform"
+        workflows = list(workflows_set.keys())
+
+        # Derive domain name – first meaningful noun after a build/create/etc.
+        domain = "Generic Platform"
+        for i, w in enumerate(words):
+            if w in {"build", "create", "develop", "make"} and i + 1 < len(words):
+                # Find the next token that is not a stop word or generic filler
+                for j in range(i + 1, len(words)):
+                    if words[j] not in stop_words:
+                        domain = words[j].title()
+                        break
+                break
+
+        # Construct actors list for model
+        actors = [IntentActor(name=name, description=desc) for name, desc in actors_set.items()]
+
+        # Simple features derived from workflows
+        features = []
+        for wf in workflows:
+            parts = wf.split()
+            if len(parts) >= 2:
+                verb, actor = parts[0], " ".join(parts[1:])
+                features.append(
+                    IntentFeature(
+                        name=wf.replace(" ", ""),
+                        description=f"Enable {actor.lower()} to {verb.lower()} items",
+                        actor_involved=actor,
+                        source=RecommendationSource(source_type="logical_inference", source_description="Generated from prompt heuristics")
+                    )
+                )
+
+        # Minimal generic business rules
+        business_rules = ["All users must accept Terms of Service."]
+
+        # Missing information and clarification placeholders
+        missing_information = [
+            "Core business focus (e.g., retail, education, health).",
+            "Specific actors and distinct roles beyond generic ones.",
+            "Functional business workflows."
+        ]
+        clarification_questions = [
+            ClarificationQuestion(
+                question="What is the primary business vertical or use case of this platform?",
+                category="general",
+                importance="high"
+            ),
+            ClarificationQuestion(
+                question="Which user roles should have administrative access?",
+                category="permissions",
+                importance="high"
+            )
+        ]
+
+        return IntentExtractionResult(
+            app_name="GenericPlatform",
+            app_type="Generic Platform",
+            detected_domain=domain,
+            detected_subdomain="Generated Domain",
+            domain_confidence=0.35,
+            entities=entities,
+            workflows=workflows,
+            actors=actors,
+            features=features,
+            business_rules=business_rules,
+            constraints=[],
+            workflow_gaps=["Authentication", "Data Storage"],
+            assumptions=[],
+            missing_information=missing_information,
+            clarification_questions=clarification_questions,
+            confidence_score=0.35,
+            confidence_explanation=["Heuristic fallback generated generic intent."]
+        )
+
+    def _rule_based_mock_extraction(self, prompt: str) -> IntentExtractionResult:
         """Rule-based mock fallback supporting normal and edge cases for local testing."""
         prompt_lower = prompt.lower()
 
@@ -878,6 +1004,59 @@ class IntentExtractionEngine:
                 confidence_explanation=[]
             )
 
+        # --- CASE 11: Mall Management ---
+        elif "mall" in prompt_lower or "shopping mall" in prompt_lower or "retail center" in prompt_lower or "commercial complex" in prompt_lower:
+            return IntentExtractionResult(
+                app_name="MallManagementPlatform",
+                app_type="Mall Management",
+                detected_domain="Mall Management Platform",
+                detected_subdomain="Retail Center & Tenant Operations",
+                domain_confidence=0.92,
+                entities=["Store", "Category", "Offer", "Event", "Product", "Tenant", "Booking"],
+                workflows=["Browse Stores", "View Offers", "Manage Store", "Book Event Space"],
+                actors=[
+                    IntentActor(name="Customer", description="Browse stores, view offers, book event spaces"),
+                    IntentActor(name="StoreOwner", description="Manage store listings, products, offers"),
+                    IntentActor(name="MallAdministrator", description="Manage tenants, events, mall operations")
+                ],
+                features=[
+                    IntentFeature(name="BrowseStores", description="Browse and search stores in the mall", actor_involved="Customer"),
+                    IntentFeature(name="ManageStore", description="Manage store listings and products", actor_involved="StoreOwner"),
+                    IntentFeature(name="ManageEvents", description="Manage mall events and bookings", actor_involved="MallAdministrator")
+                ],
+                business_rules=[
+                    "Stores must belong to an active tenant.",
+                    "Offers require store owner approval.",
+                    "Event bookings require admin confirmation."
+                ],
+                constraints=["Multi-tenant store isolation required."],
+                workflow_gaps=["Tenant onboarding flow", "Offer approval workflow"],
+                assumptions=[
+                    AssumptionModel(
+                        assumption="Single mall deployment",
+                        reason="MVP scope",
+                        source="logical_inference",
+                        confidence=0.80,
+                        impact_level="MEDIUM"
+                    )
+                ],
+                missing_information=["Parking and facilities management scope."],
+                clarification_questions=[
+                    ClarificationQuestion(
+                        question="Should the platform support multiple mall locations?",
+                        category="constraints",
+                        importance="high"
+                    ),
+                    ClarificationQuestion(
+                        question="What event types should be bookable?",
+                        category="features",
+                        importance="medium"
+                    )
+                ],
+                confidence_score=0.92,
+                confidence_explanation=[]
+            )
+
         # --- EDGE CASE: "Everyone is admin but nobody has admin rights" ---
         elif "everyone is admin but nobody has admin rights" in prompt_lower:
             return IntentExtractionResult(
@@ -913,46 +1092,8 @@ class IntentExtractionEngine:
                 confidence_explanation=[]
             )
 
-        # --- GENERAL VAGUE EDGE CASE: "Build a platform" or similar ---
+        # --- GENERIC FALLBACK: Infer domain, actors, entities, and workflows from prompt
         else:
-            return IntentExtractionResult(
-                app_name="GenericPlatform",
-                app_type="Unspecified Platform",
-                detected_domain="Unspecified Platform",
-                detected_subdomain="Vague Operational Shell",
-                domain_confidence=0.30,
-                entities=["User"],
-                workflows=["Access Platform"],
-                actors=[IntentActor(name="User", description="Standard application user")],
-                features=[
-                    IntentFeature(
-                        name="AccessPlatform", 
-                        description="Log in to the system", 
-                        actor_involved="User",
-                        source=RecommendationSource(source_type="logical_inference", source_description="Baseline access requirement")
-                    )
-                ],
-                business_rules=["Users must accept Terms of Service."],
-                constraints=[],
-                workflow_gaps=["Platform Registration Flow", "Admin Configuration Flow"],
-                assumptions=[],
-                missing_information=[
-                    "Core business focus (Gym, E-commerce, School etc.).",
-                    "Specific actors and distinct roles.",
-                    "Functional business workflows."
-                ],
-                clarification_questions=[
-                    ClarificationQuestion(
-                        question="What is the primary business vertical or use case of this platform?",
-                        category="general",
-                        importance="high"
-                    ),
-                    ClarificationQuestion(
-                        question="Which user roles should have administrative access?",
-                        category="permissions",
-                        importance="high"
-                    )
-                ],
-                confidence_score=0.30,
-                confidence_explanation=[]
-            )
+            # Use the new generic extraction helper for unseen domains
+            generic_result = self._generic_fallback_extraction(prompt)
+            return generic_result

@@ -1004,6 +1004,9 @@ class PermissionDesigner:
                 if report and "restaurant" in report.detected_domain.lower():
                     perms = ["BrowseMenu", "PlaceOrder", "ReserveTable", "LeaveReview", "ReadOwnProfile"]
                     reason = "Customer menu browsing, ordering, reservation, and review rights."
+                elif report and "mall" in report.detected_domain.lower():
+                    perms = ["BrowseStores", "ViewOffers", "BookEventSpace", "ReadOwnProfile"]
+                    reason = "Customer store browsing, offer viewing, and event booking rights."
                 else:
                     perms = ["BrowseMenu", "PlaceOrder", "Checkout", "ReadOwnProfile"]
                     reason = "Customer ordering and checkout rights."
@@ -1013,6 +1016,12 @@ class PermissionDesigner:
             elif name == "Staff":
                 perms = ["UpdateOrderStatus", "ManageReservations"]
                 reason = "Restaurant staff operational order and reservation access."
+            elif name == "StoreOwner":
+                perms = ["ManageStore", "ManageProducts", "ManageOffers", "ViewStoreAnalytics"]
+                reason = "Store owner listing, product, and offer management access."
+            elif name == "MallAdministrator":
+                perms = ["ManageTenants", "ManageEvents", "ManageFacilities", "ViewReports", "ManageStores"]
+                reason = "Mall administrator full operational and tenant management access."
             elif name == "Buyer":
                 perms = ["BrowseProducts", "AddToCart", "Checkout", "ReadOwnProfile"]
                 reason = "Buyer marketplace browsing and purchasing rights."
